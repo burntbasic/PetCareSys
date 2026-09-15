@@ -22,7 +22,6 @@ import java.awt.event.ActionEvent;
 
 import com.petcare.database.UserDB;
 
-;
 public class LoginFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
