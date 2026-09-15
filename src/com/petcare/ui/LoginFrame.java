@@ -9,12 +9,15 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.swing.JPasswordField;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 
 import com.petcare.database.UserDB;
@@ -72,8 +75,16 @@ public class LoginFrame extends JFrame {
 		
 		JLabel lblPassword = new JLabel("Password");
 		lblPassword.setFont(new Font("Dialog", Font.BOLD, 14));
-		lblPassword.setBounds(114, 169, 167, 41);
+		lblPassword.setBounds(114, 153, 167, 41);
 		contentPane.add(lblPassword);
+		
+		JLabel uname_pwError = new JLabel("New label");
+		uname_pwError.setHorizontalAlignment(SwingConstants.CENTER);
+		uname_pwError.setBounds(114, 229, 335, 17);
+		uname_pwError.setVisible(false);
+		uname_pwError.setForeground(Color.RED);
+		uname_pwError.setFont(new Font("Dialog", Font.PLAIN, 10));
+		contentPane.add(uname_pwError);
 		
 		JButton btnLogin = new JButton("Login");
 		btnLogin.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -82,20 +93,28 @@ public class LoginFrame extends JFrame {
 				String username = txtUsername.getText();
 				String password = new String(pwField.getPassword());
 				
-				boolean success = userdb.userLogin(username,password);
+				//Clearing any previous error message
+				uname_pwError.setVisible(false);
 				
-				if (success) {
-					//this.dispose()
-					//new DashboardFrame().setVisible(true);
-					System.out.println("Login Successful!");
-				} else  {
-					System.out.println("Login Failed");
+				try {
+					boolean success = userdb.userLogin(username,password);
+				
+					if (success) {
+						JOptionPane.showMessageDialog(null, "Login Successful!");
+						//this.dispose()
+						//new DashboardFrame().setVisible(true);
+					} else  {
+						uname_pwError.setText("Username or Password is incorrect.");
+						uname_pwError.setVisible(true);
+					}
+				} catch (SQLException ex) {
+					ex.printStackTrace();
+		        	JOptionPane.showMessageDialog(null, "A database error occurred.\nPlease try again later.", "Database Error", JOptionPane.ERROR_MESSAGE);
 				}
-			
 			}
 		});
 		btnLogin.setFont(new Font("Dialog", Font.BOLD, 14));
-		btnLogin.setBounds(215, 267, 131, 41);
+		btnLogin.setBounds(215, 285, 131, 41);
 		contentPane.add(btnLogin);
 		
 		JLabel lblNewUser = new JLabel("New user? Register Now!");
@@ -120,11 +139,11 @@ public class LoginFrame extends JFrame {
 		lblNewUser.setVerticalAlignment(SwingConstants.BOTTOM);
 		lblNewUser.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewUser.setFont(new Font("Dialog", Font.PLAIN, 12));
-		lblNewUser.setBounds(198, 325, 167, 17);
+		lblNewUser.setBounds(198, 343, 167, 17);
 		contentPane.add(lblNewUser);
 		
 		pwField = new JPasswordField();
-		pwField.setBounds(114, 209, 335, 32);
+		pwField.setBounds(114, 193, 335, 32);
 		contentPane.add(pwField);
 
 	}
