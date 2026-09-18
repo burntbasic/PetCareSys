@@ -1,6 +1,8 @@
 package com.petcare.ui;
 import com.petcare.database.UserDB;
+import com.petcare.exception.DatabaseConfigException;
 import com.petcare.model.*;
+import com.petcare.util.ErrorHandler;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -108,8 +110,9 @@ public class LoginFrame extends JFrame {
 						uname_pwError.setVisible(true);
 					}
 				} catch (SQLException ex) {
-					ex.printStackTrace();
-		        	JOptionPane.showMessageDialog(null, "A database error occurred.\nPlease try again later.", "Database Error", JOptionPane.ERROR_MESSAGE);
+					ErrorHandler.handleSQLException(ex);
+				} catch (DatabaseConfigException ex) {
+					ErrorHandler.handleDatabaseConfigException(null);
 				} catch (IllegalArgumentException ex) {
 					ex.printStackTrace();
 		        	JOptionPane.showMessageDialog(null, ex.getMessage(), "Application Error", JOptionPane.ERROR_MESSAGE);

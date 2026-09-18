@@ -1,4 +1,5 @@
 package com.petcare.database;
+import com.petcare.exception.DatabaseConfigException;
 import com.petcare.model.User;
 
 import java.sql.Connection;
@@ -7,7 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class UserDB {
-	public User userLogin(String username, String password) throws SQLException {
+	public User userLogin(String username, String password) throws SQLException, DatabaseConfigException {
 			String sql = "SELECT * FROM Users WHERE username = ? AND password = ?";
 			
 			try (Connection connection = DBConnection.getConnection();
@@ -41,7 +42,7 @@ public class UserDB {
 			} 
 	}
 	
-	public boolean petOwnerRegister(String fName, String lName, String email, String phone_num, String username, String password) throws SQLException {
+	public boolean petOwnerRegister(String fName, String lName, String email, String phone_num, String username, String password) throws SQLException, DatabaseConfigException {
 			String sql = "INSERT INTO Users (first_name, last_name, email, phone, username, password) VALUES (?, ?, ?, ?, ?, ?)";
 		
 			try (Connection connection = DBConnection.getConnection();
@@ -61,7 +62,7 @@ public class UserDB {
 			}
 		}
 
-	public boolean usernameExists(String username) throws SQLException {
+	public boolean usernameExists(String username) throws SQLException, DatabaseConfigException {
 		String sql = "SELECT id FROM Users WHERE username = ?";
 		
 		try (Connection connection = DBConnection.getConnection();
@@ -76,7 +77,7 @@ public class UserDB {
 		}
 	}
 	
-	public boolean emailExists(String email) throws SQLException {
+	public boolean emailExists(String email) throws SQLException, DatabaseConfigException {
 		String sql = "SELECT id FROM Users WHERE email = ?";
 		
 		try (Connection connection = DBConnection.getConnection();

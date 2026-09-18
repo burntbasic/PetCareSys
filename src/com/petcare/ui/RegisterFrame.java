@@ -1,5 +1,9 @@
 package com.petcare.ui;
 
+import com.petcare.database.UserDB;
+import com.petcare.exception.DatabaseConfigException;
+import com.petcare.util.ErrorHandler;
+
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -20,7 +24,7 @@ import java.sql.SQLException;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-import com.petcare.database.UserDB;
+
 
 
 public class RegisterFrame extends JFrame {
@@ -323,9 +327,9 @@ public class RegisterFrame extends JFrame {
 		        		JOptionPane.showMessageDialog(null, "Registration Failed", "Registration Error", JOptionPane.ERROR_MESSAGE);
 		        	}
 		        } catch (SQLException ex) {
-		        	ex.printStackTrace();
-		        	
-		        	JOptionPane.showMessageDialog(null, "A database error occurred.\nPlease try again later.", "Database Error", JOptionPane.ERROR_MESSAGE);
+		        	ErrorHandler.handleSQLException(ex);
+		        } catch (DatabaseConfigException ex) {
+		        	ErrorHandler.handleDatabaseConfigException(ex);
 		        }
 		}});
 		btnSubmit.setCursor(new Cursor(Cursor.HAND_CURSOR));
