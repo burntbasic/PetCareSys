@@ -1,4 +1,5 @@
 package com.petcare.database;
+import com.petcare.model.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -6,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class UserDB {
-	public boolean userLogin(String username, String password) throws SQLException {
+	public User userLogin(String username, String password) throws SQLException {
 			String sql = "SELECT * FROM Users WHERE username = ? AND password = ?";
 			
 			try (Connection connection = DBConnection.getConnection();
@@ -17,16 +18,27 @@ public class UserDB {
 				
 				ResultSet result = statement.executeQuery();
 				
-				return result.next();
-				//result.next() checks whether the query returned a row and returns either true or false
+				if(result.next()) {
+					User user = new User(
+							result.getInt("id"),
+							result.getString("first_name"),
+							result.getString("last_name"),
+							result.getString("email"),
+							result.getString("phone"),
+							result.getString("username"),
+							result.getString("role")
+							);
+					return user;
+					
+					//result.next() checks whether the query returned a row and returns either true or false
+				}
+				
+				return null;
 				
 				/* Connection and PreparedStatement are automatically closed because they are
 				declared as resources in the parentheses of the try-with-resources statement.*/
 				
-			} /*catch (SQLException e) {
-				e.printStackTrace();
-				return false;
-			}*/
+			} 
 	}
 	
 	public boolean petOwnerRegister(String fName, String lName, String email, String phone_num, String username, String password) throws SQLException {
@@ -46,10 +58,7 @@ public class UserDB {
 				
 				/* Connection and PreparedStatement are automatically closed because they are
 				declared as resources in the parentheses of the try-with-resources statement.*/
-			} /*catch (SQLException e) {
-				e.printStackTrace();
-				return false;
-			}*/
+			}
 		}
 
 	public boolean usernameExists(String username) throws SQLException {
@@ -64,10 +73,7 @@ public class UserDB {
 			
 			return result.next();
 			
-		} /*catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}*/
+		}
 	}
 	
 	public boolean emailExists(String email) throws SQLException {
@@ -82,9 +88,6 @@ public class UserDB {
 			
 			return result.next();
 			
-		} /*catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}*/
+		}
 	}
 }

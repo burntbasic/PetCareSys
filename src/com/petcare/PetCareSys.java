@@ -1,7 +1,7 @@
 package com.petcare;
+import com.petcare.ui.LoginFrame;
 
 import com.formdev.flatlaf.*;
-import com.petcare.ui.LoginFrame;
 
 public class PetCareSys {
 

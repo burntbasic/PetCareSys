@@ -1,4 +1,6 @@
 package com.petcare.ui;
+import com.petcare.database.UserDB;
+import com.petcare.model.*;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -10,7 +12,6 @@ import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-
 import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.swing.JPasswordField;
@@ -20,7 +21,6 @@ import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 
-import com.petcare.database.UserDB;
 
 public class LoginFrame extends JFrame {
 
@@ -96,12 +96,13 @@ public class LoginFrame extends JFrame {
 				uname_pwError.setVisible(false);
 				
 				try {
-					boolean success = userdb.userLogin(username,password);
+					User user = userdb.userLogin(username,password);
 				
-					if (success) {
+					if (user!=null) {
 						JOptionPane.showMessageDialog(null, "Login Successful!");
-						//this.dispose()
-						//new DashboardFrame().setVisible(true);
+						JFrame dashboard = DashboardFactory.createDashboard(user);
+						dispose();
+						dashboard.setVisible(true);
 					} else  {
 						uname_pwError.setText("Username or Password is incorrect.");
 						uname_pwError.setVisible(true);
@@ -109,6 +110,9 @@ public class LoginFrame extends JFrame {
 				} catch (SQLException ex) {
 					ex.printStackTrace();
 		        	JOptionPane.showMessageDialog(null, "A database error occurred.\nPlease try again later.", "Database Error", JOptionPane.ERROR_MESSAGE);
+				} catch (IllegalArgumentException ex) {
+					ex.printStackTrace();
+		        	JOptionPane.showMessageDialog(null, ex.getMessage(), "Application Error", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -118,7 +122,6 @@ public class LoginFrame extends JFrame {
 		
 		JLabel lblNewUser = new JLabel("New user? Register Now!");
 		lblNewUser.setForeground(new Color(0, 102, 204));
-		//lblBacktoLogin.setForeground(SystemColor.activeCaption);
 		lblNewUser.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		lblNewUser.addMouseListener(new MouseAdapter() {
 			public void mouseEntered(MouseEvent e) {
