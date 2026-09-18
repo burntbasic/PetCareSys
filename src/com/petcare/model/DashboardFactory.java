@@ -1,5 +1,7 @@
 package com.petcare.model;
-import com.petcare.ui.*;
+import com.petcare.ui.adminFrames.AdminDashboard;
+import com.petcare.ui.petOwnerFrames.PetOwnerDashboard;
+import com.petcare.ui.vetFrames.VetDashboard;
 
 import javax.swing.JFrame;
 
@@ -7,13 +9,13 @@ public class DashboardFactory {
 	public static JFrame createDashboard(User user) {
 		//static used to reference method without object creation
 		if(user.getRole().equals("PET_OWNER")) {
-			return new PetOwnerDashboardFrame(user);
+			return new PetOwnerDashboard(user);
 		}
 		else if(user.getRole().equals("VET")) {
-			return new VetDashboardFrame(user);
+			return new VetDashboard(user);
 		}
 		else if(user.getRole().equals("ADMIN")) {
-			return new AdminDashboardFrame(user);
+			return new AdminDashboard(user);
 		}
 		throw new IllegalArgumentException("Unknown user role");
 		// This exception should not occur because the user's role is restricted by the database ENUM.

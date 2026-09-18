@@ -21,7 +21,7 @@ public class UserDB {
 				
 				if(result.next()) {
 					User user = new User(
-							result.getInt("id"),
+							result.getInt("user_id"),
 							result.getString("first_name"),
 							result.getString("last_name"),
 							result.getString("email"),
@@ -63,7 +63,7 @@ public class UserDB {
 		}
 
 	public boolean usernameExists(String username) throws SQLException, DatabaseConfigException {
-		String sql = "SELECT id FROM Users WHERE username = ?";
+		String sql = "SELECT user_id FROM Users WHERE username = ?";
 		
 		try (Connection connection = DBConnection.getConnection();
 			PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -78,7 +78,7 @@ public class UserDB {
 	}
 	
 	public boolean emailExists(String email) throws SQLException, DatabaseConfigException {
-		String sql = "SELECT id FROM Users WHERE email = ?";
+		String sql = "SELECT user_id FROM Users WHERE email = ?";
 		
 		try (Connection connection = DBConnection.getConnection();
 			PreparedStatement statement = connection.prepareStatement(sql)) {

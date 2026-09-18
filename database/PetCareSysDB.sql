@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Sep 15, 2026 at 11:38 AM
+-- Generation Time: Sep 18, 2026 at 04:43 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,6 +20,36 @@ SET time_zone = "+00:00";
 --
 -- Database: `PetCareSysDB`
 --
+CREATE DATABASE IF NOT EXISTS `PetCareSysDB` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `PetCareSysDB`;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Appointments`
+--
+
+CREATE TABLE `Appointments` (
+  `appointment_id` int(11) NOT NULL,
+  `pet_id` int(11) NOT NULL,
+  `vet_id` int(11) NOT NULL,
+  `appointment_date` datetime NOT NULL,
+  `status` varchar(20) NOT NULL DEFAULT 'Scheduled',
+  `reason` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Pets`
+--
+
+CREATE TABLE `Pets` (
+  `pet_id` int(11) NOT NULL,
+  `owner_id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `species` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -28,7 +58,7 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `Users` (
-  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
   `first_name` varchar(50) NOT NULL,
   `last_name` varchar(50) NOT NULL,
   `email` varchar(100) NOT NULL,
@@ -44,10 +74,22 @@ CREATE TABLE `Users` (
 --
 
 --
+-- Indexes for table `Appointments`
+--
+ALTER TABLE `Appointments`
+  ADD PRIMARY KEY (`appointment_id`);
+
+--
+-- Indexes for table `Pets`
+--
+ALTER TABLE `Pets`
+  ADD PRIMARY KEY (`pet_id`);
+
+--
 -- Indexes for table `Users`
 --
 ALTER TABLE `Users`
-  ADD PRIMARY KEY (`id`),
+  ADD PRIMARY KEY (`user_id`),
   ADD UNIQUE KEY `unique_username` (`username`),
   ADD UNIQUE KEY `unique_email` (`email`);
 
@@ -56,10 +98,22 @@ ALTER TABLE `Users`
 --
 
 --
+-- AUTO_INCREMENT for table `Appointments`
+--
+ALTER TABLE `Appointments`
+  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `Pets`
+--
+ALTER TABLE `Pets`
+  MODIFY `pet_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `Users`
 --
 ALTER TABLE `Users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
