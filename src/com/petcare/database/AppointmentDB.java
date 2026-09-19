@@ -32,7 +32,7 @@ public class AppointmentDB {
 				AND a.appointment_date >= NOW()
 				ORDER BY a.appointment_date
 				""";
-		//"AND u.role = 'VET' is extra validation; vet_id should already reference a VET
+		//"AND u.role = 'VET'" is extra validation; vet_id should already reference a VET
 		
 		try(Connection connection = DBConnection.getConnection();
 			PreparedStatement statement = connection.prepareStatement(sql)) {
