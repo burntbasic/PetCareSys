@@ -62,6 +62,7 @@ public class UserDB {
 			}
 		}
 
+	//Registration Validation
 	public boolean usernameExists(String username) throws SQLException, DatabaseConfigException {
 		String sql = "SELECT user_id FROM Users WHERE username = ?";
 		

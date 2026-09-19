@@ -10,6 +10,8 @@ import com.petcare.exception.DatabaseConfigException;
 import com.petcare.model.User;
 
 public class PetDB {
+	
+	//Pet Owner UI
 	public int getPetCount(User user) throws SQLException, DatabaseConfigException {
 		String sql = "SELECT COUNT(*) AS pet_count FROM Pets WHERE owner_id = ?";
 		
@@ -22,6 +24,28 @@ public class PetDB {
 			
 			result.next();
 			return result.getInt("pet_count");
+		}
+	}
+	
+	//Vet UI
+	public int getPatientCount(User user) throws SQLException, DatabaseConfigException {
+		String sql = """
+				SELECT COUNT(DISTINCT a.pet_id) AS patient_count
+				FROM Appointments a
+				WHERE a.vet_id = ?
+				AND a.status = "Scheduled"
+				AND DATE(a.appointment_date) = CURDATE()
+				""";
+		
+		try(Connection connection  = DBConnection.getConnection();
+			PreparedStatement statement = connection.prepareStatement(sql)) {
+				
+			statement.setInt(1, user.getId());
+				
+			ResultSet result = statement.executeQuery();
+				
+			result.next();
+			return result.getInt("patient_count");
 		}
 	}
 }
