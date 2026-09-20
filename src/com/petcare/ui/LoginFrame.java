@@ -2,6 +2,7 @@ package com.petcare.ui;
 import com.petcare.database.UserDB;
 import com.petcare.exception.DatabaseConfigException;
 import com.petcare.model.*;
+import com.petcare.service.DashboardFactory;
 import com.petcare.util.ErrorHandler;
 
 import java.awt.Color;

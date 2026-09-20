@@ -1,4 +1,5 @@
-package com.petcare.model;
+package com.petcare.service;
+import com.petcare.model.User;
 import com.petcare.ui.adminFrames.AdminDashboard;
 import com.petcare.ui.petOwnerFrames.PetOwnerDashboard;
 import com.petcare.ui.vetFrames.VetDashboard;
