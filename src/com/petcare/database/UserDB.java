@@ -89,7 +89,6 @@ public class UserDB {
 			ResultSet result = statement.executeQuery();
 			
 			return result.next();
-			
 		}
 	}
 }

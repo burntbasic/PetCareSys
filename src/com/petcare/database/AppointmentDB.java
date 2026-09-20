@@ -12,7 +12,7 @@ import java.util.List;
 public class AppointmentDB {
 	
 	//Pet-Owner UI
-	public List<Appointment> getUpcomingAppointments(User user) throws SQLException, DatabaseConfigException {
+	public List<Appointment> getOwnerUpcoming(User user) throws SQLException, DatabaseConfigException {
 		
 		List<Appointment> appointments = new ArrayList<>();
 		
@@ -62,7 +62,7 @@ public class AppointmentDB {
 		}
 	}
 	
-	public int getUpcomingCount(User user) throws SQLException, DatabaseConfigException {
+	public int getOwnerUpcomingCount(User user) throws SQLException, DatabaseConfigException {
 		String sql = """
 		        SELECT COUNT(*) AS upcoming_count
 		        FROM Appointments a
@@ -84,7 +84,7 @@ public class AppointmentDB {
 		}
 	}
 	
-	public int getCompletedCount(User user) throws SQLException, DatabaseConfigException {
+	public int getOwnerCompletedCount(User user) throws SQLException, DatabaseConfigException {
 		String sql = """
 		        SELECT COUNT(*) AS completed_count
 		        FROM Appointments a
@@ -107,7 +107,7 @@ public class AppointmentDB {
 	}
 	
 	//Vet UI	
-	public int getTodayCount(User user) throws SQLException, DatabaseConfigException {
+	public int getVetTodaysCount(User user) throws SQLException, DatabaseConfigException {
 		String sql = """
 				SELECT COUNT(*) AS appointment_count
 				FROM Appointments
@@ -127,7 +127,7 @@ public class AppointmentDB {
 		}
 	}
 	
-	public List<Appointment> getTodaysAppointments(User user) throws SQLException, DatabaseConfigException {
+	public List<Appointment> getVetTodays(User user) throws SQLException, DatabaseConfigException {
 		
 		List<Appointment> appointments = new ArrayList<>();
 		
@@ -170,5 +170,5 @@ public class AppointmentDB {
 				}
 				return appointments;
 		}
-	}
+	}	
 }

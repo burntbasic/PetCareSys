@@ -12,7 +12,7 @@ import com.petcare.model.User;
 public class PetDB {
 	
 	//Pet Owner UI
-	public int getPetCount(User user) throws SQLException, DatabaseConfigException {
+	public int getOwnerPetCount(User user) throws SQLException, DatabaseConfigException {
 		String sql = "SELECT COUNT(*) AS pet_count FROM Pets WHERE owner_id = ?";
 		
 		try(Connection connection = DBConnection.getConnection();
@@ -28,7 +28,7 @@ public class PetDB {
 	}
 	
 	//Vet UI
-	public int getPatientCount(User user) throws SQLException, DatabaseConfigException {
+	public int getVetPatientCount(User user) throws SQLException, DatabaseConfigException {
 		String sql = """
 				SELECT COUNT(DISTINCT a.pet_id) AS patient_count
 				FROM Appointments a

@@ -105,7 +105,7 @@ public class VetDashboard extends BaseDashboard {
         String patient = "N/A";
         
         try {
-        	today = String.valueOf(appointmentdb.getTodayCount(user));
+        	today = String.valueOf(appointmentdb.getVetTodaysCount(user));
         } catch (SQLException | DatabaseConfigException e) {
         	e.printStackTrace();        	
         }
@@ -117,7 +117,7 @@ public class VetDashboard extends BaseDashboard {
         }
         
         try {
-        	patient = String.valueOf(petdb.getPatientCount(user));
+        	patient = String.valueOf(petdb.getVetPatientCount(user));
         } catch (SQLException | DatabaseConfigException e) {
         	e.printStackTrace();        	
         }
@@ -149,7 +149,7 @@ public class VetDashboard extends BaseDashboard {
 		};
 		
 		try {
-			List<Appointment> appointments = appointmentdb.getTodaysAppointments(user);
+			List<Appointment> appointments = appointmentdb.getVetTodays(user);
 			
 			for (Appointment appointment : appointments) {
 				tableModel.addRow(new Object[] {

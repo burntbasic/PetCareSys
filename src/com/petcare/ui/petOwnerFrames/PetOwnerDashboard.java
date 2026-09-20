@@ -99,19 +99,19 @@ public class PetOwnerDashboard extends BaseDashboard {
 		String completed = "N/A";
 
 		try {
-			petCount = String.valueOf(petdb.getPetCount(user));
+			petCount = String.valueOf(petdb.getOwnerPetCount(user));
 		} catch (SQLException | DatabaseConfigException e) {
 			e.printStackTrace();
 		}
 
 		try {
-			upcoming = String.valueOf(appointmentdb.getUpcomingCount(user));
+			upcoming = String.valueOf(appointmentdb.getOwnerUpcomingCount(user));
 		} catch (SQLException | DatabaseConfigException e) {
 			e.printStackTrace();
 		}
 
 		try {
-			completed = String.valueOf(appointmentdb.getCompletedCount(user));
+			completed = String.valueOf(appointmentdb.getOwnerCompletedCount(user));
 		} catch (SQLException | DatabaseConfigException e) {
 			e.printStackTrace();
 		}
@@ -143,7 +143,7 @@ public class PetOwnerDashboard extends BaseDashboard {
 		};
 
 		try {
-			List<Appointment> appointments = appointmentdb.getUpcomingAppointments(user);
+			List<Appointment> appointments = appointmentdb.getOwnerUpcoming(user);
 
 			for (Appointment appointment : appointments) {
 				tableModel.addRow(new Object[] {
