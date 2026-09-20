@@ -10,6 +10,7 @@ import com.petcare.ui.LoginFrame;
 import com.petcare.util.ErrorHandler;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -92,6 +93,9 @@ public class VetDashboard extends BaseDashboard {
 
         headerPanel.add(headerText, BorderLayout.WEST);
         mainPanel.add(headerPanel, BorderLayout.NORTH);
+        
+		JPanel dashboardPanel = new JPanel();
+		dashboardPanel.setLayout(new BoxLayout(dashboardPanel, BoxLayout.Y_AXIS));
 
         // =========================
         // DASHBOARD CONTENT
@@ -126,16 +130,16 @@ public class VetDashboard extends BaseDashboard {
         cardsPanel.add(createCard("Pending Treatments", pending));
         cardsPanel.add(createCard("Patients Today", patient));
 
-        dashboardContent.add(cardsPanel);
-        dashboardContent.add(Box.createVerticalStrut(25));
+        dashboardPanel.add(cardsPanel);
+        dashboardPanel.add(Box.createVerticalStrut(25));
 
         // Table title
         JLabel appointmentsTitle = new JLabel("Today's Appointments");
         appointmentsTitle.setFont(new Font("SansSerif", Font.BOLD, 20));
 		appointmentsTitle.setAlignmentX(CENTER_ALIGNMENT);
 
-        dashboardContent.add(appointmentsTitle);
-        dashboardContent.add(Box.createVerticalStrut(10));
+        dashboardPanel.add(appointmentsTitle);
+        dashboardPanel.add(Box.createVerticalStrut(10));
 
         // Table
         String[] columns = {
@@ -172,7 +176,71 @@ public class VetDashboard extends BaseDashboard {
 
         JScrollPane scrollPane = new JScrollPane(table);
 
-        dashboardContent.add(scrollPane);
+        dashboardPanel.add(scrollPane);
+        contentPanel.add(dashboardPanel, "dashboard");
+        
+        JPanel appointmentsPanel = new JPanel();
+        appointmentsPanel.add(new JLabel("Appointments"));
+
+        JPanel patientsPanel = new JPanel();
+        patientsPanel.add(new JLabel("Patients"));
+
+        JPanel treatmentsPanel = new JPanel();
+        treatmentsPanel.add(new JLabel("Treatments"));
+
+        JPanel medicalPanel = new JPanel();
+        medicalPanel.add(new JLabel("Medical Records"));
+
+        JPanel reportsPanel = new JPanel();
+        reportsPanel.add(new JLabel("Reports"));
+        
+        contentPanel.add(appointmentsPanel, "appointments");
+        contentPanel.add(patientsPanel, "patients");
+        contentPanel.add(treatmentsPanel, "treatments");
+        contentPanel.add(medicalPanel, "medical");
+        contentPanel.add(reportsPanel, "reports");
+        
+        dashboardBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                CardLayout layout = (CardLayout) contentPanel.getLayout();
+                layout.show(contentPanel, "dashboard");
+            }
+        });
+        
+        appointmentsBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                CardLayout layout = (CardLayout) contentPanel.getLayout();
+                layout.show(contentPanel, "appointments");
+            }
+        });
+        
+        patientsBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                CardLayout layout = (CardLayout) contentPanel.getLayout();
+                layout.show(contentPanel, "patients");
+            }
+        });
+        
+        treatmentsBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                CardLayout layout = (CardLayout) contentPanel.getLayout();
+                layout.show(contentPanel, "treatments");
+            }
+        });
+        
+        medicalBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                CardLayout layout = (CardLayout) contentPanel.getLayout();
+                layout.show(contentPanel, "medical");
+            }
+        });
+        
+        reportsBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                CardLayout layout = (CardLayout) contentPanel.getLayout();
+                layout.show(contentPanel, "reports");
+            }
+        });
 
         // =========================
         // LOGOUT

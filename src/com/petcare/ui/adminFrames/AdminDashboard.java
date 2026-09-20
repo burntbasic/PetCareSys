@@ -11,6 +11,7 @@ import com.petcare.ui.LoginFrame;
 import com.petcare.util.ErrorHandler;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -90,6 +91,9 @@ public class AdminDashboard extends BaseDashboard {
 
 		headerPanel.add(headerText,BorderLayout.WEST);
 		mainPanel.add(headerPanel, BorderLayout.NORTH);
+		
+		JPanel dashboardPanel = new JPanel();
+		dashboardPanel.setLayout(new BoxLayout(dashboardPanel, BoxLayout.Y_AXIS));
 
 		// =========================
 		// CARDS
@@ -131,8 +135,8 @@ public class AdminDashboard extends BaseDashboard {
 		cardsPanel.add(createCard("Total Pets", petTotCount));
 		cardsPanel.add(createCard("Appointments",upcomingAppointmentsCount));
 
-		dashboardContent.add(cardsPanel);
-		dashboardContent.add(Box.createVerticalStrut(25));
+		dashboardPanel.add(cardsPanel);
+		dashboardPanel.add(Box.createVerticalStrut(25));
 
 		// =========================
 		// ACTIVITY TITLE
@@ -142,8 +146,8 @@ public class AdminDashboard extends BaseDashboard {
 		activityTitle.setFont(new Font("SansSerif",Font.BOLD,20));
 		activityTitle.setAlignmentX(CENTER_ALIGNMENT);
 
-		dashboardContent.add(activityTitle);
-		dashboardContent.add(Box.createVerticalStrut(10));
+		dashboardPanel.add(activityTitle);
+		dashboardPanel.add(Box.createVerticalStrut(10));
 
 		// =========================
 		// ACTIVITY TABLE
@@ -193,7 +197,60 @@ public class AdminDashboard extends BaseDashboard {
 
 		JScrollPane scrollPane = new JScrollPane(table);
 
-		dashboardContent.add(scrollPane);
+		dashboardPanel.add(scrollPane);
+		contentPanel.add(dashboardPanel, "dashboard");
+		
+		JPanel usersPanel = new JPanel();
+		usersPanel.add(new JLabel("User Management"));
+
+		JPanel appointmentsPanel = new JPanel();
+		appointmentsPanel.add(new JLabel("Appointments"));
+
+		JPanel reportsPanel = new JPanel();
+		reportsPanel.add(new JLabel("Reports"));
+
+		JPanel systemPanel = new JPanel();
+		systemPanel.add(new JLabel("System Management"));
+		
+		contentPanel.add(usersPanel, "users");
+		contentPanel.add(appointmentsPanel, "appointments");
+		contentPanel.add(reportsPanel, "reports");
+		contentPanel.add(systemPanel, "system");
+		
+		dashboardBtn.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        CardLayout layout = (CardLayout) contentPanel.getLayout();
+		        layout.show(contentPanel, "dashboard");
+		    }
+		});
+		
+		usersBtn.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        CardLayout layout = (CardLayout) contentPanel.getLayout();
+		        layout.show(contentPanel, "users");
+		    }
+		});
+		
+		appointmentsBtn.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        CardLayout layout = (CardLayout) contentPanel.getLayout();
+		        layout.show(contentPanel, "appointments");
+		    }
+		});
+		
+		reportsBtn.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        CardLayout layout = (CardLayout) contentPanel.getLayout();
+		        layout.show(contentPanel, "reports");
+		    }
+		});
+		
+		systemBtn.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        CardLayout layout = (CardLayout) contentPanel.getLayout();
+		        layout.show(contentPanel, "system");
+		    }
+		});
 
 		// =========================
 		// LOGOUT

@@ -9,6 +9,7 @@ import com.petcare.ui.LoginFrame;
 import com.petcare.util.ErrorHandler;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -86,6 +87,9 @@ public class PetOwnerDashboard extends BaseDashboard {
 
 		headerPanel.add(headerText, BorderLayout.WEST);
 		mainPanel.add(headerPanel, BorderLayout.NORTH);
+		
+		JPanel dashboardPanel = new JPanel();
+		dashboardPanel.setLayout(new BoxLayout(dashboardPanel, BoxLayout.Y_AXIS));
 
 		// =========================
 		// DASHBOARD CONTENT
@@ -120,16 +124,16 @@ public class PetOwnerDashboard extends BaseDashboard {
 		cardsPanel.add(createCard("Upcoming Appointments", upcoming));
 		cardsPanel.add(createCard("Completed Appointments", completed));
 
-		dashboardContent.add(cardsPanel);
-		dashboardContent.add(Box.createVerticalStrut(25));
+		dashboardPanel.add(cardsPanel);
+		dashboardPanel.add(Box.createVerticalStrut(25));
 
 		// Table title
 		JLabel appointmentsTitle = new JLabel("Upcoming Appointments");
 		appointmentsTitle.setFont(new Font("SansSerif", Font.BOLD, 20));
 		appointmentsTitle.setAlignmentX(CENTER_ALIGNMENT);
 
-		dashboardContent.add(appointmentsTitle);
-		dashboardContent.add(Box.createVerticalStrut(10));
+		dashboardPanel.add(appointmentsTitle);
+		dashboardPanel.add(Box.createVerticalStrut(10));
 
 		// Table
 		String[] columns = {
@@ -179,8 +183,61 @@ public class PetOwnerDashboard extends BaseDashboard {
 
 		JScrollPane scrollPane = new JScrollPane(table);
 
-		dashboardContent.add(scrollPane);
+		dashboardPanel.add(scrollPane);
+		contentPanel.add(dashboardPanel, "dashboard");
+		
+		JPanel myPetsPanel = new JPanel();
+		myPetsPanel.add(new JLabel("My Pets"));
 
+		JPanel appointmentsPanel = new JPanel();
+		appointmentsPanel.add(new JLabel("Appointments"));
+
+		JPanel medicalPanel = new JPanel();
+		medicalPanel.add(new JLabel("Medical Records"));
+
+		JPanel reportsPanel = new JPanel();
+		reportsPanel.add(new JLabel("Reports"));
+		
+		contentPanel.add(myPetsPanel, "myPets");
+		contentPanel.add(appointmentsPanel, "appointments");
+		contentPanel.add(medicalPanel, "medical");
+		contentPanel.add(reportsPanel, "reports");
+		
+		dashboardBtn.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        CardLayout layout = (CardLayout) contentPanel.getLayout();
+		        layout.show(contentPanel, "dashboard");
+		    }
+		});
+		
+		petsBtn.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        CardLayout layout = (CardLayout) contentPanel.getLayout();
+		        layout.show(contentPanel, "myPets");
+		    }
+		});
+		
+		appointmentsBtn.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        CardLayout layout = (CardLayout) contentPanel.getLayout();
+		        layout.show(contentPanel, "appointments");
+		    }
+		});
+		
+		medicalBtn.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        CardLayout layout = (CardLayout) contentPanel.getLayout();
+		        layout.show(contentPanel, "medical");
+		    }
+		});
+		
+		reportsBtn.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        CardLayout layout = (CardLayout) contentPanel.getLayout();
+		        layout.show(contentPanel, "reports");
+		    }
+		});
+		
 		// =========================
 		// LOGOUT
 		// =========================

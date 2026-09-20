@@ -1,6 +1,7 @@
 package com.petcare.ui;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -24,8 +25,8 @@ public class BaseDashboard extends JFrame{
     
     protected JPanel sidebar;
     protected JPanel mainPanel;
-    protected JPanel dashboardContent;
-	
+    protected JPanel contentPanel;
+    
     //Helper methods
     protected JButton createMenuButton(String text) {
 
@@ -93,10 +94,9 @@ public class BaseDashboard extends JFrame{
         mainPanel = new JPanel(new BorderLayout(20, 20));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(25, 30, 25, 30));
 
-        dashboardContent = new JPanel();
-        dashboardContent.setLayout(new BoxLayout(dashboardContent, BoxLayout.Y_AXIS));
+        contentPanel = new JPanel(new CardLayout());
 
-        mainPanel.add(dashboardContent, BorderLayout.CENTER);
+        mainPanel.add(contentPanel, BorderLayout.CENTER);
 
         getContentPane().add(sidebar, BorderLayout.WEST);
         getContentPane().add(mainPanel, BorderLayout.CENTER);
