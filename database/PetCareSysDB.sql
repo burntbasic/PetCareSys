@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Sep 19, 2026 at 04:29 PM
+-- Generation Time: Sep 20, 2026 at 01:59 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -22,6 +22,19 @@ SET time_zone = "+00:00";
 --
 CREATE DATABASE IF NOT EXISTS `PetCareSysDB` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 USE `PetCareSysDB`;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ActivityLog`
+--
+
+CREATE TABLE `ActivityLog` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `activity` varchar(255) NOT NULL,
+  `activity_date` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -48,7 +61,8 @@ CREATE TABLE `Pets` (
   `pet_id` int(11) NOT NULL,
   `owner_id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
-  `species` varchar(50) NOT NULL
+  `species` varchar(50) NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -91,6 +105,13 @@ CREATE TABLE `Users` (
 --
 
 --
+-- Indexes for table `ActivityLog`
+--
+ALTER TABLE `ActivityLog`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
 -- Indexes for table `Appointments`
 --
 ALTER TABLE `Appointments`
@@ -126,6 +147,12 @@ ALTER TABLE `Users`
 --
 
 --
+-- AUTO_INCREMENT for table `ActivityLog`
+--
+ALTER TABLE `ActivityLog`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `Appointments`
 --
 ALTER TABLE `Appointments`
@@ -152,6 +179,12 @@ ALTER TABLE `Users`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `ActivityLog`
+--
+ALTER TABLE `ActivityLog`
+  ADD CONSTRAINT `ActivityLog_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `Users` (`user_id`);
 
 --
 -- Constraints for table `Appointments`

@@ -91,4 +91,31 @@ public class UserDB {
 			return result.next();
 		}
 	}
+	
+	//Admin UI
+		public int getOwnerCount() throws SQLException, DatabaseConfigException {
+			String sql = "SELECT COUNT(*) AS pet_owner_count FROM Users WHERE role = 'PET_OWNER'";
+			
+			try (Connection connection = DBConnection.getConnection();
+					PreparedStatement statement = connection.prepareStatement(sql)) {
+					
+					ResultSet result = statement.executeQuery();
+					
+					result.next();
+					return result.getInt("pet_owner_count");
+				}
+		}
+		
+		public int getVetCount() throws SQLException, DatabaseConfigException {
+			String sql = "SELECT COUNT(*) AS vet_count FROM Users WHERE role = 'VET'";
+			
+			try (Connection connection = DBConnection.getConnection();
+					PreparedStatement statement = connection.prepareStatement(sql)) {
+					
+					ResultSet result = statement.executeQuery();
+					
+					result.next();
+					return result.getInt("vet_count");
+				}
+		}
 }

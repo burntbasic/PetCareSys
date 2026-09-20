@@ -48,4 +48,18 @@ public class PetDB {
 			return result.getInt("patient_count");
 		}
 	}
+	
+	//Admin UI
+		public int getTotPetCount() throws SQLException, DatabaseConfigException {
+			String sql = "SELECT COUNT(*) AS pet_count FROM Pets";
+			
+			try(Connection connection  = DBConnection.getConnection();
+					PreparedStatement statement = connection.prepareStatement(sql)) {
+						
+					ResultSet result = statement.executeQuery();
+						
+					result.next();
+					return result.getInt("pet_count");
+				}
+		}
 }

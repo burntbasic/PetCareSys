@@ -170,5 +170,19 @@ public class AppointmentDB {
 				}
 				return appointments;
 		}
-	}	
+	}
+	
+	//Admin UI
+	public int getTotUpcomingCount() throws SQLException, DatabaseConfigException {
+		String sql = "SELECT COUNT(*) AS appointment_count FROM Appointments WHERE appointment_date >= NOW()";
+		
+		try (Connection connection = DBConnection.getConnection();
+			PreparedStatement statement = connection.prepareStatement(sql)) {
+			
+			ResultSet result = statement.executeQuery();
+			
+			result.next();
+			return result.getInt("appointment_count");
+		}
+	}
 }
