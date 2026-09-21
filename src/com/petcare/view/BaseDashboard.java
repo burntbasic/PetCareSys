@@ -1,4 +1,4 @@
-package com.petcare.ui;
+package com.petcare.view;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;

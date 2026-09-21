@@ -1,13 +1,4 @@
-package com.petcare.ui.vetFrames;
-import com.petcare.database.AppointmentDB;
-import com.petcare.database.PetDB;
-import com.petcare.database.TreatmentDB;
-import com.petcare.exception.DatabaseConfigException;
-import com.petcare.model.Appointment;
-import com.petcare.model.User;
-import com.petcare.ui.BaseDashboard;
-import com.petcare.ui.LoginFrame;
-import com.petcare.util.ErrorHandler;
+package com.petcare.view.vetFrames;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -18,7 +9,6 @@ import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -28,21 +18,25 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import com.petcare.controller.VetController;
+import com.petcare.exception.DatabaseConfigException;
+import com.petcare.model.Appointment;
+import com.petcare.model.User;
+import com.petcare.util.ErrorHandler;
+import com.petcare.view.BaseDashboard;
+import com.petcare.view.LoginFrame;
+
 public class VetDashboard extends BaseDashboard {
 
     private static final long serialVersionUID = 1L;
     
-    private AppointmentDB appointmentdb;
-    private PetDB petdb;
-    private TreatmentDB treatmentdb;
+    private VetController controller;
 
     public VetDashboard(User user) {
     	
     	super();
     	
-    	appointmentdb = new AppointmentDB();
-    	treatmentdb = new TreatmentDB();
-    	petdb = new PetDB();
+    	controller = new VetController();
 
         setTitle("PetCare - Vet Dashboard");
 
@@ -107,19 +101,19 @@ public class VetDashboard extends BaseDashboard {
         String patient = "N/A";
         
         try {
-        	today = String.valueOf(appointmentdb.getVetTodaysCount(user));
+        	today = String.valueOf(controller.getVetTodaysCount(user));
         } catch (SQLException | DatabaseConfigException e) {
         	e.printStackTrace();        	
         }
         
         try {
-        	pending = String.valueOf(treatmentdb.getPendingCount(user));
+        	pending = String.valueOf(controller.getPendingCount(user));
         } catch (SQLException | DatabaseConfigException e) {
         	e.printStackTrace();        	
         }
         
         try {
-        	patient = String.valueOf(petdb.getVetPatientCount(user));
+        	patient = String.valueOf(controller.getVetPatientCount(user));
         } catch (SQLException | DatabaseConfigException e) {
         	e.printStackTrace();        	
         }
@@ -151,7 +145,7 @@ public class VetDashboard extends BaseDashboard {
 		};
 		
 		try {
-			List<Appointment> appointments = appointmentdb.getVetTodays(user);
+			List<Appointment> appointments = controller.getVetTodays(user);
 			
 			for (Appointment appointment : appointments) {
 				tableModel.addRow(new Object[] {

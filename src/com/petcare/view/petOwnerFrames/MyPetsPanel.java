@@ -1,5 +1,4 @@
-package com.petcare.ui.petOwnerFrames;
-import com.petcare.model.User;
+package com.petcare.view.petOwnerFrames;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
@@ -11,6 +10,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
+import com.petcare.model.User;
 
 public class MyPetsPanel extends JPanel {
 

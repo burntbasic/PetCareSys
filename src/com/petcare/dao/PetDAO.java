@@ -1,15 +1,14 @@
-package com.petcare.database;
+package com.petcare.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 
-
 import com.petcare.exception.DatabaseConfigException;
 import com.petcare.model.User;
 
-public class PetDB {
+public class PetDAO {
 	
 	//Pet Owner UI
 	public int getOwnerPetCount(User user) throws SQLException, DatabaseConfigException {

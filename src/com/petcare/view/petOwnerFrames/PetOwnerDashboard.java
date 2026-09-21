@@ -1,12 +1,4 @@
-package com.petcare.ui.petOwnerFrames;
-import com.petcare.database.AppointmentDB;
-import com.petcare.database.PetDB;
-import com.petcare.exception.DatabaseConfigException;
-import com.petcare.model.Appointment;
-import com.petcare.model.User;
-import com.petcare.ui.BaseDashboard;
-import com.petcare.ui.LoginFrame;
-import com.petcare.util.ErrorHandler;
+package com.petcare.view.petOwnerFrames;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -26,19 +18,25 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import com.petcare.controller.PetOwnerController;
+import com.petcare.exception.DatabaseConfigException;
+import com.petcare.model.Appointment;
+import com.petcare.model.User;
+import com.petcare.util.ErrorHandler;
+import com.petcare.view.BaseDashboard;
+import com.petcare.view.LoginFrame;
+
 public class PetOwnerDashboard extends BaseDashboard {
 
 	private static final long serialVersionUID = 1L;
 
-	private AppointmentDB appointmentdb;
-	private PetDB petdb;
+	private PetOwnerController controller;
 
 	public PetOwnerDashboard(User user) {
 		
 		super();
 
-		appointmentdb = new AppointmentDB();
-		petdb = new PetDB();
+		controller = new PetOwnerController();
 
 		setTitle("PetCare - Pet Owner Dashboard");
 
@@ -100,19 +98,19 @@ public class PetOwnerDashboard extends BaseDashboard {
 		String completed = "N/A";
 
 		try {
-			petCount = String.valueOf(petdb.getOwnerPetCount(user));
+			petCount = String.valueOf(controller.getOwnerPetCount(user));
 		} catch (SQLException | DatabaseConfigException e) {
 			e.printStackTrace();
 		}
 
 		try {
-			upcoming = String.valueOf(appointmentdb.getOwnerUpcomingCount(user));
+			upcoming = String.valueOf(controller.getOwnerUpcomingCount(user));
 		} catch (SQLException | DatabaseConfigException e) {
 			e.printStackTrace();
 		}
 
 		try {
-			completed = String.valueOf(appointmentdb.getOwnerCompletedCount(user));
+			completed = String.valueOf(controller.getOwnerCompletedCount(user));
 		} catch (SQLException | DatabaseConfigException e) {
 			e.printStackTrace();
 		}
@@ -144,7 +142,7 @@ public class PetOwnerDashboard extends BaseDashboard {
 		};
 
 		try {
-			List<Appointment> appointments = appointmentdb.getOwnerUpcoming(user);
+			List<Appointment> appointments = controller.getOwnerUpcoming(user);
 
 			for (Appointment appointment : appointments) {
 				tableModel.addRow(new Object[] {

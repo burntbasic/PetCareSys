@@ -1,14 +1,4 @@
-package com.petcare.ui.adminFrames;
-import com.petcare.database.AppointmentDB;
-import com.petcare.database.PetDB;
-import com.petcare.database.UserDB;
-import com.petcare.database.ActivityLogDB;
-import com.petcare.exception.DatabaseConfigException;
-import com.petcare.model.Activity;
-import com.petcare.model.User;
-import com.petcare.ui.BaseDashboard;
-import com.petcare.ui.LoginFrame;
-import com.petcare.util.ErrorHandler;
+package com.petcare.view.adminFrames;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -19,7 +9,6 @@ import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -29,23 +18,25 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import com.petcare.controller.AdminController;
+import com.petcare.exception.DatabaseConfigException;
+import com.petcare.model.Activity;
+import com.petcare.model.User;
+import com.petcare.util.ErrorHandler;
+import com.petcare.view.BaseDashboard;
+import com.petcare.view.LoginFrame;
+
 public class AdminDashboard extends BaseDashboard {
 
 	private static final long serialVersionUID = 1L;
 	
-	private UserDB userdb;
-	private PetDB petdb;
-	private AppointmentDB appointmentdb;
-	private ActivityLogDB activitydb;
+	private AdminController controller;
 
 	public AdminDashboard(User user) {
 
 		super();
 		
-		userdb = new UserDB();
-		petdb = new PetDB();
-		appointmentdb = new AppointmentDB();
-		activitydb = new ActivityLogDB();
+		controller = new AdminController();
 		
 		setTitle("PetCare - Admin Dashboard");
 
@@ -111,25 +102,25 @@ public class AdminDashboard extends BaseDashboard {
 		String upcomingAppointmentsCount = "N/A";
 		
 		try {
-			petOwnerCount = String.valueOf(userdb.getOwnerCount());
+			petOwnerCount = String.valueOf(controller.getOwnerCount());
 		} catch (SQLException | DatabaseConfigException e) {
 			e.printStackTrace();
 		}
 		
 		try { 
-			vetCount = String.valueOf(userdb.getVetCount());
+			vetCount = String.valueOf(controller.getVetCount());
 		} catch (SQLException | DatabaseConfigException e) {
 			e.printStackTrace();
 		}
 		
 		try {
-			petTotCount = String.valueOf(petdb.getTotPetCount());
+			petTotCount = String.valueOf(controller.getTotPetCount());
 		} catch (SQLException | DatabaseConfigException e) {
 			e.printStackTrace();
 		}
 		
 		try {
-			upcomingAppointmentsCount = String.valueOf(appointmentdb.getTotUpcomingCount());
+			upcomingAppointmentsCount = String.valueOf(controller.getTotUpcomingCount());
 		} catch (SQLException | DatabaseConfigException e) {
 			e.printStackTrace();
 		}
@@ -166,7 +157,7 @@ public class AdminDashboard extends BaseDashboard {
 		};
 
 		try {
-			List<Activity> activities = activitydb.getRecentActivity();
+			List<Activity> activities = controller.getRecentActivity();
 
 			for (Activity activity : activities) {
 				tableModel.addRow(new Object[] {

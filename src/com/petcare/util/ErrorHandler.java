@@ -1,7 +1,6 @@
 package com.petcare.util;
 
 import java.sql.SQLException;
-
 import javax.swing.JOptionPane;
 
 import com.petcare.exception.DatabaseConfigException;

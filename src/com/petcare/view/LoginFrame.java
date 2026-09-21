@@ -1,9 +1,4 @@
-package com.petcare.ui;
-import com.petcare.database.UserDB;
-import com.petcare.exception.DatabaseConfigException;
-import com.petcare.model.*;
-import com.petcare.service.DashboardFactory;
-import com.petcare.util.ErrorHandler;
+package com.petcare.view;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -26,6 +21,11 @@ import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 
+import com.petcare.controller.LoginController;
+import com.petcare.exception.DatabaseConfigException;
+import com.petcare.factory.DashboardFactory;
+import com.petcare.model.*;
+import com.petcare.util.ErrorHandler;
 
 public class LoginFrame extends JFrame {
 
@@ -35,7 +35,7 @@ public class LoginFrame extends JFrame {
 	private JPasswordField pwField;
 
 	//Class-level variable declared for availability throughout the entire class (not just the constructor)
-	private UserDB userdb;
+	private LoginController controller;
 
 	/**
 	 * Launch the application.
@@ -58,7 +58,7 @@ public class LoginFrame extends JFrame {
 	 */
 	public LoginFrame() {
 
-		userdb = new UserDB();
+		controller = new LoginController();
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 560, 503);
@@ -105,7 +105,7 @@ public class LoginFrame extends JFrame {
 				uname_pwError.setVisible(false);
 
 				try {
-					User user = userdb.userLogin(username,password);
+					User user = controller.loginValidation(username, password);
 
 					if (user!=null) {
 						JFrame dashboard = DashboardFactory.createDashboard(user);

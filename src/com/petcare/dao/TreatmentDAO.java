@@ -1,13 +1,14 @@
-package com.petcare.database;
-import com.petcare.exception.DatabaseConfigException;
-import com.petcare.model.User;
+package com.petcare.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class TreatmentDB {
+import com.petcare.exception.DatabaseConfigException;
+import com.petcare.model.User;
+
+public class TreatmentDAO {
 	//Vet UI
 	public int getPendingCount(User user) throws SQLException, DatabaseConfigException {
 		String sql = """

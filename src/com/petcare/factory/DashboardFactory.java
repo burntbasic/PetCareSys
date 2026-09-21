@@ -1,10 +1,11 @@
-package com.petcare.service;
-import com.petcare.model.User;
-import com.petcare.ui.adminFrames.AdminDashboard;
-import com.petcare.ui.petOwnerFrames.PetOwnerDashboard;
-import com.petcare.ui.vetFrames.VetDashboard;
+package com.petcare.factory;
 
 import javax.swing.JFrame;
+
+import com.petcare.model.User;
+import com.petcare.view.adminFrames.AdminDashboard;
+import com.petcare.view.petOwnerFrames.PetOwnerDashboard;
+import com.petcare.view.vetFrames.VetDashboard;
 
 public class DashboardFactory {
 	public static JFrame createDashboard(User user) {

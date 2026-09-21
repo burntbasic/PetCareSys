@@ -1,13 +1,14 @@
-package com.petcare.database;
-import com.petcare.exception.DatabaseConfigException;
-import com.petcare.model.User;
+package com.petcare.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class UserDB {
+import com.petcare.exception.DatabaseConfigException;
+import com.petcare.model.User;
+
+public class UserDAO {
 	public User userLogin(String username, String password) throws SQLException, DatabaseConfigException {
 			String sql = "SELECT * FROM Users WHERE username = ? AND password = ?";
 			
@@ -42,7 +43,7 @@ public class UserDB {
 			} 
 	}
 	
-	public boolean petOwnerRegister(String fName, String lName, String email, String phone_num, String username, String password) throws SQLException, DatabaseConfigException {
+	public boolean petOwnerRegister(String fName, String lName, String email, String phone, String username, String password) throws SQLException, DatabaseConfigException {
 			String sql = "INSERT INTO Users (first_name, last_name, email, phone, username, password) VALUES (?, ?, ?, ?, ?, ?)";
 		
 			try (Connection connection = DBConnection.getConnection();
@@ -51,7 +52,7 @@ public class UserDB {
 				statement.setString(1, fName);
 				statement.setString(2, lName);
 				statement.setString(3, email);
-				statement.setString(4, phone_num);
+				statement.setString(4, phone);
 				statement.setString(5, username);
 				statement.setString(6, password);
 				

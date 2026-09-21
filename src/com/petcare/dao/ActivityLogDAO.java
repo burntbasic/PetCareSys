@@ -1,4 +1,4 @@
-package com.petcare.database;
+package com.petcare.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,7 +10,7 @@ import java.util.List;
 import com.petcare.exception.DatabaseConfigException;
 import com.petcare.model.Activity;
 
-public class ActivityLogDB {
+public class ActivityLogDAO {
 	public List<Activity> getRecentActivity() throws SQLException, DatabaseConfigException {
 		
 		List<Activity> activities = new ArrayList<>();

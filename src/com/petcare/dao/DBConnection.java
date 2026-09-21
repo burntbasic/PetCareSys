@@ -1,6 +1,4 @@
-package com.petcare.database;
-import com.petcare.exception.DatabaseConfigException;
-
+package com.petcare.dao;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -8,6 +6,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
+
+import com.petcare.exception.DatabaseConfigException;
 
 public class DBConnection {
 	private static final Properties properties = new Properties();

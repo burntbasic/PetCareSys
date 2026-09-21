@@ -1,6 +1,4 @@
-package com.petcare.database;
-import com.petcare.exception.DatabaseConfigException;
-import com.petcare.model.*;
+package com.petcare.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,7 +7,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;  
 
-public class AppointmentDB {
+import com.petcare.exception.DatabaseConfigException;
+import com.petcare.model.*;
+
+public class AppointmentDAO {
 	
 	//Pet-Owner UI
 	public List<Appointment> getOwnerUpcoming(User user) throws SQLException, DatabaseConfigException {
