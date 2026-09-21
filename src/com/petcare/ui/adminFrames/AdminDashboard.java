@@ -76,24 +76,28 @@ public class AdminDashboard extends BaseDashboard {
 		// HEADER
 		// =========================
 
-		JPanel headerPanel = new JPanel(new BorderLayout());
-		JLabel welcomeLabel = new JLabel("Welcome, " + user.getFName());
+		JPanel dashboardPanel = new JPanel(new BorderLayout(0 ,20));
 
+		JPanel headerPanel = new JPanel();
+		headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
+		
+		JLabel welcomeLabel = new JLabel("Welcome, " + user.getFName());
 		welcomeLabel.setFont(new Font("SansSerif", Font.BOLD, 28));
 
 		JLabel subtitleLabel = new JLabel("System administration overview");
 
-		JPanel headerText = new JPanel();
-		headerText.setLayout(new BoxLayout(headerText,BoxLayout.Y_AXIS));
-		headerText.add(welcomeLabel);
-		headerText.add(Box.createVerticalStrut(5));
-		headerText.add(subtitleLabel);
+		headerPanel.add(welcomeLabel);
+		headerPanel.add(Box.createVerticalStrut(5));
+		headerPanel.add(subtitleLabel);
 
-		headerPanel.add(headerText,BorderLayout.WEST);
-		mainPanel.add(headerPanel, BorderLayout.NORTH);
+		dashboardPanel.add(headerPanel, BorderLayout.NORTH);
 		
-		JPanel dashboardPanel = new JPanel();
-		dashboardPanel.setLayout(new BoxLayout(dashboardPanel, BoxLayout.Y_AXIS));
+		// =========================
+		// MAIN CONTENT
+		// =========================
+
+		JPanel mainPanel = new JPanel();
+		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
 		// =========================
 		// CARDS
@@ -135,8 +139,8 @@ public class AdminDashboard extends BaseDashboard {
 		cardsPanel.add(createCard("Total Pets", petTotCount));
 		cardsPanel.add(createCard("Appointments",upcomingAppointmentsCount));
 
-		dashboardPanel.add(cardsPanel);
-		dashboardPanel.add(Box.createVerticalStrut(25));
+		mainPanel.add(cardsPanel);
+		mainPanel.add(Box.createVerticalStrut(25));
 
 		// =========================
 		// ACTIVITY TITLE
@@ -146,8 +150,8 @@ public class AdminDashboard extends BaseDashboard {
 		activityTitle.setFont(new Font("SansSerif",Font.BOLD,20));
 		activityTitle.setAlignmentX(CENTER_ALIGNMENT);
 
-		dashboardPanel.add(activityTitle);
-		dashboardPanel.add(Box.createVerticalStrut(10));
+		mainPanel.add(activityTitle);
+		mainPanel.add(Box.createVerticalStrut(10));
 
 		// =========================
 		// ACTIVITY TABLE
@@ -177,7 +181,6 @@ public class AdminDashboard extends BaseDashboard {
 			tableModel.addRow(new Object[] {
 					"ERROR",
 					"Could not load activity",
-					"",
 					""
 			});
 		} catch (DatabaseConfigException e) {
@@ -186,18 +189,18 @@ public class AdminDashboard extends BaseDashboard {
 			tableModel.addRow(new Object[] {
 					"ERROR",
 					"Could not load activity",
-					"",
 					""
 			});
 		}
 		
 		JTable table = new JTable(tableModel);
-
         table.setRowHeight(35);
 
 		JScrollPane scrollPane = new JScrollPane(table);
 
-		dashboardPanel.add(scrollPane);
+		mainPanel.add(scrollPane);
+		
+		dashboardPanel.add(mainPanel, BorderLayout.CENTER);
 		contentPanel.add(dashboardPanel, "dashboard");
 		
 		JPanel usersPanel = new JPanel();

@@ -65,35 +65,32 @@ public class PetOwnerDashboard extends BaseDashboard {
 		sidebar.add(Box.createVerticalStrut(20));
 
 		// =========================
+		// DASHBOARD CONTENT
+		// =========================
+		
+		JPanel dashboardPanel = new JPanel(new BorderLayout(0, 20));
+		
+		// Header
+		JPanel headerPanel = new JPanel();
+		headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
+		
+		JLabel welcomeLabel = new JLabel("Welcome back, " + user.getFName() + "!");
+		welcomeLabel.setFont(new Font("SansSerif", Font.BOLD, 28));
+		
+		JLabel subtitleLabel = new JLabel("Your PetCare overview");
+
+		headerPanel.add(welcomeLabel);
+		headerPanel.add(Box.createVerticalStrut(5));
+		headerPanel.add(subtitleLabel);
+		
+		dashboardPanel.add(headerPanel, BorderLayout.NORTH);
+
+		// =========================
 		// MAIN CONTENT
 		// =========================
 
-		// Header
-		JPanel headerPanel = new JPanel(new BorderLayout());
-
-		JLabel welcomeLabel = new JLabel(
-				"Welcome back, " + user.getFName() + "!"
-				);
-
-		welcomeLabel.setFont(new Font("SansSerif", Font.BOLD, 28));
-
-		JLabel subtitleLabel = new JLabel("Your PetCare overview");
-
-		JPanel headerText = new JPanel();
-		headerText.setLayout(new BoxLayout(headerText, BoxLayout.Y_AXIS));
-		headerText.add(welcomeLabel);
-		headerText.add(Box.createVerticalStrut(5));
-		headerText.add(subtitleLabel);
-
-		headerPanel.add(headerText, BorderLayout.WEST);
-		mainPanel.add(headerPanel, BorderLayout.NORTH);
-		
-		JPanel dashboardPanel = new JPanel();
-		dashboardPanel.setLayout(new BoxLayout(dashboardPanel, BoxLayout.Y_AXIS));
-
-		// =========================
-		// DASHBOARD CONTENT
-		// =========================
+		JPanel mainPanel = new JPanel();
+		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
 		// Cards
 		JPanel cardsPanel = new JPanel(new GridLayout(1, 3, 15, 0));
@@ -124,16 +121,16 @@ public class PetOwnerDashboard extends BaseDashboard {
 		cardsPanel.add(createCard("Upcoming Appointments", upcoming));
 		cardsPanel.add(createCard("Completed Appointments", completed));
 
-		dashboardPanel.add(cardsPanel);
-		dashboardPanel.add(Box.createVerticalStrut(25));
+		mainPanel.add(cardsPanel);
+		mainPanel.add(Box.createVerticalStrut(25));
 
 		// Table title
 		JLabel appointmentsTitle = new JLabel("Upcoming Appointments");
 		appointmentsTitle.setFont(new Font("SansSerif", Font.BOLD, 20));
 		appointmentsTitle.setAlignmentX(CENTER_ALIGNMENT);
 
-		dashboardPanel.add(appointmentsTitle);
-		dashboardPanel.add(Box.createVerticalStrut(10));
+		mainPanel.add(appointmentsTitle);
+		mainPanel.add(Box.createVerticalStrut(10));
 
 		// Table
 		String[] columns = {
@@ -178,16 +175,15 @@ public class PetOwnerDashboard extends BaseDashboard {
 		}
 
 		JTable table = new JTable(tableModel);
-
 		table.setRowHeight(35);
 
 		JScrollPane scrollPane = new JScrollPane(table);
+		mainPanel.add(scrollPane);
 
-		dashboardPanel.add(scrollPane);
+		dashboardPanel.add(mainPanel, BorderLayout.CENTER);
 		contentPanel.add(dashboardPanel, "dashboard");
 		
-		JPanel myPetsPanel = new JPanel();
-		myPetsPanel.add(new JLabel("My Pets"));
+		MyPetsPanel myPetsPanel = new MyPetsPanel(user);
 
 		JPanel appointmentsPanel = new JPanel();
 		appointmentsPanel.add(new JLabel("Appointments"));
