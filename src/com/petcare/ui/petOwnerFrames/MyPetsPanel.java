@@ -4,6 +4,7 @@ import com.petcare.model.User;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -28,12 +29,10 @@ public class MyPetsPanel extends JPanel {
         JLabel titleLabel = new JLabel("My Pets");
         titleLabel.setFont(new Font("SansSerif", Font.BOLD, 28));
 
-        JLabel subtitleLabel =
-                new JLabel("Manage your registered pets");
+        JLabel subtitleLabel = new JLabel("Manage your registered pets");
 
         JPanel headerText = new JPanel();
-        headerText.setLayout(new javax.swing.BoxLayout(
-                headerText, javax.swing.BoxLayout.Y_AXIS));
+        headerText.setLayout(new BoxLayout(headerText, BoxLayout.Y_AXIS));
 
         headerText.add(titleLabel);
         headerText.add(subtitleLabel);
@@ -47,10 +46,7 @@ public class MyPetsPanel extends JPanel {
 
         // TABLE
         String[] columns = {
-                "Name",
-                "Species",
-                "Gender",
-                "Actions"
+        		"Name", "Species", "Gender", "Actions"
         };
 
         DefaultTableModel tableModel = new DefaultTableModel(columns, 0) {
