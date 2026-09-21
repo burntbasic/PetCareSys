@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Sep 20, 2026 at 01:59 PM
+-- Generation Time: Sep 21, 2026 at 08:33 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -62,7 +62,8 @@ CREATE TABLE `Pets` (
   `owner_id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
   `species` varchar(50) NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp()
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `gender` enum('Male','Female') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
