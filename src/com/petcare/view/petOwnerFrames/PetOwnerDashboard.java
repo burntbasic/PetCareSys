@@ -185,8 +185,7 @@ public class PetOwnerDashboard extends BaseDashboard {
 
 		AppointmentsPanel appointmentsPanel = new AppointmentsPanel(user);
 
-		JPanel medicalPanel = new JPanel();
-		medicalPanel.add(new JLabel("Medical Records"));
+		MedicalPanel medicalPanel = new MedicalPanel(user);
 
 		JPanel reportsPanel = new JPanel();
 		reportsPanel.add(new JLabel("Reports"));
