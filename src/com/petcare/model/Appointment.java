@@ -3,7 +3,9 @@ package com.petcare.model;
 import java.sql.Timestamp;
 
 public class Appointment {
-	private int id;
+	private int appointmentId;
+	private int petId;
+	private int vetId;
 	private String petName;
 	private String ownerName;
 	private String vetName;
@@ -11,8 +13,12 @@ public class Appointment {
 	private String status;
 	private String reason;
 	
-	public Appointment(int id, String petName, String ownerName, String vetName, Timestamp appointmentDate, String status, String reason) {
-		this.id = id;
+	//Complete Constructor
+	public Appointment(int appointmentId, int petId, int vetId, String petName, String ownerName,
+			String vetName, Timestamp appointmentDate, String status, String reason) {
+		this.appointmentId = appointmentId;
+		this.petId = petId;
+		this.vetId = vetId;
 		this.petName = petName;
 		this.ownerName = ownerName;
 		this.vetName = vetName;
@@ -21,7 +27,21 @@ public class Appointment {
 		this.reason = reason;
 	}
 	
-	public int getId() {return id;}
+	//Display Constructor - no pet/vet ids
+	public Appointment(int appointmentId, String petName, String ownerName, String vetName, 
+			Timestamp appointmentDate, String status, String reason) {
+		this.appointmentId = appointmentId;
+		this.petName = petName;
+		this.ownerName = ownerName;
+		this.vetName = vetName;
+		this.appointmentDate = appointmentDate;
+		this.status = status;
+		this.reason = reason;
+	}
+	
+	public int getAppointmentId() {return appointmentId;}
+	public int getpetId() {return petId;}
+	public int getVetId() {return vetId;}
 	public String getPetName() {return petName;}
 	public String getOwnerName() {return ownerName;}
 	public String getVetName() {return vetName;}
