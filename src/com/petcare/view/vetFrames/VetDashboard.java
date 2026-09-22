@@ -188,17 +188,14 @@ public class VetDashboard extends BaseDashboard {
         dashboardPanel.add(mainPanel, BorderLayout.CENTER);
         contentPanel.add(dashboardPanel, "dashboard");
         
-        JPanel appointmentsPanel = new JPanel();
-        appointmentsPanel.add(new JLabel("Appointments"));
+        VetAppointmentsPanel appointmentsPanel = new VetAppointmentsPanel(user);
 
-        JPanel patientsPanel = new JPanel();
-        patientsPanel.add(new JLabel("Patients"));
+        PatientsPanel patientsPanel = new PatientsPanel(user);
 
-        JPanel treatmentsPanel = new JPanel();
-        treatmentsPanel.add(new JLabel("Treatments"));
+        TreatmentsPanel treatmentsPanel = new TreatmentsPanel(user);
 
-        JPanel medicalPanel = new JPanel();
-        medicalPanel.add(new JLabel("Medical Records"));
+        VetMedicalPanel medicalPanel = new VetMedicalPanel(user);
+
 
         JPanel reportsPanel = new JPanel();
         reportsPanel.add(new JLabel("Reports"));
