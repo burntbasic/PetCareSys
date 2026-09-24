@@ -1,7 +1,16 @@
 package com.petcare.view.petOwnerFrames;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+import java.sql.SQLException;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -10,18 +19,33 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import com.petcare.controller.PetOwnerController;
+import com.petcare.exception.DatabaseConfigException;
+import com.petcare.model.Appointment;
 import com.petcare.model.User;
+import com.petcare.util.ErrorHandler;
 
 public class AppointmentsPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
+	private JTable appointmentsTable;
+	private DefaultTableModel tableModel;
+
+	private PetOwnerController controller;
+	private List<Appointment> appointments;
+	private User user;
+	private String currentFilter = "Upcoming";
+	
 	/**
 	 * Create the panel.
 	 */
 	public AppointmentsPanel(User user) {
+		this.user = user;
+		controller = new PetOwnerController();
 
 		setLayout(new BorderLayout(15, 15));
 
@@ -45,6 +69,18 @@ public class AppointmentsPanel extends JPanel {
 		headerPanel.add(headerText, BorderLayout.WEST);
 
 		JButton bookAppointmentButton = new JButton("+ Book Appointment");
+		bookAppointmentButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		bookAppointmentButton.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+
+		        BookAppointmentDialog dialog = new BookAppointmentDialog(user);
+		        dialog.setVisible(true);
+
+		        if (dialog.isChanged()) {
+		            refreshAppointments();
+		        }
+		    }
+		});
 		headerPanel.add(bookAppointmentButton, BorderLayout.EAST);
 
 		add(headerPanel, BorderLayout.NORTH);
@@ -54,8 +90,32 @@ public class AppointmentsPanel extends JPanel {
 		JPanel filterPanel = new JPanel();
 
 		JButton upcomingButton = new JButton("Upcoming");
+		upcomingButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		upcomingButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				currentFilter = "Upcoming";
+				loadUpcomingAppointments(user);
+			}
+		});
+
 		JButton pastButton = new JButton("Past");
+		pastButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		pastButton.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        currentFilter = "Past";
+		    	loadPastAppointments(user);
+		    }
+		});
+		
 		JButton cancelledButton = new JButton("Cancelled");
+		cancelledButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		cancelledButton.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        currentFilter = "Cancelled";
+		    	loadCancelledAppointments(user);
+		    }
+		});
 
 		filterPanel.add(upcomingButton);
 		filterPanel.add(pastButton);
@@ -66,14 +126,62 @@ public class AppointmentsPanel extends JPanel {
 		String[] columns = {"Pet", "Veterinarian", "Date & Time", "Status", "Actions"};
 		//"Actions" column to be removed for past and cancelled appointments
 
-		DefaultTableModel tableModel = new DefaultTableModel(columns, 0) {
+		tableModel = new DefaultTableModel(columns, 0) {
 			public boolean isCellEditable(int row, int column) {
 				return false;
 			}
 		};
 
-		JTable appointmentsTable = new JTable(tableModel);
+		appointmentsTable = new JTable(tableModel);
 		appointmentsTable.setRowHeight(35);
+		appointmentsTable.getColumnModel().getColumn(4).setCellRenderer(new DefaultTableCellRenderer() {
+			
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+
+                JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+                label.setText("<html><u>View</u></html>");
+                label.setHorizontalAlignment(JLabel.CENTER);
+                
+                return label;
+            }
+        });
+		appointmentsTable.addMouseMotionListener(new MouseMotionAdapter() {
+
+		    public void mouseMoved(MouseEvent e) {
+
+		        int row = appointmentsTable.rowAtPoint(e.getPoint());
+		        int column = appointmentsTable.columnAtPoint(e.getPoint());
+
+		        if (row >= 0 && column == 4) {
+		            appointmentsTable.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		        } else {
+		            appointmentsTable.setCursor(Cursor.getDefaultCursor());
+		        }
+		    }
+		});
+		appointmentsTable.addMouseListener(new MouseAdapter() {
+
+			public void mouseClicked(MouseEvent e) {
+
+				int row = appointmentsTable.rowAtPoint(e.getPoint());
+				int column = appointmentsTable.columnAtPoint(e.getPoint());
+
+				if (row >= 0 && column == 4 && appointments != null) {
+
+					Appointment appointment = appointments.get(row);
+
+					ViewAppointmentDialog dialog = new ViewAppointmentDialog(appointment);
+					dialog.setVisible(true);
+
+					if(dialog.isChanged()) {
+						refreshAppointments();
+					}
+				}
+			}
+		});
+
+		loadUpcomingAppointments(user);
 
 		JScrollPane scrollPane = new JScrollPane(appointmentsTable);
 
@@ -85,5 +193,153 @@ public class AppointmentsPanel extends JPanel {
 		contentPanel.add(scrollPane, BorderLayout.CENTER);
 
 		add(contentPanel, BorderLayout.CENTER);
+	}
+	
+	private void refreshAppointments() {
+
+	    if ("Upcoming".equals(currentFilter)) {
+
+	        loadUpcomingAppointments(user);
+
+	    } else if ("Past".equals(currentFilter)) {
+
+	        loadPastAppointments(user);
+
+	    } else if ("Cancelled".equals(currentFilter)) {
+
+	        loadCancelledAppointments(user);
+	    }
+	}
+	
+	private void loadUpcomingAppointments(User user) {
+
+		tableModel.setRowCount(0);
+
+		try {
+			appointments = controller.getOwnerUpcoming(user);
+
+			for (Appointment appointment : appointments) {
+
+				tableModel.addRow(new Object[] {
+						appointment.getPetName(),
+						appointment.getVetName(),
+						appointment.getAppointmentDate(),
+						appointment.getStatus(),
+						"View"
+				});
+			}
+
+		} catch (SQLException e) {
+
+			ErrorHandler.handleSQLException(e);
+
+			tableModel.addRow(new Object[] {
+					"ERROR",
+					"Could not load data",
+					"",
+					"",
+					""
+			});
+
+		} catch (DatabaseConfigException e) {
+
+			ErrorHandler.handleDatabaseConfigException(e);
+
+			tableModel.addRow(new Object[] {
+					"ERROR",
+					"Could not load data",
+					"",
+					"",
+					""
+			});
+		}
+	}
+	
+	private void loadPastAppointments(User user) {
+
+	    tableModel.setRowCount(0);
+
+	    try {
+	        appointments = controller.getOwnerPast(user);
+
+	        for (Appointment appointment : appointments) {
+
+	            tableModel.addRow(new Object[] {
+	                    appointment.getPetName(),
+	                    appointment.getVetName(),
+	                    appointment.getAppointmentDate(),
+	                    appointment.getStatus(),
+	                    "View"
+	            });
+	        }
+
+	    } catch (SQLException e) {
+
+	        ErrorHandler.handleSQLException(e);
+
+	        tableModel.addRow(new Object[] {
+	                "ERROR",
+	                "Could not load data",
+	                "",
+	                "",
+	                ""
+	        });
+
+	    } catch (DatabaseConfigException e) {
+
+	        ErrorHandler.handleDatabaseConfigException(e);
+
+	        tableModel.addRow(new Object[] {
+	                "ERROR",
+	                "Could not load data",
+	                "",
+	                "",
+	                ""
+	        });
+	    }
+	}
+	
+	private void loadCancelledAppointments(User user) {
+
+	    tableModel.setRowCount(0);
+
+	    try {
+	        appointments = controller.getOwnerCancelled(user);
+
+	        for (Appointment appointment : appointments) {
+
+	            tableModel.addRow(new Object[] {
+	                    appointment.getPetName(),
+	                    appointment.getVetName(),
+	                    appointment.getAppointmentDate(),
+	                    appointment.getStatus(),
+	                    "View"
+	            });
+	        }
+
+	    } catch (SQLException e) {
+
+	        ErrorHandler.handleSQLException(e);
+
+	        tableModel.addRow(new Object[] {
+	                "ERROR",
+	                "Could not load data",
+	                "",
+	                "",
+	                ""
+	        });
+
+	    } catch (DatabaseConfigException e) {
+
+	        ErrorHandler.handleDatabaseConfigException(e);
+
+	        tableModel.addRow(new Object[] {
+	                "ERROR",
+	                "Could not load data",
+	                "",
+	                "",
+	                ""
+	        });
+	    }
 	}
 }

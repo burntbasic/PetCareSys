@@ -10,6 +10,7 @@ public class User {
 	private String username;
 	private String role;
 	
+	//Complete constructor
 	public User(int id, String fName, String lName, String email, String phone, String username, String role) {
 		this.id = id;
 		this.fName = fName;
@@ -18,6 +19,13 @@ public class User {
 		this.phone = phone;
 		this.username = username;
 		this.role = role;
+	}
+	
+	//Simple | Display Constructor
+	public User(int id, String fName, String lName) {
+		this.id = id;
+		this.fName = fName;
+		this.lName = lName;
 	}
 	
 	public int getId() {return id;}

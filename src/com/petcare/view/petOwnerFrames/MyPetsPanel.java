@@ -1,7 +1,16 @@
 package com.petcare.view.petOwnerFrames;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.sql.SQLException;
+import java.util.List;
+
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -9,59 +18,166 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import com.petcare.controller.PetOwnerController;
+import com.petcare.exception.DatabaseConfigException;
+import com.petcare.model.Pet;
 import com.petcare.model.User;
+import com.petcare.util.ErrorHandler;
 
 public class MyPetsPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
+	private PetOwnerController controller;
+	private List<Pet> pets;
+	private DefaultTableModel tableModel;
+
+	private void loadPets(User user) {
+		tableModel.setRowCount(0);
+
+		try {
+			pets = controller.getOwnerPets(user);
+
+			for (Pet pet : pets) {
+				tableModel.addRow(new Object[] {
+						pet.getName(),
+						pet.getSpecies(),
+						pet.getGender(),
+						"Edit"
+				});
+			}
+		} catch (SQLException e) {
+			ErrorHandler.handleSQLException(e);
+			tableModel.addRow(new Object[] {
+					"ERROR",
+					"Could not load data",
+					"",
+					""
+			});
+		} catch (DatabaseConfigException e) {
+			ErrorHandler.handleDatabaseConfigException(e);
+			tableModel.addRow(new Object[] {
+					"ERROR",
+					"Could not load data",
+					"",
+					""
+			});
+		}
+	}
+
 	/**
 	 * Create the panel.
 	 */
 	public MyPetsPanel(User user) {
+
+		controller = new PetOwnerController();
+
 		setLayout(new BorderLayout(15, 15));
-        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // HEADER
-        JPanel headerPanel = new JPanel(new BorderLayout());
+		// HEADER
+		JPanel headerPanel = new JPanel(new BorderLayout());
 
-        JLabel titleLabel = new JLabel("My Pets");
-        titleLabel.setFont(new Font("SansSerif", Font.BOLD, 28));
+		JLabel titleLabel = new JLabel("My Pets");
+		titleLabel.setFont(new Font("SansSerif", Font.BOLD, 28));
 
-        JLabel subtitleLabel = new JLabel("Manage your registered pets");
+		JLabel subtitleLabel = new JLabel("Manage your registered pets");
 
-        JPanel headerText = new JPanel();
-        headerText.setLayout(new BoxLayout(headerText, BoxLayout.Y_AXIS));
+		JPanel headerText = new JPanel();
+		headerText.setLayout(new BoxLayout(headerText, BoxLayout.Y_AXIS));
 
-        headerText.add(titleLabel);
-        headerText.add(subtitleLabel);
+		headerText.add(titleLabel);
+		headerText.add(subtitleLabel);
 
-        headerPanel.add(headerText, BorderLayout.WEST);
+		headerPanel.add(headerText, BorderLayout.WEST);
 
-        JButton addPetButton = new JButton("+ Add Pet");
-        headerPanel.add(addPetButton, BorderLayout.EAST);
+		JButton addPetButton = new JButton("+ Add Pet");
+		addPetButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		addPetButton.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
 
-        add(headerPanel, BorderLayout.NORTH);
+		        AddPetDialog dialog = new AddPetDialog(user);
+		        dialog.setVisible(true);
 
-        // TABLE
-        String[] columns = {
-        		"Name", "Species", "Gender", "Actions"
-        };
+		        if (dialog.isChanged()) {
+		            loadPets(user);
+		        }
+		    }
+		});
+		headerPanel.add(addPetButton, BorderLayout.EAST);
 
-        DefaultTableModel tableModel = new DefaultTableModel(columns, 0) {
-        	public boolean isCellEditable(int row, int column) {
-        		return false;
-        		}
-        	};
+		add(headerPanel, BorderLayout.NORTH);
 
-        JTable petsTable = new JTable(tableModel);
-        petsTable.setRowHeight(35);
+		// TABLE
+		String[] columns = {
+				"Name", "Species", "Gender", "Actions"
+		};
 
-        JScrollPane scrollPane = new JScrollPane(petsTable);
+		tableModel = new DefaultTableModel(columns, 0) {
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		};
 
-        add(scrollPane, BorderLayout.CENTER);
+		loadPets(user);
+
+		JTable petsTable = new JTable(tableModel);
+		petsTable.setRowHeight(35);
+
+		DefaultTableCellRenderer editRenderer = new DefaultTableCellRenderer() {
+
+			public Component getTableCellRendererComponent(
+					JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+
+				JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+				label.setText("<html><u>Edit</u></html>");
+				label.setHorizontalAlignment(JLabel.CENTER);
+
+				return label;
+			}
+		};
+
+		petsTable.getColumnModel().getColumn(3).setCellRenderer(editRenderer);
+
+		petsTable.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+
+				int row = petsTable.rowAtPoint(e.getPoint());
+				int column = petsTable.columnAtPoint(e.getPoint());
+
+				if (column == 3 && row >= 0) {
+
+					Pet pet = pets.get(row);
+
+					EditPetDialog dialog = new EditPetDialog(pet);
+					dialog.setVisible(true);
+
+					if (dialog.isChanged()) {
+						loadPets(user);
+					}
+				}
+			}
+		});
+
+		petsTable.addMouseMotionListener(new MouseAdapter() { 
+			public void mouseMoved(MouseEvent e) { 
+
+				int row = petsTable.rowAtPoint(e.getPoint());
+				int column = petsTable.columnAtPoint(e.getPoint());
+
+				if (column == 3 && row >= 0 && row < pets.size()) { 
+					petsTable.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); 
+				} else { 
+					petsTable.setCursor(Cursor.getDefaultCursor()); 
+				}
+			}
+		});
+
+		JScrollPane scrollPane = new JScrollPane(petsTable);
+		add(scrollPane, BorderLayout.CENTER);
 	}
-
 }
