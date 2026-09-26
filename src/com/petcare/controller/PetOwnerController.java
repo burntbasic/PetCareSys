@@ -10,10 +10,12 @@ import java.time.LocalTime;
 
 import com.petcare.dao.AppointmentDAO;
 import com.petcare.dao.PetDAO;
+import com.petcare.dao.TreatmentDAO;
 import com.petcare.dao.UserDAO;
 import com.petcare.exception.DatabaseConfigException;
 import com.petcare.model.Appointment;
 import com.petcare.model.Pet;
+import com.petcare.model.Treatment;
 import com.petcare.model.User;
 
 public class PetOwnerController {
@@ -21,11 +23,13 @@ public class PetOwnerController {
 	private PetDAO petdb;
 	private AppointmentDAO appointmentdb;
 	private UserDAO userdb;
+	private TreatmentDAO treatmentdb;
 	
 	public PetOwnerController() {
 		petdb = new PetDAO();
 		appointmentdb = new AppointmentDAO();
 		userdb =  new UserDAO();
+		treatmentdb = new TreatmentDAO();
 	}
 	
 	//Dashboard Cards
@@ -215,5 +219,12 @@ public class PetOwnerController {
 	    }
 
 	    return availableTimes;
+	}
+	
+	//Medical Panel
+	public List<Treatment> getPetMedicalRecords(User user, int petId)
+	        throws SQLException, DatabaseConfigException {
+
+	    return treatmentdb.getPetMedicalRecords(user, petId);
 	}
 }
