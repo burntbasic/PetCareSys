@@ -10,6 +10,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.sql.SQLException;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -223,7 +224,7 @@ public class AppointmentsPanel extends JPanel {
 				tableModel.addRow(new Object[] {
 						appointment.getPetName(),
 						appointment.getVetName(),
-						appointment.getAppointmentDate(),
+						appointment.getAppointmentDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("dd MMM yyyy, h:mm a")),
 						appointment.getStatus(),
 						"View"
 				});
@@ -267,7 +268,7 @@ public class AppointmentsPanel extends JPanel {
 	            tableModel.addRow(new Object[] {
 	                    appointment.getPetName(),
 	                    appointment.getVetName(),
-	                    appointment.getAppointmentDate(),
+	                    appointment.getAppointmentDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("dd MMM yyyy, h:mm a")),
 	                    appointment.getStatus(),
 	                    "View"
 	            });
@@ -311,7 +312,7 @@ public class AppointmentsPanel extends JPanel {
 	            tableModel.addRow(new Object[] {
 	                    appointment.getPetName(),
 	                    appointment.getVetName(),
-	                    appointment.getAppointmentDate(),
+	                    appointment.getAppointmentDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("dd MMM yyyy, h:mm a")),
 	                    appointment.getStatus(),
 	                    "View"
 	            });

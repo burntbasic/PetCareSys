@@ -12,6 +12,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.time.format.DateTimeFormatter;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -66,7 +67,7 @@ public class ViewAppointmentDialog extends JDialog {
 
 		addDetail(detailsPanel, gbc, 1, "Pet:",appointment.getPetName());
 		addDetail(detailsPanel, gbc, 2, "Veterinarian:",appointment.getVetName());
-		addDetail(detailsPanel, gbc, 3, "Date & Time:",appointment.getAppointmentDate().toString());
+		addDetail(detailsPanel, gbc, 3, "Date & Time:",appointment.getAppointmentDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("dd MMM yyyy, h:mm a")));
 		addDetail(detailsPanel, gbc, 4, "Status:",appointment.getStatus());
 		addDetail(detailsPanel, gbc, 5, "Reason:",appointment.getReason());
 
