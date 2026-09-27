@@ -171,7 +171,7 @@ public class AppointmentsPanel extends JPanel {
 				if (row >= 0 && column == 4 && appointments != null) {
 
 					Appointment appointment = appointments.get(row);
-
+											
 					ViewAppointmentDialog dialog = new ViewAppointmentDialog(appointment);
 					dialog.setVisible(true);
 
@@ -231,28 +231,9 @@ public class AppointmentsPanel extends JPanel {
 			}
 
 		} catch (SQLException e) {
-
-			ErrorHandler.handleSQLException(e);
-
-			tableModel.addRow(new Object[] {
-					"ERROR",
-					"Could not load data",
-					"",
-					"",
-					""
-			});
-
+		    ErrorHandler.handleTableLoadError(e, appointmentsTable, tableModel);
 		} catch (DatabaseConfigException e) {
-
-			ErrorHandler.handleDatabaseConfigException(e);
-
-			tableModel.addRow(new Object[] {
-					"ERROR",
-					"Could not load data",
-					"",
-					"",
-					""
-			});
+		    ErrorHandler.handleTableLoadError(e, appointmentsTable, tableModel);
 		}
 	}
 	
@@ -275,29 +256,10 @@ public class AppointmentsPanel extends JPanel {
 	        }
 
 	    } catch (SQLException e) {
-
-	        ErrorHandler.handleSQLException(e);
-
-	        tableModel.addRow(new Object[] {
-	                "ERROR",
-	                "Could not load data",
-	                "",
-	                "",
-	                ""
-	        });
-
-	    } catch (DatabaseConfigException e) {
-
-	        ErrorHandler.handleDatabaseConfigException(e);
-
-	        tableModel.addRow(new Object[] {
-	                "ERROR",
-	                "Could not load data",
-	                "",
-	                "",
-	                ""
-	        });
-	    }
+		    ErrorHandler.handleTableLoadError(e, appointmentsTable, tableModel);
+		} catch (DatabaseConfigException e) {
+		    ErrorHandler.handleTableLoadError(e, appointmentsTable, tableModel);
+		}
 	}
 	
 	private void loadCancelledAppointments(User user) {
@@ -319,28 +281,9 @@ public class AppointmentsPanel extends JPanel {
 	        }
 
 	    } catch (SQLException e) {
-
-	        ErrorHandler.handleSQLException(e);
-
-	        tableModel.addRow(new Object[] {
-	                "ERROR",
-	                "Could not load data",
-	                "",
-	                "",
-	                ""
-	        });
-
-	    } catch (DatabaseConfigException e) {
-
-	        ErrorHandler.handleDatabaseConfigException(e);
-
-	        tableModel.addRow(new Object[] {
-	                "ERROR",
-	                "Could not load data",
-	                "",
-	                "",
-	                ""
-	        });
-	    }
+		    ErrorHandler.handleTableLoadError(e, appointmentsTable, tableModel);
+		} catch (DatabaseConfigException e) {
+		    ErrorHandler.handleTableLoadError(e, appointmentsTable, tableModel);
+		}
 	}
 }

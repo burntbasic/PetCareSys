@@ -231,9 +231,9 @@ public class MedicalPanel extends JPanel {
 	        }
 
 	    } catch (SQLException e) {
-	        ErrorHandler.handleSQLException(e);
+	        ErrorHandler.handleTableLoadError(e, medicalRecordsTable, tableModel);
 	    } catch (DatabaseConfigException e) {
-	        ErrorHandler.handleDatabaseConfigException(e);
+	        ErrorHandler.handleTableLoadError(e, medicalRecordsTable, tableModel);
 	    }
 	}
 	

@@ -140,6 +140,9 @@ public class PetOwnerDashboard extends BaseDashboard {
 				return false;
 			}
 		};
+		
+		JTable table = new JTable(tableModel);
+		table.setRowHeight(35);
 
 		try {
 			List<Appointment> appointments = controller.getOwnerUpcoming(user);
@@ -153,27 +156,10 @@ public class PetOwnerDashboard extends BaseDashboard {
 				});
 			}
 		} catch (SQLException e) {
-			ErrorHandler.handleSQLException(e);
-
-			tableModel.addRow(new Object[] {
-					"ERROR",
-					"Could not load appointments",
-					"",
-					""
-			});
+		    ErrorHandler.handleTableLoadError(e, table, tableModel);
 		} catch (DatabaseConfigException e) {
-			ErrorHandler.handleDatabaseConfigException(e);
-
-			tableModel.addRow(new Object[] {
-					"ERROR",
-					"Could not load appointments",
-					"",
-					""
-			});
+		    ErrorHandler.handleTableLoadError(e, table, tableModel);
 		}
-
-		JTable table = new JTable(tableModel);
-		table.setRowHeight(35);
 
 		JScrollPane scrollPane = new JScrollPane(table);
 		mainPanel.add(scrollPane);

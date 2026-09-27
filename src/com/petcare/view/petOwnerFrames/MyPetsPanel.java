@@ -33,8 +33,10 @@ public class MyPetsPanel extends JPanel {
 
 	private PetOwnerController controller;
 	private List<Pet> pets;
+	
 	private DefaultTableModel tableModel;
-
+	private JTable petsTable;
+	
 	private void loadPets(User user) {
 		tableModel.setRowCount(0);
 
@@ -50,21 +52,9 @@ public class MyPetsPanel extends JPanel {
 				});
 			}
 		} catch (SQLException e) {
-			ErrorHandler.handleSQLException(e);
-			tableModel.addRow(new Object[] {
-					"ERROR",
-					"Could not load data",
-					"",
-					""
-			});
+		    ErrorHandler.handleTableLoadError(e, petsTable, tableModel);
 		} catch (DatabaseConfigException e) {
-			ErrorHandler.handleDatabaseConfigException(e);
-			tableModel.addRow(new Object[] {
-					"ERROR",
-					"Could not load data",
-					"",
-					""
-			});
+		    ErrorHandler.handleTableLoadError(e, petsTable, tableModel);
 		}
 	}
 
@@ -122,10 +112,10 @@ public class MyPetsPanel extends JPanel {
 			}
 		};
 
-		loadPets(user);
-
-		JTable petsTable = new JTable(tableModel);
+		petsTable = new JTable(tableModel);
 		petsTable.setRowHeight(35);
+		
+		loadPets(user);
 
 		DefaultTableCellRenderer editRenderer = new DefaultTableCellRenderer() {
 
