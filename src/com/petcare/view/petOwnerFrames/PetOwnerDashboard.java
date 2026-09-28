@@ -204,6 +204,9 @@ public class PetOwnerDashboard extends BaseDashboard {
 		
 		medicalBtn.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
+		    	
+		    	medicalPanel.refreshPets();
+		    	
 		        CardLayout layout = (CardLayout) contentPanel.getLayout();
 		        layout.show(contentPanel, "medical");
 		    }

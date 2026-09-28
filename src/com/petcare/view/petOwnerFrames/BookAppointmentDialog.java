@@ -367,10 +367,15 @@ public class BookAppointmentDialog extends JDialog {
 		}
 
 		try {
-			List<LocalTime> availableTimes = controller.getAvailableTimes(selectedVet.getId(),selectedDate);
+			List<LocalTime> availableTimes = controller.getAvailableTimes(selectedVet.getId(), selectedDate);
 
 			for (LocalTime time : availableTimes) {
-				timeComboBox.addItem(time);
+
+			    if (selectedDate.equals(LocalDate.now()) && !time.isAfter(LocalTime.now())) {
+			        continue;
+			    }
+
+			    timeComboBox.addItem(time);
 			}
 
 		} catch (SQLException e) {

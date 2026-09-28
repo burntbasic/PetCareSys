@@ -125,9 +125,6 @@ public class MedicalPanel extends JPanel {
 
 		medicalRecordsTable = new JTable(tableModel);
 		medicalRecordsTable.setRowHeight(35);
-		
-		medicalRecordsTable = new JTable(tableModel);
-		medicalRecordsTable.setRowHeight(35);
 
 		medicalRecordsTable.getColumnModel().getColumn(3).setCellRenderer(new DefaultTableCellRenderer() {
 		    public Component getTableCellRendererComponent(
@@ -209,6 +206,13 @@ public class MedicalPanel extends JPanel {
 	    } catch (DatabaseConfigException e) {
 	        ErrorHandler.handleDatabaseConfigException(e);
 	    }
+	}
+	
+	public void refreshPets() {
+	    petComboBox.removeAllItems();
+	    tableModel.setRowCount(0);
+	    treatments = null;
+	    loadPets();
 	}
 	
 	private void loadMedicalRecords(Pet pet) {
