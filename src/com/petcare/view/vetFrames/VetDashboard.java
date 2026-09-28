@@ -236,6 +236,9 @@ public class VetDashboard extends BaseDashboard {
         
         medicalBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+            	
+            	medicalPanel.refreshRecords();
+            	
                 CardLayout layout = (CardLayout) contentPanel.getLayout();
                 layout.show(contentPanel, "medical");
             }

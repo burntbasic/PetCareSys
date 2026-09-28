@@ -14,6 +14,8 @@ public class Treatment {
     private String medication;
     private String status;
     private Timestamp treatmentDate;
+    
+    private String ownerName;
 
     public Treatment(int treatmentId, int appointmentId, int vetId, String petName, String vetName,
             String diagnosis, String treatmentDescription, String medication, String status, Timestamp treatmentDate) {
@@ -21,6 +23,23 @@ public class Treatment {
         this.appointmentId = appointmentId;
         this.vetId = vetId;
         this.petName = petName;
+        this.vetName = vetName;
+        this.diagnosis = diagnosis;
+        this.treatmentDescription = treatmentDescription;
+        this.medication = medication;
+        this.status = status;
+        this.treatmentDate = treatmentDate;
+    }
+    
+	//Constructor used to pass Pet object for Medical panel (Vet UI)
+    public Treatment(int treatmentId, int appointmentId, int vetId, String petName, String ownerName, String vetName,
+    		String diagnosis, String treatmentDescription, String medication, String status, Timestamp treatmentDate) {
+
+        this.treatmentId = treatmentId;
+        this.appointmentId = appointmentId;
+        this.vetId = vetId;
+        this.petName = petName;
+        this.ownerName = ownerName;
         this.vetName = vetName;
         this.diagnosis = diagnosis;
         this.treatmentDescription = treatmentDescription;
@@ -39,4 +58,5 @@ public class Treatment {
     public String getMedication() {return medication;}
     public String getStatus() {return status;}
     public Timestamp getTreatmentDate() {return treatmentDate;}
+    public String getOwnerName() {return ownerName;}
 }

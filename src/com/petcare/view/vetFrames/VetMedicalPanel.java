@@ -1,28 +1,52 @@
 package com.petcare.view.vetFrames;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Font;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseMotionAdapter;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import com.petcare.controller.VetController;
+import com.petcare.exception.DatabaseConfigException;
+import com.petcare.model.Treatment;
 import com.petcare.model.User;
+import com.petcare.util.ErrorHandler;
 
 public class VetMedicalPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Create the panel.
-	 */
+	private JTable medicalRecordsTable;
+	private DefaultTableModel tableModel;
+	private JTextField searchField;
+
+	private VetController controller;
+	private List<Treatment> treatments = new ArrayList<>();
+	private User user;
+
 	public VetMedicalPanel(User user) {
+		
+		this.user = user;
+		controller = new VetController();
+
 		setLayout(new BorderLayout(15, 15));
 		setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -45,29 +69,93 @@ public class VetMedicalPanel extends JPanel {
 
 		JPanel filterPanel = new JPanel(new BorderLayout(10, 10));
 
-		JLabel petLabel = new JLabel("Patient:");
-
-		String[] pets = {"All Patients"};
-
-		JComboBox<String> petComboBox = new JComboBox<>(pets);
-
-		JTextField searchField = new JTextField();
+		JLabel searchLabel = new JLabel("Search:");
+		
+		searchField = new JTextField();
 		searchField.setToolTipText("Search by pet name or owner name");
+		searchField.getDocument().addDocumentListener(new DocumentListener() {
 
-		filterPanel.add(petLabel, BorderLayout.WEST);
-		filterPanel.add(petComboBox, BorderLayout.CENTER);
-		filterPanel.add(searchField, BorderLayout.EAST);
+			public void insertUpdate(DocumentEvent e) {
+				filterMedicalRecords();
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				filterMedicalRecords();
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				filterMedicalRecords();
+			}
+		});
+		
+		filterPanel.add(searchLabel, BorderLayout.WEST);
+		filterPanel.add(searchField, BorderLayout.CENTER);
 
 		String[] columns = {"Pet", "Owner", "Date", "Diagnosis", "Status", "Actions"};
 
-		DefaultTableModel tableModel = new DefaultTableModel(columns, 0) {
+		tableModel = new DefaultTableModel(columns, 0) {
+
 			public boolean isCellEditable(int row, int column) {
 				return false;
 			}
 		};
 
-		JTable medicalRecordsTable = new JTable(tableModel);
+		medicalRecordsTable = new JTable(tableModel);
 		medicalRecordsTable.setRowHeight(35);
+
+
+		medicalRecordsTable.getColumnModel().getColumn(5).setCellRenderer(new DefaultTableCellRenderer() {
+
+			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+
+				JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+				label.setText("<html><u>View</u></html>");
+				label.setHorizontalAlignment(JLabel.CENTER);
+
+				return label;
+			}
+		});
+		medicalRecordsTable.addMouseMotionListener(new MouseMotionAdapter() {
+			public void mouseMoved(MouseEvent e) {
+
+				int row = medicalRecordsTable.rowAtPoint(e.getPoint());
+				int column = medicalRecordsTable.columnAtPoint(e.getPoint());
+
+				if(row >= 0 && column == 5) {
+				    medicalRecordsTable.setCursor(new Cursor(Cursor.HAND_CURSOR));
+				} else {
+				    medicalRecordsTable.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+				}
+			}
+		});
+		medicalRecordsTable.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+
+				int row = medicalRecordsTable.rowAtPoint(e.getPoint());
+				int column = medicalRecordsTable.columnAtPoint(e.getPoint());
+
+				if(row >= 0 && column == 5) {
+
+					String petName = medicalRecordsTable.getValueAt(row, 0).toString();
+					String date = medicalRecordsTable.getValueAt(row, 2).toString();
+
+					for(Treatment treatment : treatments) {
+
+						String treatmentDate = new SimpleDateFormat("dd MMM yyyy, h:mm a").format(treatment.getTreatmentDate());
+
+						if(treatment.getPetName().equals(petName) && treatmentDate.equals(date)) {
+
+							ViewMedicalDialog dialog = new ViewMedicalDialog(treatment);
+							dialog.setVisible(true);
+							break;
+						}
+					}
+				}
+			}
+		});
 
 		JScrollPane scrollPane = new JScrollPane(medicalRecordsTable);
 
@@ -77,6 +165,68 @@ public class VetMedicalPanel extends JPanel {
 		contentPanel.add(scrollPane, BorderLayout.CENTER);
 
 		add(contentPanel, BorderLayout.CENTER);
+
+		loadMedicalRecords(user);
 	}
 
+	private void loadMedicalRecords(User user) {
+
+		tableModel.setRowCount(0);
+
+		try {
+			treatments = controller.getVetMedicalRecords(user);
+
+			for(Treatment treatment : treatments) {
+
+				String date = new SimpleDateFormat("dd MMM yyyy, h:mm a").format(treatment.getTreatmentDate());
+
+				tableModel.addRow(new Object[] {
+						treatment.getPetName(),
+						treatment.getOwnerName(),
+						date,
+						treatment.getDiagnosis(),
+						treatment.getStatus(),
+						"View"
+				});
+			}
+
+		} catch(SQLException e) {
+			ErrorHandler.handleTableLoadError(e, medicalRecordsTable, tableModel);
+		} catch(DatabaseConfigException e) {
+			ErrorHandler.handleTableLoadError(e, medicalRecordsTable, tableModel);
+		}
+	}
+	
+	private void filterMedicalRecords() {
+
+		String search = searchField.getText().trim().toLowerCase();
+
+		tableModel.setRowCount(0);
+
+		for(Treatment treatment : treatments) {
+
+			String petName = treatment.getPetName().toLowerCase();
+			String ownerName = treatment.getOwnerName().toLowerCase();
+			String date = new SimpleDateFormat("dd MMM yyyy, h:mm a").format(treatment.getTreatmentDate()).toLowerCase();
+			String diagnosis = treatment.getDiagnosis() == null ? "" : treatment.getDiagnosis().toLowerCase();
+			String status = treatment.getStatus() == null ? "" : treatment.getStatus().toLowerCase();
+
+			if(petName.contains(search) || ownerName.contains(search) || date.contains(search) || diagnosis.contains(search) || status.contains(search)) {
+
+				tableModel.addRow(new Object[] {
+						treatment.getPetName(),
+						treatment.getOwnerName(),
+						date,
+						treatment.getDiagnosis(),
+						treatment.getStatus(),
+						"View"
+				});
+			}
+		}
+	}
+	
+	public void refreshRecords() {
+	    loadMedicalRecords(user);
+	    filterMedicalRecords();
+	}
 }

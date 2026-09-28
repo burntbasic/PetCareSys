@@ -351,6 +351,7 @@ public class AppointmentDAO {
 				         JOIN Users v ON a.vet_id = v.user_id AND v.role = 'VET'
 				         WHERE a.vet_id = ?
 				         AND DATE(a.appointment_date) = CURDATE()
+				         AND a.status = 'Scheduled'
 				         ORDER BY a.appointment_date
 				""";
 
@@ -375,6 +376,234 @@ public class AppointmentDAO {
 			}
 			return appointments;
 		}
+	}
+	
+	public List<Appointment> getVetUpcoming(User user) throws SQLException, DatabaseConfigException {
+
+	    List<Appointment> appointments = new ArrayList<>();
+
+	    String sql = """
+	            SELECT
+	                a.appointment_id,
+	                a.appointment_date,
+	                p.name AS pet_name,
+	                CONCAT(u.first_name, ' ', u.last_name) AS owner_name,
+	                CONCAT(v.first_name, ' ', v.last_name) AS vet_name,
+	                a.reason,
+	                a.status
+	            FROM Appointments a
+	            JOIN Pets p
+	            ON a.pet_id = p.pet_id
+	            JOIN Users u
+	            ON p.owner_id = u.user_id
+	            JOIN Users v
+	            ON a.vet_id = v.user_id
+	            AND v.role = 'VET'
+	            WHERE a.vet_id = ?
+	            AND a.appointment_date > NOW()
+	            AND a.status = 'Scheduled'
+	            ORDER BY a.appointment_date
+	            """;
+
+	    try(Connection connection = DBConnection.getConnection();
+	        PreparedStatement statement = connection.prepareStatement(sql)) {
+
+	        statement.setInt(1, user.getId());
+
+	        ResultSet result = statement.executeQuery();
+
+	        while(result.next()) {
+
+	            Appointment appointment = new Appointment(
+	                    result.getInt("appointment_id"),
+	                    result.getString("pet_name"),
+	                    result.getString("owner_name"),
+	                    result.getString("vet_name"),
+	                    result.getTimestamp("appointment_date"),
+	                    result.getString("status"),
+	                    result.getString("reason"));
+
+	            appointments.add(appointment);
+	        }
+
+	        return appointments;
+	    }
+	}
+
+	public List<Appointment> getVetPast(User user) throws SQLException, DatabaseConfigException {
+
+	    List<Appointment> appointments = new ArrayList<>();
+
+	    String sql = """
+	            SELECT
+	                a.appointment_id,
+	                a.appointment_date,
+	                p.name AS pet_name,
+	                CONCAT(u.first_name, ' ', u.last_name) AS owner_name,
+	                CONCAT(v.first_name, ' ', v.last_name) AS vet_name,
+	                a.reason,
+	                a.status
+	            FROM Appointments a
+	            JOIN Pets p
+	            ON a.pet_id = p.pet_id
+	            JOIN Users u
+	            ON p.owner_id = u.user_id
+	            JOIN Users v
+	            ON a.vet_id = v.user_id
+	            AND v.role = 'VET'
+	            WHERE a.vet_id = ?
+	            AND a.appointment_date < NOW()
+	            AND a.status = 'Completed'
+	            ORDER BY a.appointment_date DESC
+	            """;
+
+	    try(Connection connection = DBConnection.getConnection();
+	        PreparedStatement statement = connection.prepareStatement(sql)) {
+
+	        statement.setInt(1, user.getId());
+
+	        ResultSet result = statement.executeQuery();
+
+	        while(result.next()) {
+
+	            Appointment appointment = new Appointment(
+	                    result.getInt("appointment_id"),
+	                    result.getString("pet_name"),
+	                    result.getString("owner_name"),
+	                    result.getString("vet_name"),
+	                    result.getTimestamp("appointment_date"),
+	                    result.getString("status"),
+	                    result.getString("reason"));
+
+	            appointments.add(appointment);
+	        }
+
+	        return appointments;
+	    }
+	}
+
+	public List<Appointment> getVetCancelled(User user) throws SQLException, DatabaseConfigException {
+
+	    List<Appointment> appointments = new ArrayList<>();
+
+	    String sql = """
+	            SELECT
+	                a.appointment_id,
+	                a.appointment_date,
+	                p.name AS pet_name,
+	                CONCAT(u.first_name, ' ', u.last_name) AS owner_name,
+	                CONCAT(v.first_name, ' ', v.last_name) AS vet_name,
+	                a.reason,
+	                a.status
+	            FROM Appointments a
+	            JOIN Pets p
+	            ON a.pet_id = p.pet_id
+	            JOIN Users u
+	            ON p.owner_id = u.user_id
+	            JOIN Users v
+	            ON a.vet_id = v.user_id
+	            AND v.role = 'VET'
+	            WHERE a.vet_id = ?
+	            AND a.status = 'Cancelled'
+	            ORDER BY a.appointment_date DESC
+	            """;
+
+	    try(Connection connection = DBConnection.getConnection();
+	        PreparedStatement statement = connection.prepareStatement(sql)) {
+
+	        statement.setInt(1, user.getId());
+
+	        ResultSet result = statement.executeQuery();
+
+	        while(result.next()) {
+
+	            Appointment appointment = new Appointment(
+	                    result.getInt("appointment_id"),
+	                    result.getString("pet_name"),
+	                    result.getString("owner_name"),
+	                    result.getString("vet_name"),
+	                    result.getTimestamp("appointment_date"),
+	                    result.getString("status"),
+	                    result.getString("reason"));
+
+	            appointments.add(appointment);
+	        }
+
+	        return appointments;
+	    }
+	}
+	
+	public List<Appointment> getVetCompletedForTreatment(User user) throws SQLException, DatabaseConfigException {
+
+	    List<Appointment> appointments = new ArrayList<>();
+
+	    String sql = """
+	            SELECT
+	                a.appointment_id,
+	                a.appointment_date,
+	                p.name AS pet_name,
+	                CONCAT(u.first_name, ' ', u.last_name) AS owner_name,
+	                CONCAT(v.first_name, ' ', v.last_name) AS vet_name,
+	                a.reason,
+	                a.status
+	            FROM Appointments a
+	            JOIN Pets p
+	            ON a.pet_id = p.pet_id
+	            JOIN Users u
+	            ON p.owner_id = u.user_id
+	            JOIN Users v
+	            ON a.vet_id = v.user_id
+	            AND v.role = 'VET'
+	            WHERE a.vet_id = ?
+	            AND a.status = 'Completed'
+	            ORDER BY a.appointment_date DESC
+	            """;
+
+	    try(Connection connection = DBConnection.getConnection();
+	        PreparedStatement statement = connection.prepareStatement(sql)) {
+
+	        statement.setInt(1, user.getId());
+
+	        ResultSet result = statement.executeQuery();
+
+	        while(result.next()) {
+
+	            Appointment appointment = new Appointment(
+	                    result.getInt("appointment_id"),
+	                    result.getString("pet_name"),
+	                    result.getString("owner_name"),
+	                    result.getString("vet_name"),
+	                    result.getTimestamp("appointment_date"),
+	                    result.getString("status"),
+	                    result.getString("reason"));
+
+	            appointments.add(appointment);
+	        }
+
+	        return appointments;
+	    }
+	}
+	
+	public void completeAppointment(Appointment appointment) throws SQLException, DatabaseConfigException {
+
+	    String sql = """
+	            UPDATE Appointments
+	            SET status = 'Completed'
+	            WHERE appointment_id = ?
+	            AND status = 'Scheduled'
+	            """;
+
+	    try(Connection connection = DBConnection.getConnection();
+	        PreparedStatement statement = connection.prepareStatement(sql)) {
+
+	        statement.setInt(1, appointment.getAppointmentId());
+
+	        int rowsUpdated = statement.executeUpdate();
+
+	        if(rowsUpdated == 0) {
+	            throw new SQLException("Appointment could not be completed.");
+	        }
+	    }
 	}
 
 	//Admin UI

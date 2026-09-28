@@ -138,6 +138,50 @@ public class PetDAO {
 			return result.getInt("patient_count");
 		}
 	}
+	
+	public List<Pet> getVetPatients(User user) throws SQLException, DatabaseConfigException {
+
+	    List<Pet> pets = new ArrayList<>();
+
+	    String sql = """
+	            SELECT
+	                p.pet_id,
+	                p.name,
+	                p.species,
+	                CONCAT(u.first_name, ' ', u.last_name) AS owner_name,
+	                MAX(a.appointment_date) AS last_appointment
+	            FROM Pets p
+	            JOIN Appointments a
+	            ON p.pet_id = a.pet_id
+	            JOIN Users u
+	            ON p.owner_id = u.user_id
+	            WHERE a.vet_id = ?
+	            GROUP BY p.pet_id, p.name, p.species, u.first_name, u.last_name
+	            ORDER BY p.name
+	            """;
+
+	    try(Connection connection = DBConnection.getConnection();
+	            PreparedStatement statement = connection.prepareStatement(sql)) {
+
+	        statement.setInt(1, user.getId());
+
+	        ResultSet result = statement.executeQuery();
+
+	        while(result.next()) {
+
+	            Pet pet = new Pet(
+	                    result.getInt("pet_id"),
+	                    result.getString("name"),
+	                    result.getString("species"),
+	                    result.getString("owner_name"),
+	                    result.getTimestamp("last_appointment"));
+
+	            pets.add(pet);
+	        }
+
+	        return pets;
+	    }
+	}
 
 	//Admin UI
 	public int getTotPetCount() throws SQLException, DatabaseConfigException {
