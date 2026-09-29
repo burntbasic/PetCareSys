@@ -51,8 +51,7 @@ public class EditTreatmentDialog extends JDialog {
 
 		// FORM
 		JPanel formPanel = new JPanel(new GridBagLayout());
-		formPanel.setBorder(
-				BorderFactory.createEmptyBorder(20, 25, 10, 25));
+		formPanel.setBorder(BorderFactory.createEmptyBorder(20, 25, 10, 25));
 
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(7, 5, 7, 5);
@@ -186,7 +185,6 @@ public class EditTreatmentDialog extends JDialog {
 		// SAVE
 		saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
 				String diagnosis = diagnosisField.getText().trim();
 				String treatmentDescription = treatmentField.getText().trim();
 				String medication = medicationField.getText().trim();
@@ -205,6 +203,7 @@ public class EditTreatmentDialog extends JDialog {
 					JOptionPane.showMessageDialog(EditTreatmentDialog.this, "Medication cannot be empty.", "Validation Error", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
+				
 				try {
 					controller.updateTreatment(user, treatment, diagnosis, treatmentDescription, medication, status);
 
@@ -214,9 +213,7 @@ public class EditTreatmentDialog extends JDialog {
 					dispose();
 
 				} catch(IllegalArgumentException ex) {
-
 					JOptionPane.showMessageDialog(EditTreatmentDialog.this, ex.getMessage(), "Validation Error", JOptionPane.ERROR_MESSAGE);
-
 				} catch(SQLException ex) {
 					ErrorHandler.handleSQLException(ex);
 				} catch(DatabaseConfigException ex) {

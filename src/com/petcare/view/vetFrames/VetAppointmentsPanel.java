@@ -88,33 +88,29 @@ public class VetAppointmentsPanel extends JPanel {
 
         todayButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
                 currentFilter = "Today";
-                loadTodayAppointments(user);
+                loadTodayAppointments();
             }
         });
 
         upcomingButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
                 currentFilter = "Upcoming";
-                loadUpcomingAppointments(user);
+                loadUpcomingAppointments();
             }
         });
 
         pastButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
                 currentFilter = "Past";
-                loadPastAppointments(user);
+                loadPastAppointments();
             }
         });
 
         cancelledButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
                 currentFilter = "Cancelled";
-                loadCancelledAppointments(user);
+                loadCancelledAppointments();
             }
         });
 
@@ -183,7 +179,6 @@ public class VetAppointmentsPanel extends JPanel {
                     Appointment appointment = appointments.get(row);
 
                     VetAppointmentDialog dialog = new VetAppointmentDialog(user, appointment);
-
                     dialog.setVisible(true);
 
                     if(dialog.isChanged()) {
@@ -208,7 +203,7 @@ public class VetAppointmentsPanel extends JPanel {
 
         // LOAD DEFAULT FILTER
 
-        loadTodayAppointments(user);
+        loadTodayAppointments();
     }
 
     // REFRESH
@@ -216,26 +211,19 @@ public class VetAppointmentsPanel extends JPanel {
     private void refreshAppointments() {
 
         if ("Today".equals(currentFilter)) {
-
-            loadTodayAppointments(user);
-
+            loadTodayAppointments();
         } else if ("Upcoming".equals(currentFilter)) {
-
-            loadUpcomingAppointments(user);
-
+            loadUpcomingAppointments();
         } else if ("Past".equals(currentFilter)) {
-
-            loadPastAppointments(user);
-
+            loadPastAppointments();
         } else if ("Cancelled".equals(currentFilter)) {
-
-            loadCancelledAppointments(user);
+            loadCancelledAppointments();
         }
     }
 
     // TODAY
 
-    private void loadTodayAppointments(User user) {
+    private void loadTodayAppointments() {
 
         tableModel.setRowCount(0);
 
@@ -256,7 +244,6 @@ public class VetAppointmentsPanel extends JPanel {
                         "View"
                 });
             }
-
         } catch (SQLException e) {
             ErrorHandler.handleTableLoadError(e, appointmentsTable, tableModel);
         } catch (DatabaseConfigException e) {
@@ -266,7 +253,7 @@ public class VetAppointmentsPanel extends JPanel {
 
     // UPCOMING
 
-    private void loadUpcomingAppointments(User user) {
+    private void loadUpcomingAppointments() {
 
         tableModel.setRowCount(0);
 
@@ -287,7 +274,6 @@ public class VetAppointmentsPanel extends JPanel {
                         "View"
                 });
             }
-
         } catch (SQLException e) {
             ErrorHandler.handleTableLoadError(e, appointmentsTable, tableModel);
         } catch (DatabaseConfigException e) {
@@ -297,7 +283,7 @@ public class VetAppointmentsPanel extends JPanel {
 
     // PAST
 
-    private void loadPastAppointments(User user) {
+    private void loadPastAppointments() {
 
         tableModel.setRowCount(0);
 
@@ -318,7 +304,6 @@ public class VetAppointmentsPanel extends JPanel {
                         "View"
                 });
             }
-
         } catch (SQLException e) {
             ErrorHandler.handleTableLoadError(e, appointmentsTable, tableModel);
         } catch (DatabaseConfigException e) {
@@ -328,7 +313,7 @@ public class VetAppointmentsPanel extends JPanel {
 
     // CANCELLED
 
-    private void loadCancelledAppointments(User user) {
+    private void loadCancelledAppointments() {
 
         tableModel.setRowCount(0);
 
@@ -348,7 +333,6 @@ public class VetAppointmentsPanel extends JPanel {
                         "View"
                 });
             }
-
         } catch (SQLException e) {
             ErrorHandler.handleTableLoadError(e, appointmentsTable, tableModel);
         } catch (DatabaseConfigException e) {

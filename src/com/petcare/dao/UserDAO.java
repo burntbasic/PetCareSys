@@ -77,7 +77,6 @@ public class UserDAO {
 			ResultSet result = statement.executeQuery();
 
 			return result.next();
-
 		}
 	}
 
@@ -180,7 +179,6 @@ public class UserDAO {
 	            users.add(user);
 	        }
 	    }
-
 	    return users;
 	}
 	
@@ -214,10 +212,7 @@ public class UserDAO {
 	
 	public boolean deleteUser(int userId) throws SQLException, DatabaseConfigException {
 
-	    String sql = """
-	            DELETE FROM Users
-	            WHERE user_id = ?
-	            """;
+	    String sql = "DELETE FROM Users WHERE user_id = ?";
 
 	    try (Connection connection = DBConnection.getConnection();
 	            PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -277,7 +272,6 @@ public class UserDAO {
 	            owners.add(owner);
 	        }
 	    }
-
 	    return owners;
 	}
 }

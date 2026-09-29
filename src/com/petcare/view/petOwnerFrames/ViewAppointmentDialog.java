@@ -35,10 +35,6 @@ public class ViewAppointmentDialog extends JDialog {
 	private PetOwnerController controller;
 	private boolean changed = false;
 
-	public boolean isChanged() {
-		return changed;
-	}
-
 	public ViewAppointmentDialog(User user, Appointment appointment) {
 
 		controller = new PetOwnerController();
@@ -137,5 +133,9 @@ public class ViewAppointmentDialog extends JDialog {
 		valueLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
 
 		panel.add(valueLabel, gbc);
+	}
+	
+	public boolean isChanged() {
+		return changed;
 	}
 }

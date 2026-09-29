@@ -39,10 +39,6 @@ public class EditPetDialog extends JDialog {
 	private PetOwnerController controller;
 	private boolean changed;
 
-	public boolean isChanged() {
-		return changed;
-	}
-
 	public EditPetDialog(User user, Pet pet) {
 		
 		controller = new PetOwnerController();
@@ -66,7 +62,7 @@ public class EditPetDialog extends JDialog {
 
 		JLabel speciesLabel = new JLabel("Species:");
 
-		String[] species = {"Dog", "Cat", "Squirrel", "Hamster", "Other"}; //other should open a new textfield
+		String[] species = {"Dog", "Cat", "Squirrel", "Hamster", "Other"};
 		JComboBox<String> speciesComboBox = new JComboBox<>(species);
 
 		JLabel otherSpeciesLabel = new JLabel("Other Species:");
@@ -131,7 +127,6 @@ public class EditPetDialog extends JDialog {
 					otherSpeciesLabel.setVisible(false);
 					otherSpeciesField.setVisible(false);
 				}
-
 				formPanel.revalidate();
 				formPanel.repaint();
 			}
@@ -164,7 +159,6 @@ public class EditPetDialog extends JDialog {
 		// DELETE
 		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
 				int result = JOptionPane.showConfirmDialog(EditPetDialog.this, "Are you sure you want to delete " + pet.getName() + "?", "Delete Pet", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
 				if (result == JOptionPane.YES_OPTION) {
@@ -178,10 +172,8 @@ public class EditPetDialog extends JDialog {
 						dispose();
 
 					} catch (SQLIntegrityConstraintViolationException ex) {
-
-						JOptionPane.showMessageDialog(EditPetDialog.this, "This pet cannot be deleted because it has existing appointments.", "Cannot Delete Pet", JOptionPane.WARNING_MESSAGE);
-						//both completed and scheduled appointments are treated this way
-						//best option: soft delete?(isActive = 0)
+						//both completed and scheduled appointments linked to a pet are treated this way
+						JOptionPane.showMessageDialog(EditPetDialog.this, "This pet cannot be deleted because it has existing appointments.", "Cannot Delete Pet", JOptionPane.WARNING_MESSAGE);						
 					} catch (SQLException ex) { 
 						ErrorHandler.handleSQLException(ex);
 					} catch (DatabaseConfigException ex) { 
@@ -242,5 +234,9 @@ public class EditPetDialog extends JDialog {
 	        public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {}
 	        public void popupMenuCanceled(PopupMenuEvent e) {}
 	    });
+	}
+	
+	public boolean isChanged() {
+		return changed;
 	}
 }

@@ -67,6 +67,7 @@ public class AdminController {
 
 	public boolean updateUser(int userId, String fName, String lName, String email, String phone, String username, String role) throws SQLException, DatabaseConfigException {
 
+		phone = "+94" + phone;
 		boolean updated = userdb.updateUser(userId, fName, lName, email, phone, username, role);
 
 		if (updated) {
@@ -89,6 +90,7 @@ public class AdminController {
 
 	public boolean addUser(String fName, String lName, String email, String phone, String username, String password, String role) throws SQLException, DatabaseConfigException {
 
+		phone = "+94" + phone;
 		boolean added = userdb.addUser(fName, lName, email, phone, username, password, role);
 
 		if (added) {
@@ -123,7 +125,6 @@ public class AdminController {
 	public void addPet(User user, String name, String species, String gender) throws SQLException, DatabaseConfigException {
 
 		petdb.addPet(user, name, species, gender);
-
 		activitydb.addActivity(loggedInUser.getId(), "Added pet");
 	}
 
@@ -147,7 +148,6 @@ public class AdminController {
 	public void cancelAppointment(Appointment appointment) throws SQLException, DatabaseConfigException {
 
 		appointmentdb.cancelAppointment(appointment);
-
 		activitydb.addActivity(loggedInUser.getId(), "Cancelled appointment");
 	}
 
@@ -166,26 +166,21 @@ public class AdminController {
 		return userdb.getVeterinarians();
 	}
 
-	public List<LocalTime> getAvailableTimes(int vetId, LocalDate date)
-			throws SQLException, DatabaseConfigException {
+	public List<LocalTime> getAvailableTimes(int vetId, LocalDate date) throws SQLException, DatabaseConfigException {
 
 		List<Timestamp> bookedTimes = appointmentdb.getBookedTimes(vetId, date);
-
 		List<LocalTime> availableTimes = new ArrayList<>();
 
 		LocalTime startTime = LocalTime.of(8, 30);
 		LocalTime endTime = LocalTime.of(17, 30);
 
-		for (LocalTime time = startTime;
-				!time.isAfter(endTime);
-				time = time.plusMinutes(30)) {
+		for (LocalTime time = startTime; !time.isAfter(endTime); time = time.plusMinutes(30)) {
 
 			boolean booked = false;
 
 			for (Timestamp bookedTimestamp : bookedTimes) {
 
-				LocalTime bookedTime =
-						bookedTimestamp.toLocalDateTime().toLocalTime();
+				LocalTime bookedTime = bookedTimestamp.toLocalDateTime().toLocalTime();
 
 				if (bookedTime.equals(time)) {
 					booked = true;
@@ -201,18 +196,11 @@ public class AdminController {
 		return availableTimes;
 	}
 
-	public void addAppointment(Pet pet, User vet, LocalDate date, LocalTime time, String reason)
-			throws SQLException, DatabaseConfigException {
+	public void addAppointment(Pet pet, User vet, LocalDate date, LocalTime time, String reason) throws SQLException, DatabaseConfigException {
 
 		Timestamp appointmentDate = Timestamp.valueOf(date.atTime(time));
 
-		appointmentdb.bookAppointment(
-				pet.getPetId(),
-				vet.getId(),
-				appointmentDate,
-				reason
-		);
-
+		appointmentdb.bookAppointment(pet.getPetId(), vet.getId(), appointmentDate, reason);
 		activitydb.addActivity(loggedInUser.getId(), "Added appointment");
 	}
 }

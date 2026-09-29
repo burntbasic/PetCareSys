@@ -11,5 +11,4 @@ public class DatabaseConfigException extends Exception {
 	public DatabaseConfigException(String message, Throwable cause) {
 		super(message, cause);
 	}
-
 }

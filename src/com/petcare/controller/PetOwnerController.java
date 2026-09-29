@@ -90,8 +90,7 @@ public class PetOwnerController {
 	    activitydb.addActivity(user.getId(), "Deleted pet");
 	}
 	
-	public void addPet(User user, String name, String species, String otherSpecies, String gender)
-	        throws SQLException, DatabaseConfigException {
+	public void addPet(User user, String name, String species, String otherSpecies, String gender) throws SQLException, DatabaseConfigException {
 
 	    if (name == null || name.trim().isEmpty()) {
 	        throw new IllegalArgumentException("Pet name cannot be empty.");
@@ -126,17 +125,14 @@ public class PetOwnerController {
 	}
 	
 	public List<Appointment> getOwnerPast(User user) throws SQLException, DatabaseConfigException {
-
 	    return appointmentdb.getOwnerPast(user);
 	}
 	
 	public List<Appointment> getOwnerCancelled(User user) throws SQLException, DatabaseConfigException {
-
 	    return appointmentdb.getOwnerCancelled(user);
 	}
 	
 	public List<User> getVeterinarians() throws SQLException, DatabaseConfigException {
-
 	    return userdb.getVeterinarians();
 	}
 	
@@ -184,17 +180,11 @@ public class PetOwnerController {
 	                "This time is no longer available. Please select another time.");
 	    }
 
-	    appointmentdb.bookAppointment(
-	            pet.getPetId(),
-	            vet.getId(),
-	            appointmentDate,
-	            reason.trim());
-
+	    appointmentdb.bookAppointment(pet.getPetId(), vet.getId(), appointmentDate, reason.trim());
 	    activitydb.addActivity(owner.getId(), "Added appointment");
 	}
 	
 	public boolean isVetAvailable(int vetId, Timestamp appointmentDate) throws SQLException, DatabaseConfigException {
-
 	    return appointmentdb.isVetAvailable(vetId, appointmentDate);
 	}
 	
@@ -206,9 +196,7 @@ public class PetOwnerController {
 	    LocalTime startTime = LocalTime.of(8, 30);
 	    LocalTime endTime = LocalTime.of(17, 30);
 
-	    for (LocalTime time = startTime;
-	            !time.isAfter(endTime);
-	            time = time.plusMinutes(30)) {
+	    for (LocalTime time = startTime; !time.isAfter(endTime); time = time.plusMinutes(30)) {
 
 	        boolean booked = false;
 
@@ -231,9 +219,7 @@ public class PetOwnerController {
 	}
 	
 	//Medical Panel
-	public List<Treatment> getPetMedicalRecords(User user, int petId)
-	        throws SQLException, DatabaseConfigException {
-
+	public List<Treatment> getPetMedicalRecords(User user, int petId) throws SQLException, DatabaseConfigException {
 	    return treatmentdb.getPetMedicalRecords(user, petId);
 	}
 }

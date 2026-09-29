@@ -17,88 +17,88 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 public class BaseDashboard extends JFrame{
-	
-    private static final long serialVersionUID = 1L;
-    
+
+	private static final long serialVersionUID = 1L;
+
 	protected final Color cardColor = new Color(42, 44, 54);
 	protected final Color sidebarColor = new Color(30, 32, 40);
-    
-    protected JPanel sidebar;
-    protected JPanel mainPanel;
-    protected JPanel contentPanel;
-    
-    //Helper methods
-    protected JButton createMenuButton(String text) {
 
-        JButton button = new JButton(text);
+	protected JPanel sidebar;
+	protected JPanel mainPanel;
+	protected JPanel contentPanel;
 
-        button.setMaximumSize(new Dimension(Integer.MAX_VALUE, 45));
-        button.setAlignmentX(LEFT_ALIGNMENT);
-        button.setHorizontalAlignment(SwingConstants.LEFT);
-        button.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 10));
-        button.setMargin(new Insets(0, 0, 0, 0));
-        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+	public BaseDashboard() {
+		setSize(1100, 700);
+		setLocationRelativeTo(null);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        return button;
-    }
+		getContentPane().setLayout(new BorderLayout());
 
-    protected JPanel createCard(String title, String value) {
+		// =========================
+		// SIDEBAR
+		// =========================
 
-        JPanel card = new JPanel();
-        card.setBackground(cardColor);
-        card.setBorder(
-                BorderFactory.createEmptyBorder(20, 20, 20, 20)
-        );
-        card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
+		sidebar = new JPanel();
+		sidebar.setBackground(sidebarColor);
+		sidebar.setPreferredSize(new Dimension(220, 0));
+		sidebar.setLayout(new BoxLayout(sidebar, BoxLayout.Y_AXIS));
 
-        JLabel titleLabel = new JLabel(title);
-        titleLabel.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		JLabel logo = new JLabel("PetCareSys");
+		logo.setFont(new Font("SansSerif", Font.BOLD, 24));
+		logo.setBorder(BorderFactory.createEmptyBorder(25, 20, 25, 20));
+		logo.setAlignmentX(LEFT_ALIGNMENT);
 
-        JLabel valueLabel = new JLabel(value);
-        valueLabel.setFont(new Font("SansSerif", Font.BOLD, 30));
+		sidebar.add(logo);
 
-        card.add(titleLabel);
-        card.add(Box.createVerticalStrut(10));
-        card.add(valueLabel);
+		// =========================
+		// MAIN CONTENT
+		// =========================
 
-        return card;
-    }
-    
-    public BaseDashboard() {
-        setSize(1100, 700);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        getContentPane().setLayout(new BorderLayout());
+		mainPanel = new JPanel(new BorderLayout(20, 20));
+		mainPanel.setBorder(BorderFactory.createEmptyBorder(25, 30, 25, 30));
 
-        // =========================
-        // SIDEBAR
-        // =========================
+		contentPanel = new JPanel(new CardLayout());
 
-        sidebar = new JPanel();
-        sidebar.setBackground(sidebarColor);
-        sidebar.setPreferredSize(new Dimension(220, 0));
-        sidebar.setLayout(new BoxLayout(sidebar, BoxLayout.Y_AXIS));
+		mainPanel.add(contentPanel, BorderLayout.CENTER);
 
-        JLabel logo = new JLabel("PetCareSys");
-        logo.setFont(new Font("SansSerif", Font.BOLD, 24));
-        logo.setBorder(BorderFactory.createEmptyBorder(25, 20, 25, 20));
-        logo.setAlignmentX(LEFT_ALIGNMENT);
+		getContentPane().add(sidebar, BorderLayout.WEST);
+		getContentPane().add(mainPanel, BorderLayout.CENTER);
+	}
 
-        sidebar.add(logo);
+	//Helper methods
+	protected JButton createMenuButton(String text) {
 
-        // =========================
-        // MAIN CONTENT
-        // =========================
+		JButton button = new JButton(text);
 
-        mainPanel = new JPanel(new BorderLayout(20, 20));
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(25, 30, 25, 30));
+		button.setMaximumSize(new Dimension(Integer.MAX_VALUE, 45));
+		button.setAlignmentX(LEFT_ALIGNMENT);
+		button.setHorizontalAlignment(SwingConstants.LEFT);
+		button.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 10));
+		button.setMargin(new Insets(0, 0, 0, 0));
+		button.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        contentPanel = new JPanel(new CardLayout());
+		return button;
+	}
 
-        mainPanel.add(contentPanel, BorderLayout.CENTER);
+	protected JPanel createCard(String title, String value) {
 
-        getContentPane().add(sidebar, BorderLayout.WEST);
-        getContentPane().add(mainPanel, BorderLayout.CENTER);
-    }
+		JPanel card = new JPanel();
+		card.setBackground(cardColor);
+		card.setBorder(
+				BorderFactory.createEmptyBorder(20, 20, 20, 20)
+				);
+		card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
+
+		JLabel titleLabel = new JLabel(title);
+		titleLabel.setFont(new Font("SansSerif", Font.PLAIN, 15));
+
+		JLabel valueLabel = new JLabel(value);
+		valueLabel.setFont(new Font("SansSerif", Font.BOLD, 30));
+
+		card.add(titleLabel);
+		card.add(Box.createVerticalStrut(10));
+		card.add(valueLabel);
+
+		return card;
+	}
 }

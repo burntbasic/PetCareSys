@@ -138,5 +138,4 @@ public class VetController {
         treatmentdb.addTreatment(appointmentId, user.getId(), diagnosis.trim(), treatmentDescription.trim(), medication.trim(), status);
         activitydb.addActivity(user.getId(), "Added treatment");
     }
-
 }

@@ -72,7 +72,6 @@ public class TreatmentsPanel extends JPanel {
         addTreatmentButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 AddTreatmentDialog dialog = new AddTreatmentDialog(user);
-
                 dialog.setVisible(true);
 
                 if(dialog.isChanged()) {

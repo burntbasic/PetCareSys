@@ -31,12 +31,14 @@ public class VetAppointmentDialog extends JDialog {
 
 	private VetController controller;
 	private Appointment appointment;
+	private User user;
 
 	private boolean changed = false;
 
 	public VetAppointmentDialog(User user, Appointment appointment) {
 
 		this.appointment = appointment;
+		this.user = user;
 		controller = new VetController();
 
 		setTitle("Appointment Details");
@@ -96,7 +98,7 @@ public class VetAppointmentDialog extends JDialog {
 			completeButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			completeButton.addActionListener(new ActionListener() {
 			    public void actionPerformed(ActionEvent e) {
-			        completeAppointment(user);
+			        completeAppointment();
 			    }
 			});
 
@@ -124,7 +126,7 @@ public class VetAppointmentDialog extends JDialog {
 	    panel.add(valueLabel, gbc);
 	}
 
-	private void completeAppointment(User user) {
+	private void completeAppointment() {
 
 		int result = JOptionPane.showConfirmDialog(this, "Are you sure you want to mark this appointment as completed?", "Complete Appointment", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 

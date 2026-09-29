@@ -53,7 +53,6 @@ public class MedicalPanel extends JPanel {
 		controller = new PetOwnerController();
 		
 		setLayout(new BorderLayout(15, 15));
-
 		setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
 		// HEADER
@@ -125,15 +124,8 @@ public class MedicalPanel extends JPanel {
 
 		medicalRecordsTable = new JTable(tableModel);
 		medicalRecordsTable.setRowHeight(35);
-
 		medicalRecordsTable.getColumnModel().getColumn(3).setCellRenderer(new DefaultTableCellRenderer() {
-		    public Component getTableCellRendererComponent(
-		            JTable table,
-		            Object value,
-		            boolean isSelected,
-		            boolean hasFocus,
-		            int row,
-		            int column) {
+		    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 
 		        JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
@@ -164,7 +156,6 @@ public class MedicalPanel extends JPanel {
 		        }
 		    }
 		});
-		
 		medicalRecordsTable.addMouseMotionListener(new MouseMotionAdapter() {
 		    public void mouseMoved(MouseEvent e) {
 
@@ -242,5 +233,3 @@ public class MedicalPanel extends JPanel {
 	}
 	
 }
-
-

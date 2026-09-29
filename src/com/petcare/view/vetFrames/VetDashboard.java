@@ -134,9 +134,7 @@ public class VetDashboard extends BaseDashboard {
         mainPanel.add(Box.createVerticalStrut(10));
 
         // Table
-        String[] columns = {
-                "Time", "Pet", "Owner", "Reason", "Status"
-        };
+        String[] columns = {"Time", "Pet", "Owner", "Reason", "Status"};
 
 		DefaultTableModel tableModel = new DefaultTableModel(columns, 0) { //anonymous class
 			public boolean isCellEditable(int row, int column) {
@@ -236,10 +234,8 @@ public class VetDashboard extends BaseDashboard {
         
         medicalBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	
             	medicalPanel.refreshRecords();
-            	
-                CardLayout layout = (CardLayout) contentPanel.getLayout();
+            	CardLayout layout = (CardLayout) contentPanel.getLayout();
                 layout.show(contentPanel, "medical");
             }
         });

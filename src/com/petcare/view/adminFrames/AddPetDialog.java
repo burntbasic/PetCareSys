@@ -1,6 +1,7 @@
 package com.petcare.view.adminFrames;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -16,6 +17,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -47,15 +49,9 @@ public class AddPetDialog extends JDialog {
         setLocationRelativeTo(null);
         setModal(true);
 
-        createForm();
-    }
-
-    private void createForm() {
-
         JPanel formPanel = new JPanel(new GridBagLayout());
 
-        formPanel.setBorder(
-                BorderFactory.createEmptyBorder(15, 15, 10, 15));
+        formPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 10, 15));
 
         GridBagConstraints gbc = new GridBagConstraints();
 
@@ -72,40 +68,19 @@ public class AddPetDialog extends JDialog {
         formPanel.add(ownerLabel, gbc);
 
         ownerComboBox = new JComboBox<>();
-
         ownerComboBox.setRenderer(new DefaultListCellRenderer() {
-
-            @Override
-            public java.awt.Component getListCellRendererComponent(
-                    javax.swing.JList<?> list,
-                    Object value,
-                    int index,
-                    boolean isSelected,
-                    boolean cellHasFocus) {
-
-                super.getListCellRendererComponent(
-                        list,
-                        value,
-                        index,
-                        isSelected,
-                        cellHasFocus);
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
                 if (value instanceof User) {
-
                     User owner = (User) value;
-
-                    setText(
-                            owner.getFName()
-                            + " "
-                            + owner.getLName());
+                    setText(owner.getFName() + " " + owner.getLName());
                 }
-
                 return this;
             }
         });
 
         try {
-
             List<User> owners = controller.getPetOwners();
 
             for (User owner : owners) {
@@ -113,11 +88,8 @@ public class AddPetDialog extends JDialog {
             }
 
         } catch (SQLException e) {
-
             ErrorHandler.handleSQLException(e);
-
         } catch (DatabaseConfigException e) {
-
             ErrorHandler.handleDatabaseConfigException(e);
         }
 
@@ -150,13 +122,7 @@ public class AddPetDialog extends JDialog {
 
         formPanel.add(speciesLabel, gbc);
 
-        String[] species = {
-                "Dog",
-                "Cat",
-                "Bird",
-                "Rabbit",
-                "Other"
-        };
+        String[] species = {"Dog", "Cat", "Bird", "Rabbit", "Other"};
 
         speciesComboBox = new JComboBox<>(species);
 
@@ -173,10 +139,7 @@ public class AddPetDialog extends JDialog {
 
         formPanel.add(genderLabel, gbc);
 
-        String[] genders = {
-                "Male",
-                "Female"
-        };
+        String[] genders = {"Male", "Female"};
 
         genderComboBox = new JComboBox<>(genders);
 
@@ -188,8 +151,7 @@ public class AddPetDialog extends JDialog {
 
         // BUTTONS
 
-        JPanel buttonPanel =
-                new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
         JButton cancelButton = new JButton("Cancel");
         JButton addButton = new JButton("Add Pet");
@@ -202,10 +164,7 @@ public class AddPetDialog extends JDialog {
         // CANCEL
 
         cancelButton.addActionListener(new ActionListener() {
-
-            @Override
             public void actionPerformed(ActionEvent e) {
-
                 dispose();
             }
         });
@@ -213,77 +172,38 @@ public class AddPetDialog extends JDialog {
         // ADD PET
 
         addButton.addActionListener(new ActionListener() {
-
-            @Override
             public void actionPerformed(ActionEvent e) {
+            	User selectedOwner = (User) ownerComboBox.getSelectedItem();
+                String name = nameField.getText().trim();
+                String species = (String) speciesComboBox.getSelectedItem();
+                String gender = (String) genderComboBox.getSelectedItem();
 
-                addPet();
+                if (selectedOwner == null) {
+                    JOptionPane.showMessageDialog(AddPetDialog.this, "Please select a pet owner.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                if (name.isEmpty()) {
+
+                    JOptionPane.showMessageDialog(AddPetDialog.this, "Pet name cannot be empty.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                try {
+                    controller.addPet(selectedOwner, name, species, gender);
+                    
+                    changed = true;
+
+                    JOptionPane.showMessageDialog(AddPetDialog.this, "Pet added successfully.", "Pet Added", JOptionPane.INFORMATION_MESSAGE);
+                    dispose();
+
+                } catch (SQLException ex) {
+                    ErrorHandler.handleSQLException(ex);
+                } catch (DatabaseConfigException ex) {
+                    ErrorHandler.handleDatabaseConfigException(ex);
+                }
             }
         });
-    }
-
-    private void addPet() {
-
-        User selectedOwner =
-                (User) ownerComboBox.getSelectedItem();
-
-        String name =
-                nameField.getText().trim();
-
-        String species =
-                (String) speciesComboBox.getSelectedItem();
-
-        String gender =
-                (String) genderComboBox.getSelectedItem();
-
-        if (selectedOwner == null) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Please select a pet owner.",
-                    "Validation Error",
-                    JOptionPane.ERROR_MESSAGE);
-
-            return;
-        }
-
-        if (name.isEmpty()) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Pet name cannot be empty.",
-                    "Validation Error",
-                    JOptionPane.ERROR_MESSAGE);
-
-            return;
-        }
-
-        try {
-
-            controller.addPet(
-                    selectedOwner,
-                    name,
-                    species,
-                    gender);
-
-            changed = true;
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Pet added successfully.",
-                    "Pet Added",
-                    JOptionPane.INFORMATION_MESSAGE);
-
-            dispose();
-
-        } catch (SQLException e) {
-
-            ErrorHandler.handleSQLException(e);
-
-        } catch (DatabaseConfigException e) {
-
-            ErrorHandler.handleDatabaseConfigException(e);
-        }
     }
 
     public boolean isChanged() {

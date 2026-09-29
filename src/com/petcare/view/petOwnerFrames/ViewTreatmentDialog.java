@@ -68,9 +68,7 @@ public class ViewTreatmentDialog extends JDialog {
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
 		JButton closeButton = new JButton("Close");
-
 		closeButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
 		closeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();

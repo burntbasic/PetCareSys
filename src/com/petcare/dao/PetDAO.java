@@ -178,7 +178,6 @@ public class PetDAO {
 
 	            pets.add(pet);
 	        }
-
 	        return pets;
 	    }
 	}
@@ -223,7 +222,6 @@ public class PetDAO {
 
 	            pets.add(pet);
 	        }
-
 	        return pets;
 	    }
 	}

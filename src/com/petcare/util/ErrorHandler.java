@@ -19,7 +19,6 @@ public class ErrorHandler {
 	}
 
 	public static void handleTableLoadError(Exception e, JTable table, DefaultTableModel tableModel) {
-
 	    if (e instanceof SQLException) {
 	        handleSQLException((SQLException) e);
 

@@ -112,7 +112,6 @@ public class AddPetDialog extends JDialog {
 					otherSpeciesField.setVisible(true);
 
 				} else {
-
 					otherSpeciesLabel.setVisible(false);
 					otherSpeciesField.setVisible(false);
 				}

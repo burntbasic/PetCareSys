@@ -56,5 +56,4 @@ public class ActivityLogDAO {
 			return statement.executeUpdate() > 0;
 		}
 	}
-
 }

@@ -40,6 +40,7 @@ public class PatientsPanel extends JPanel {
 
 	private List<Pet> patients = new ArrayList<>();
 	private VetController controller;
+	private User user;
 
 	/**
 	 * Create the panel.
@@ -47,6 +48,7 @@ public class PatientsPanel extends JPanel {
 	public PatientsPanel(User user) {
 		
 		controller = new VetController();
+		this.user = user;
 
 		setLayout(new BorderLayout(15, 15));
 		setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -82,11 +84,9 @@ public class PatientsPanel extends JPanel {
 		    public void insertUpdate(DocumentEvent e) {
 		        filterPatients();
 		    }
-
 		    public void removeUpdate(DocumentEvent e) {
 		        filterPatients();
 		    }
-
 		    public void changedUpdate(DocumentEvent e) {
 		        filterPatients();
 		    }
@@ -158,10 +158,10 @@ public class PatientsPanel extends JPanel {
 
 		add(contentPanel, BorderLayout.CENTER);
 		
-		loadPatients(user);
+		loadPatients();
 	}
 	
-	private void loadPatients(User user) {
+	private void loadPatients() {
 
 	    tableModel.setRowCount(0);
 
@@ -180,7 +180,6 @@ public class PatientsPanel extends JPanel {
 	                    "View"
 	            });
 	        }
-
 	    } catch(SQLException e) {
 	        ErrorHandler.handleTableLoadError(e, patientsTable, tableModel);
 	    } catch(DatabaseConfigException e) {
@@ -214,5 +213,4 @@ public class PatientsPanel extends JPanel {
 			}
 		}
 	}
-
 }

@@ -255,8 +255,7 @@ public class AppointmentDAO {
 	    }
 	}
 	
-	public boolean isVetAvailable(int vetId, Timestamp appointmentDate)
-	        throws SQLException, DatabaseConfigException {
+	public boolean isVetAvailable(int vetId, Timestamp appointmentDate) throws SQLException, DatabaseConfigException {
 
 	    String sql = """
 	            SELECT COUNT(*)
@@ -338,21 +337,21 @@ public class AppointmentDAO {
 
 		String sql = """
 				SELECT            
-				a.appointment_id,
-				a.appointment_date, 
-				p.name AS pet_name,
-				         CONCAT(u.first_name, ' ', u.last_name) AS owner_name,
-				         CONCAT(v.first_name, ' ', v.last_name) AS vet_name,
-				         a.reason,
-				         a.status
-				         FROM Appointments a
-				         JOIN Pets p ON a.pet_id = p.pet_id
-				         JOIN Users u ON p.owner_id = u.user_id
-				         JOIN Users v ON a.vet_id = v.user_id AND v.role = 'VET'
-				         WHERE a.vet_id = ?
-				         AND DATE(a.appointment_date) = CURDATE()
-				         AND a.status = 'Scheduled'
-				         ORDER BY a.appointment_date
+					a.appointment_id,
+					a.appointment_date, 
+					p.name AS pet_name,
+				    CONCAT(u.first_name, ' ', u.last_name) AS owner_name,
+				    CONCAT(v.first_name, ' ', v.last_name) AS vet_name,
+				   	a.reason,
+				    a.status
+				FROM Appointments a
+				JOIN Pets p ON a.pet_id = p.pet_id
+				JOIN Users u ON p.owner_id = u.user_id
+				JOIN Users v ON a.vet_id = v.user_id AND v.role = 'VET'
+				WHERE a.vet_id = ?
+				AND DATE(a.appointment_date) = CURDATE()
+				AND a.status = 'Scheduled'
+				ORDER BY a.appointment_date
 				""";
 
 		try(Connection connection  = DBConnection.getConnection();
@@ -425,7 +424,6 @@ public class AppointmentDAO {
 
 	            appointments.add(appointment);
 	        }
-
 	        return appointments;
 	    }
 	}
@@ -477,7 +475,6 @@ public class AppointmentDAO {
 
 	            appointments.add(appointment);
 	        }
-
 	        return appointments;
 	    }
 	}
@@ -528,7 +525,6 @@ public class AppointmentDAO {
 
 	            appointments.add(appointment);
 	        }
-
 	        return appointments;
 	    }
 	}
@@ -579,7 +575,6 @@ public class AppointmentDAO {
 
 	            appointments.add(appointment);
 	        }
-
 	        return appointments;
 	    }
 	}
@@ -666,7 +661,6 @@ public class AppointmentDAO {
 
 	            appointments.add(appointment);
 	        }
-
 	        return appointments;
 	    }
 	}
@@ -699,10 +693,7 @@ public class AppointmentDAO {
 	
 	public boolean deleteAppointment(int appointmentId) throws SQLException, DatabaseConfigException {
 
-	    String sql = """
-	            DELETE FROM Appointments
-	            WHERE appointment_id = ?
-	            """;
+	    String sql = "DELETE FROM Appointments WHERE appointment_id = ?";
 
 	    try (Connection connection = DBConnection.getConnection();
 	            PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -712,6 +703,4 @@ public class AppointmentDAO {
 	        return statement.executeUpdate() > 0;
 	    }
 	}
-	
-	
 }

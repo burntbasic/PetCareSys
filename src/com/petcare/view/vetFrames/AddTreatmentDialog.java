@@ -221,7 +221,6 @@ public class AddTreatmentDialog extends JDialog {
 		int index = appointmentComboBox.getSelectedIndex();
 
 		if(index < 0) {
-
 			JOptionPane.showMessageDialog(AddTreatmentDialog.this, "Please select an appointment.", "Validation Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
@@ -234,19 +233,14 @@ public class AddTreatmentDialog extends JDialog {
 		String status = (String) statusComboBox.getSelectedItem();
 
 		if(diagnosis.isEmpty()) {
-
 			JOptionPane.showMessageDialog(AddTreatmentDialog.this, "Diagnosis cannot be empty.", "Validation Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-
 		if(treatmentDescription.isEmpty()) {
-
 			JOptionPane.showMessageDialog(AddTreatmentDialog.this, "Treatment cannot be empty.", "Validation Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-
 		if(medication.isEmpty()) {
-
 			JOptionPane.showMessageDialog(AddTreatmentDialog.this, "Medication cannot be empty.", "Validation Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}

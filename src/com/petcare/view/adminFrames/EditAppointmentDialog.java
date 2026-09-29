@@ -77,29 +77,17 @@ public class EditAppointmentDialog extends JDialog {
 		setLocationRelativeTo(null);
 		setModal(true);
 
-		createForm();
-	}
+		JPanel formPanel = new JPanel(new GridBagLayout());
 
-	private void createForm() {
+		formPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 10, 20));
 
-		JPanel formPanel =
-				new JPanel(new GridBagLayout());
-
-		formPanel.setBorder(
-				BorderFactory.createEmptyBorder(
-						15, 20, 10, 20));
-
-		GridBagConstraints gbc =
-				new GridBagConstraints();
+		GridBagConstraints gbc = new GridBagConstraints();
 
 		gbc.insets = new Insets(6, 6, 6, 6);
 		gbc.anchor = GridBagConstraints.WEST;
 
-		JLabel titleLabel =
-				new JLabel("Edit Appointment");
-
-		titleLabel.setFont(
-				new Font("SansSerif", Font.BOLD, 24));
+		JLabel titleLabel = new JLabel("Edit Appointment");
+		titleLabel.setFont(new Font("SansSerif", Font.BOLD, 24));
 
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -111,11 +99,9 @@ public class EditAppointmentDialog extends JDialog {
 
 		// PET
 
-		JLabel petLabel =
-				new JLabel("Pet");
+		JLabel petLabel = new JLabel("Pet");
 
-		JLabel petValueLabel =
-				new JLabel(appointment.getPetName());
+		JLabel petValueLabel = new JLabel(appointment.getPetName());
 
 		gbc.gridx = 0;
 		gbc.gridy = 1;
@@ -128,11 +114,9 @@ public class EditAppointmentDialog extends JDialog {
 
 		// OWNER
 
-		JLabel ownerLabel =
-				new JLabel("Owner");
+		JLabel ownerLabel = new JLabel("Owner");
 
-		JLabel ownerValueLabel =
-				new JLabel(appointment.getOwnerName());
+		JLabel ownerValueLabel = new JLabel(appointment.getOwnerName());
 
 		gbc.gridx = 0;
 		gbc.gridy = 2;
@@ -145,11 +129,9 @@ public class EditAppointmentDialog extends JDialog {
 
 		// VETERINARIAN
 
-		JLabel vetLabel =
-				new JLabel("Veterinarian");
+		JLabel vetLabel = new JLabel("Veterinarian");
 
-		JLabel vetValueLabel =
-				new JLabel(appointment.getVetName());
+		JLabel vetValueLabel = new JLabel(appointment.getVetName());
 
 		gbc.gridx = 0;
 		gbc.gridy = 3;
@@ -162,8 +144,7 @@ public class EditAppointmentDialog extends JDialog {
 
 		// DATE
 
-		JLabel dateLabel =
-				new JLabel("Date");
+		JLabel dateLabel = new JLabel("Date");
 
 		gbc.gridx = 0;
 		gbc.gridy = 4;
@@ -202,9 +183,9 @@ public class EditAppointmentDialog extends JDialog {
 		dateSettings.setDateRangeLimits(LocalDate.now(), null);
 		datePicker.getComponentDateTextField().setBorder(UIManager.getBorder("TextField.border"));
 		datePicker.addPropertyChangeListener("date", new PropertyChangeListener() {
-		    public void propertyChange(PropertyChangeEvent evt) {
-		        loadAvailableTimes();
-		    }
+			public void propertyChange(PropertyChangeEvent evt) {
+				loadAvailableTimes();
+			}
 		});
 		gbc.gridx = 1;
 
@@ -212,48 +193,26 @@ public class EditAppointmentDialog extends JDialog {
 
 		// TIME
 
-		JLabel timeLabel =
-				new JLabel("Time");
+		JLabel timeLabel = new JLabel("Time");
 
 		gbc.gridx = 0;
 		gbc.gridy = 5;
 
 		formPanel.add(timeLabel, gbc);
 
-		timeComboBox =
-				new JComboBox<>();
+		timeComboBox = new JComboBox<>();
 
-		timeComboBox.setRenderer(
-				new DefaultListCellRenderer() {
+		timeComboBox.setRenderer(new DefaultListCellRenderer() {
+			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+				super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
-					public Component getListCellRendererComponent(
-							JList<?> list,
-							Object value,
-							int index,
-							boolean isSelected,
-							boolean cellHasFocus) {
-
-						super.getListCellRendererComponent(
-								list,
-								value,
-								index,
-								isSelected,
-								cellHasFocus);
-
-						if (value instanceof LocalTime) {
-
-							LocalTime time =
-									(LocalTime) value;
-
-							setText(
-									time.format(
-											DateTimeFormatter.ofPattern(
-													"h:mm a")));
-						}
-
-						return this;
-					}
-				});
+				if (value instanceof LocalTime) {
+					LocalTime time = (LocalTime) value;
+					setText(time.format(DateTimeFormatter.ofPattern("h:mm a")));
+				}
+				return this;
+			}
+		});
 
 		gbc.gridx = 1;
 
@@ -261,16 +220,11 @@ public class EditAppointmentDialog extends JDialog {
 
 		// REASON
 
-		JLabel reasonLabel =
-				new JLabel("Reason");
+		JLabel reasonLabel = new JLabel("Reason");
 
-		reasonField =
-				new JTextField(15);
+		reasonField = new JTextField(15);
 
-		reasonField.setText(
-				appointment.getReason() == null
-						? ""
-						: appointment.getReason());
+		reasonField.setText(appointment.getReason() == null ? "" : appointment.getReason());
 
 		gbc.gridx = 0;
 		gbc.gridy = 6;
@@ -283,20 +237,13 @@ public class EditAppointmentDialog extends JDialog {
 
 		// STATUS
 
-		JLabel statusLabel =
-				new JLabel("Status");
+		JLabel statusLabel = new JLabel("Status");
 
-		String[] statuses = {
-				"Scheduled",
-				"Completed",
-				"Cancelled"
-		};
+		String[] statuses = {"Scheduled", "Completed", "Cancelled"};
 
-		statusComboBox =
-				new JComboBox<>(statuses);
+		statusComboBox = new JComboBox<>(statuses);
 
-		statusComboBox.setSelectedItem(
-				appointment.getStatus());
+		statusComboBox.setSelectedItem(appointment.getStatus());
 
 		gbc.gridx = 0;
 		gbc.gridy = 7;
@@ -307,9 +254,7 @@ public class EditAppointmentDialog extends JDialog {
 
 		formPanel.add(statusComboBox, gbc);
 
-		add(
-				formPanel,
-				BorderLayout.CENTER);
+		add(formPanel, BorderLayout.CENTER);
 
 		// INITIAL DATE AND TIME
 
@@ -317,64 +262,40 @@ public class EditAppointmentDialog extends JDialog {
 
 		// DATE CHANGE
 
-		datePicker.addPropertyChangeListener(
-				"date",
-				new PropertyChangeListener() {
-
-					public void propertyChange(
-							PropertyChangeEvent evt) {
-
-						loadAvailableTimes();
-					}
-				});
+		datePicker.addPropertyChangeListener("date", new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				loadAvailableTimes();
+			}
+		});
 
 		// BUTTONS
 
-		JPanel buttonPanel =
-				new JPanel(new FlowLayout(
-						FlowLayout.RIGHT));
+		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
-		JButton cancelButton =
-				new JButton("Cancel");
+		JButton cancelButton = new JButton("Cancel");
 
-		JButton saveButton =
-				new JButton("Save Changes");
+		JButton saveButton = new JButton("Save Changes");
 
-		cancelButton.setCursor(
-				Cursor.getPredefinedCursor(
-						Cursor.HAND_CURSOR));
-
-		saveButton.setCursor(
-				Cursor.getPredefinedCursor(
-						Cursor.HAND_CURSOR));
+		cancelButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		saveButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
 		buttonPanel.add(cancelButton);
 		buttonPanel.add(saveButton);
 
-		add(
-				buttonPanel,
-				BorderLayout.SOUTH);
+		add(buttonPanel, BorderLayout.SOUTH);
 
 		// CANCEL
 
-		cancelButton.addActionListener(
-				new ActionListener() {
-
-					public void actionPerformed(
-							ActionEvent e) {
-
+		cancelButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
 						dispose();
 					}
 				});
 
 		// SAVE
 
-		saveButton.addActionListener(
-				new ActionListener() {
-
-					public void actionPerformed(
-							ActionEvent e) {
-
+		saveButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
 						updateAppointment();
 					}
 				});
@@ -382,40 +303,22 @@ public class EditAppointmentDialog extends JDialog {
 
 	private void setInitialDateAndTime() {
 
-		LocalDateTime appointmentDateTime =
-				appointment.getAppointmentDate()
-						.toLocalDateTime();
+		LocalDateTime appointmentDateTime = appointment.getAppointmentDate().toLocalDateTime();
 
-		LocalDate date =
-				appointmentDateTime.toLocalDate();
-
-		LocalTime time =
-				appointmentDateTime.toLocalTime();
-
-		LocalDate today =
-				LocalDate.now();
+		LocalDate date = appointmentDateTime.toLocalDate();
+		LocalTime time = appointmentDateTime.toLocalTime();
+		LocalDate today = LocalDate.now();
 
 		if (date.isBefore(today)) {
-
 			date = today;
-
-			time = LocalTime.now()
-					.plusMinutes(1)
-					.withSecond(0)
-					.withNano(0);
+			time = LocalTime.now().plusMinutes(1).withSecond(0).withNano(0);
 		}
 
-		if (date.equals(today)
-				&& !time.isAfter(LocalTime.now())) {
-
-			time = LocalTime.now()
-					.plusMinutes(1)
-					.withSecond(0)
-					.withNano(0);
+		if (date.equals(today) && !time.isAfter(LocalTime.now())) {
+			time = LocalTime.now().plusMinutes(1).withSecond(0).withNano(0);
 		}
 
 		datePicker.setDate(date);
-
 		loadAvailableTimes();
 
 		if (timeComboBox.getItemCount() == 0) {
@@ -424,15 +327,11 @@ public class EditAppointmentDialog extends JDialog {
 
 		boolean found = false;
 
-		for (int i = 0;
-				i < timeComboBox.getItemCount();
-				i++) {
+		for (int i = 0; i < timeComboBox.getItemCount(); i++) {
 
-			LocalTime availableTime =
-					timeComboBox.getItemAt(i);
+			LocalTime availableTime = timeComboBox.getItemAt(i);
 
 			if (availableTime.equals(time)) {
-
 				timeComboBox.setSelectedIndex(i);
 				found = true;
 				break;
@@ -440,9 +339,7 @@ public class EditAppointmentDialog extends JDialog {
 		}
 
 		if (!found) {
-
-			timeComboBox.setSelectedItem(
-					findClosestTime(time));
+			timeComboBox.setSelectedItem(findClosestTime(time));
 		}
 	}
 
@@ -450,83 +347,49 @@ public class EditAppointmentDialog extends JDialog {
 
 		timeComboBox.removeAllItems();
 
-		LocalDate selectedDate =
-				datePicker.getDate();
-
+		LocalDate selectedDate = datePicker.getDate();
 		if (selectedDate == null) {
 			return;
 		}
 
 		try {
 
-			List<LocalTime> availableTimes =
-					pController.getAvailableTimes(
-							appointment.getVetId(),
-							selectedDate);
+			List<LocalTime> availableTimes = pController.getAvailableTimes(appointment.getVetId(), selectedDate);
 
-			LocalTime currentAppointmentTime =
-					appointment.getAppointmentDate()
-							.toLocalDateTime()
-							.toLocalTime()
-							.withSecond(0)
-							.withNano(0);
+			LocalTime currentAppointmentTime = appointment.getAppointmentDate().toLocalDateTime().toLocalTime().withSecond(0).withNano(0);
 
 			for (LocalTime time : availableTimes) {
 
-				LocalTime cleanTime =
-						time.withSecond(0)
-								.withNano(0);
+				LocalTime cleanTime = time.withSecond(0).withNano(0);
 
-				if (selectedDate.equals(
-						LocalDate.now())
-						&& !cleanTime.isAfter(
-								LocalTime.now())) {
-
+				if (selectedDate.equals(LocalDate.now()) && !cleanTime.isAfter(LocalTime.now())) {
 					continue;
 				}
 
 				timeComboBox.addItem(cleanTime);
 			}
 
-			if (selectedDate.equals(
-					appointment.getAppointmentDate()
-							.toLocalDateTime()
-							.toLocalDate())
-					&& !timeAlreadyExists(
-							currentAppointmentTime)) {
+			if (selectedDate.equals(appointment.getAppointmentDate().toLocalDateTime().toLocalDate()) && !timeAlreadyExists(currentAppointmentTime)) {
+				if (!selectedDate.equals(LocalDate.now()) || currentAppointmentTime.isAfter(LocalTime.now())) {
 
-				if (!selectedDate.equals(LocalDate.now())
-						|| currentAppointmentTime.isAfter(
-								LocalTime.now())) {
-
-					timeComboBox.addItem(
-							currentAppointmentTime);
+					timeComboBox.addItem(currentAppointmentTime);
 				}
 			}
 
 		} catch (SQLException e) {
-
 			ErrorHandler.handleSQLException(e);
-
 		} catch (DatabaseConfigException e) {
-
 			ErrorHandler.handleDatabaseConfigException(e);
 		}
 	}
 
 	private boolean timeAlreadyExists(LocalTime time) {
 
-		for (int i = 0;
-				i < timeComboBox.getItemCount();
-				i++) {
-
-			if (timeComboBox.getItemAt(i)
-					.equals(time)) {
-
+		for (int i = 0; i < timeComboBox.getItemCount(); i++) {
+			if (timeComboBox.getItemAt(i).equals(time)) {
 				return true;
 			}
 		}
-
 		return false;
 	}
 
@@ -536,100 +399,53 @@ public class EditAppointmentDialog extends JDialog {
 			return null;
 		}
 
-		LocalTime closest =
-				timeComboBox.getItemAt(0);
+		LocalTime closest = timeComboBox.getItemAt(0);
 
-		long closestDifference =
-				Math.abs(
-						closest.toSecondOfDay()
-						- target.toSecondOfDay());
+		long closestDifference = Math.abs(closest.toSecondOfDay() - target.toSecondOfDay());
 
-		for (int i = 1;
-				i < timeComboBox.getItemCount();
-				i++) {
+		for (int i = 1; i < timeComboBox.getItemCount(); i++) {
 
-			LocalTime time =
-					timeComboBox.getItemAt(i);
+			LocalTime time = timeComboBox.getItemAt(i);
 
-			long difference =
-					Math.abs(
-							time.toSecondOfDay()
-							- target.toSecondOfDay());
+			long difference = Math.abs(time.toSecondOfDay() - target.toSecondOfDay());
 
 			if (difference < closestDifference) {
-
 				closest = time;
 				closestDifference = difference;
 			}
 		}
-
 		return closest;
 	}
 
 	private void updateAppointment() {
 
-		LocalDate date =
-				datePicker.getDate();
-
-		LocalTime time =
-				(LocalTime) timeComboBox.getSelectedItem();
-
-		String reason =
-				reasonField.getText().trim();
-
-		String status =
-				(String) statusComboBox.getSelectedItem();
+		LocalDate date = datePicker.getDate();
+		LocalTime time = (LocalTime) timeComboBox.getSelectedItem();
+		String reason = reasonField.getText().trim();
+		String status = (String) statusComboBox.getSelectedItem();
 
 		if (date == null) {
-
-			JOptionPane.showMessageDialog(
-					this,
-					"Please select an appointment date.",
-					"Validation Error",
-					JOptionPane.ERROR_MESSAGE);
-
+			JOptionPane.showMessageDialog(this, "Please select an appointment date.", "Validation Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 
 		if (time == null) {
 
-			JOptionPane.showMessageDialog(
-					this,
-					"Please select an appointment time.",
-					"Validation Error",
-					JOptionPane.ERROR_MESSAGE);
-
+			JOptionPane.showMessageDialog(this, "Please select an appointment time.", "Validation Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 
-		LocalDateTime dateTime =
-				LocalDateTime.of(date, time);
+		LocalDateTime dateTime = LocalDateTime.of(date, time);
 
-		if ("Scheduled".equals(status)
-				&& dateTime.isBefore(
-						LocalDateTime.now())) {
-
-			JOptionPane.showMessageDialog(
-					this,
-					"A scheduled appointment cannot be set to a past date and time.",
-					"Validation Error",
-					JOptionPane.ERROR_MESSAGE);
-
+		if ("Scheduled".equals(status) && dateTime.isBefore(LocalDateTime.now())) {
+			JOptionPane.showMessageDialog(this, "A scheduled appointment cannot be set to a past date and time.", "Validation Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 
-		Date appointmentDate =
-				Date.from(
-						dateTime.atZone(
-								ZoneId.systemDefault())
-								.toInstant());
+		Date appointmentDate = Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());
+		Timestamp timestamp = new Timestamp(appointmentDate.getTime());
 
-		Timestamp timestamp =
-				new Timestamp(
-						appointmentDate.getTime());
-
-		Appointment updatedAppointment =
-				new Appointment(
+		Appointment updatedAppointment = new Appointment(
 						appointment.getAppointmentId(),
 						appointment.getPetId(),
 						appointment.getVetId(),
@@ -642,29 +458,18 @@ public class EditAppointmentDialog extends JDialog {
 
 		try {
 
-			boolean updated =
-					controller.updateAppointment(
-							updatedAppointment);
+			boolean updated = controller.updateAppointment(updatedAppointment);
 
 			if (updated) {
-
 				changed = true;
 
-				JOptionPane.showMessageDialog(
-						this,
-						"Appointment updated successfully.",
-						"Appointment Updated",
-						JOptionPane.INFORMATION_MESSAGE);
-
+				JOptionPane.showMessageDialog(this, "Appointment updated successfully.", "Appointment Updated", JOptionPane.INFORMATION_MESSAGE);
 				dispose();
 			}
 
 		} catch (SQLException e) {
-
 			ErrorHandler.handleSQLException(e);
-
 		} catch (DatabaseConfigException e) {
-
 			ErrorHandler.handleDatabaseConfigException(e);
 		}
 	}

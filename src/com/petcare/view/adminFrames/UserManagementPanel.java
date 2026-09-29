@@ -68,7 +68,6 @@ public class UserManagementPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
 
                 AddUserDialog dialog = new AddUserDialog(user);
-
                 dialog.setVisible(true);
 
                 if (dialog.isChanged()) {
@@ -82,7 +81,6 @@ public class UserManagementPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
 
                 AddPetDialog dialog = new AddPetDialog(user);
-
                 dialog.setVisible(true);
             }
         });
@@ -120,7 +118,6 @@ public class UserManagementPanel extends JPanel {
         	    if (column == 7 && getValueAt(row, column) == null) {
         	        return false;
         	    }
-
         	    return column == 6 || column == 7;
         	}
         };
@@ -155,7 +152,6 @@ public class UserManagementPanel extends JPanel {
 
         try {
             users = controller.getAllUsers();
-
             displayUsers(users);
 
         } catch (SQLException e) {
@@ -204,11 +200,9 @@ public class UserManagementPanel extends JPanel {
                     || user.getEmail().toLowerCase().contains(searchText)
                     || user.getUsername().toLowerCase().contains(searchText)
                     || user.getRole().toLowerCase().contains(searchText)) {
-
                 filteredUsers.add(user);
             }
         }
-
         displayUsers(filteredUsers);
     }
 
@@ -223,7 +217,6 @@ public class UserManagementPanel extends JPanel {
         }
 
         EditUserDialog dialog = new EditUserDialog(selectedUser);
-
         dialog.setVisible(true);
 
         if (dialog.isChanged()) {
@@ -265,7 +258,6 @@ public class UserManagementPanel extends JPanel {
             } else {
                 ErrorHandler.handleSQLException(e);
             }            
-
         } catch (DatabaseConfigException e) {
             ErrorHandler.handleDatabaseConfigException(e);
         }
@@ -279,7 +271,6 @@ public class UserManagementPanel extends JPanel {
                 return user;
             }
         }
-
         return null;
     }
 
@@ -290,22 +281,14 @@ public class UserManagementPanel extends JPanel {
     // BUTTON RENDERER
 
     private class ButtonRenderer extends JButton implements TableCellRenderer {
-
         private static final long serialVersionUID = 1L;
-
 		public ButtonRenderer(String text) {
             setText(text);
             setFocusable(false);
             setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		}
 
-		public Component getTableCellRendererComponent(
-		        JTable table,
-		        Object value,
-		        boolean isSelected,
-		        boolean hasFocus,
-		        int row,
-		        int column) {
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 
 		    if (value == null) {
 		        setText("");
@@ -318,7 +301,6 @@ public class UserManagementPanel extends JPanel {
 		        setBorderPainted(true);
 		        setContentAreaFilled(true);
 		    }
-
 		    return this;
 		}
     }
@@ -326,23 +308,19 @@ public class UserManagementPanel extends JPanel {
     // BUTTON EDITOR
 
     private class ButtonEditor extends AbstractCellEditor implements TableCellEditor {
-
         private static final long serialVersionUID = 1L;
 		private JButton button;
         private String buttonType;
         private int row;
 
         public ButtonEditor(String text, boolean editButton) {
-
             buttonType = text;
-
             button = new JButton(text);
             button.setFocusable(false);
             setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
             button.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-
                     fireEditingStopped();
 
                     if (editButton) {
@@ -354,13 +332,7 @@ public class UserManagementPanel extends JPanel {
             });
         }
 
-        public Component getTableCellEditorComponent(
-                JTable table,
-                Object value,
-                boolean isSelected,
-                int row,
-                int column) {
-
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
             this.row = row;
 
             if (value == null) {

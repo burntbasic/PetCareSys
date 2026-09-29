@@ -32,38 +32,18 @@ public class MyPetsPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	private PetOwnerController controller;
+	private User user;
 	private List<Pet> pets;
 	
 	private DefaultTableModel tableModel;
 	private JTable petsTable;
-	
-	private void loadPets(User user) {
-		tableModel.setRowCount(0);
-
-		try {
-			pets = controller.getOwnerPets(user);
-
-			for (Pet pet : pets) {
-				tableModel.addRow(new Object[] {
-						pet.getName(),
-						pet.getSpecies(),
-						pet.getGender(),
-						"Edit"
-				});
-			}
-		} catch (SQLException e) {
-		    ErrorHandler.handleTableLoadError(e, petsTable, tableModel);
-		} catch (DatabaseConfigException e) {
-		    ErrorHandler.handleTableLoadError(e, petsTable, tableModel);
-		}
-	}
-
 	/**
 	 * Create the panel.
 	 */
 	public MyPetsPanel(User user) {
 
 		controller = new PetOwnerController();
+		this.user = user;
 
 		setLayout(new BorderLayout(15, 15));
 		setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -93,7 +73,7 @@ public class MyPetsPanel extends JPanel {
 		        dialog.setVisible(true);
 
 		        if (dialog.isChanged()) {
-		            loadPets(user);
+		            loadPets();
 		        }
 		    }
 		});
@@ -102,9 +82,7 @@ public class MyPetsPanel extends JPanel {
 		add(headerPanel, BorderLayout.NORTH);
 
 		// TABLE
-		String[] columns = {
-				"Name", "Species", "Gender", "Actions"
-		};
+		String[] columns = {"Name", "Species", "Gender", "Actions"};
 
 		tableModel = new DefaultTableModel(columns, 0) {
 			public boolean isCellEditable(int row, int column) {
@@ -115,12 +93,10 @@ public class MyPetsPanel extends JPanel {
 		petsTable = new JTable(tableModel);
 		petsTable.setRowHeight(35);
 		
-		loadPets(user);
+		loadPets();
 
 		DefaultTableCellRenderer editRenderer = new DefaultTableCellRenderer() {
-
-			public Component getTableCellRendererComponent(
-					JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 
 				JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
@@ -132,7 +108,6 @@ public class MyPetsPanel extends JPanel {
 		};
 
 		petsTable.getColumnModel().getColumn(3).setCellRenderer(editRenderer);
-
 		petsTable.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 
@@ -147,12 +122,11 @@ public class MyPetsPanel extends JPanel {
 					dialog.setVisible(true);
 
 					if (dialog.isChanged()) {
-						loadPets(user);
+						loadPets();
 					}
 				}
 			}
 		});
-
 		petsTable.addMouseMotionListener(new MouseAdapter() { 
 			public void mouseMoved(MouseEvent e) { 
 
@@ -169,5 +143,26 @@ public class MyPetsPanel extends JPanel {
 
 		JScrollPane scrollPane = new JScrollPane(petsTable);
 		add(scrollPane, BorderLayout.CENTER);
+	}
+	
+	private void loadPets() {
+		tableModel.setRowCount(0);
+
+		try {
+			pets = controller.getOwnerPets(user);
+
+			for (Pet pet : pets) {
+				tableModel.addRow(new Object[] {
+						pet.getName(),
+						pet.getSpecies(),
+						pet.getGender(),
+						"Edit"
+				});
+			}
+		} catch (SQLException e) {
+		    ErrorHandler.handleTableLoadError(e, petsTable, tableModel);
+		} catch (DatabaseConfigException e) {
+		    ErrorHandler.handleTableLoadError(e, petsTable, tableModel);
+		}
 	}
 }

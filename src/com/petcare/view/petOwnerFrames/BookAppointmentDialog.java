@@ -56,10 +56,6 @@ public class BookAppointmentDialog extends JDialog {
 	
 	private boolean changed = false;
 	
-	public boolean isChanged() {
-	    return changed;
-	}
-	
 	public BookAppointmentDialog(User user) {
 
 		controller = new PetOwnerController();
@@ -102,21 +98,13 @@ public class BookAppointmentDialog extends JDialog {
 
 		JComboBox<Pet> petComboBox = new JComboBox<>();
 		petComboBox.setRenderer(new DefaultListCellRenderer() {
-			public Component getListCellRendererComponent(
-					JList<?> list,
-					Object value,
-					int index,
-					boolean isSelected,
-					boolean cellHasFocus) {
-
-				super.getListCellRendererComponent(
-						list, value, index, isSelected, cellHasFocus);
+			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+				super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
 				if (value instanceof Pet) {
 					Pet pet = (Pet) value;
 					setText(pet.getName());
 				}
-
 				return this;
 			}
 		});
@@ -127,7 +115,6 @@ public class BookAppointmentDialog extends JDialog {
 			for (Pet pet : pets) {
 				petComboBox.addItem(pet);
 			}
-
 		} catch (SQLException e) {
 			ErrorHandler.handleSQLException(e);
 		} catch (DatabaseConfigException e) {
@@ -151,21 +138,13 @@ public class BookAppointmentDialog extends JDialog {
 
 		vetComboBox = new JComboBox<>();
 		vetComboBox.setRenderer(new DefaultListCellRenderer() {
-			public Component getListCellRendererComponent(
-					JList<?> list,
-					Object value,
-					int index,
-					boolean isSelected,
-					boolean cellHasFocus) {
-
-				super.getListCellRendererComponent(
-						list, value, index, isSelected, cellHasFocus);
+			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+				super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
 				if (value instanceof User) {
 					User vet = (User) value;
 					setText(vet.getFName() + " " + vet.getLName());
 				}
-
 				return this;
 			}
 		});
@@ -208,7 +187,6 @@ public class BookAppointmentDialog extends JDialog {
 		Color background = UIManager.getColor("TextField.background");
 		Color foreground = UIManager.getColor("TextField.foreground");
 		Color panelBackground = UIManager.getColor("Panel.background");
-		//Color selectionBackground = UIManager.getColor("TextField.selectionBackground");
 		Color borderColor = UIManager.getColor("Component.borderColor");
 
 		dateSettings.setColor(DatePickerSettings.DateArea.BackgroundOverallCalendarPanel, background);
@@ -257,13 +235,7 @@ public class BookAppointmentDialog extends JDialog {
 
 		timeComboBox = new JComboBox<>();
 		timeComboBox.setRenderer(new DefaultListCellRenderer() {
-			public Component getListCellRendererComponent(
-					JList<?> list,
-					Object value,
-					int index,
-					boolean isSelected,
-					boolean cellHasFocus) {
-
+			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 				super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
 				if (value instanceof LocalTime) {
@@ -341,7 +313,6 @@ public class BookAppointmentDialog extends JDialog {
 
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
@@ -377,11 +348,14 @@ public class BookAppointmentDialog extends JDialog {
 
 			    timeComboBox.addItem(time);
 			}
-
 		} catch (SQLException e) {
 			ErrorHandler.handleSQLException(e);
 		} catch (DatabaseConfigException e) {
 			ErrorHandler.handleDatabaseConfigException(e);
 		}
+	}
+	
+	public boolean isChanged() {
+	    return changed;
 	}
 }

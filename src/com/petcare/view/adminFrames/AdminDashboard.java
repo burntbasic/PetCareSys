@@ -225,7 +225,6 @@ public class AdminDashboard extends BaseDashboard {
 	    activityTableModel.setRowCount(0);
 
 	    try {
-
 	        List<Activity> activities = controller.getRecentActivity();
 
 	        for (Activity activity : activities) {
@@ -233,27 +232,14 @@ public class AdminDashboard extends BaseDashboard {
 	            activityTableModel.addRow(new Object[] {
 	                    activity.getUser(),
 	                    activity.getActivity(),
-	                    activity.getActivityDate()
-	                            .toLocalDateTime()
-	                            .format(DateTimeFormatter.ofPattern("dd MMM yyyy, hh:mm a"))
+	                    activity.getActivityDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("dd MMM yyyy, hh:mm a"))
 	            });
 	        }
 
 	    } catch (SQLException e) {
-
-	        ErrorHandler.handleTableLoadError(
-	                e,
-	                table,
-	                activityTableModel
-	        );
-
+	        ErrorHandler.handleTableLoadError(e, table, activityTableModel);
 	    } catch (DatabaseConfigException e) {
-
-	        ErrorHandler.handleTableLoadError(
-	                e,
-	                table,
-	                activityTableModel
-	        );
+	        ErrorHandler.handleTableLoadError(e, table, activityTableModel);
 	    }
 	}
 }

@@ -31,20 +31,6 @@ public class RegisterFrame extends JFrame {
 
 	private RegisterController controller;
 
-	//Helper method
-	private boolean showValidationError(RegisterFieldEnum field, String value, JLabel errorLabel) {
-
-		String error = controller.validateField(field, value);
-
-		if (error != null) {
-			errorLabel.setText(error);
-			errorLabel.setVisible(true);
-			return false;
-		}
-
-		return true;
-	}
-
 	public RegisterFrame() {
 
 		controller = new RegisterController();
@@ -330,4 +316,19 @@ public class RegisterFrame extends JFrame {
 		lblBacktoLogin.setBounds(175, 617, 167, 17);
 		contentPane.add(lblBacktoLogin);
 	}
+
+	//Helper method
+	private boolean showValidationError(RegisterFieldEnum field, String value, JLabel errorLabel) {
+
+		String error = controller.validateField(field, value);
+
+		if (error != null) {
+			errorLabel.setText(error);
+			errorLabel.setVisible(true);
+			return false;
+		}
+
+		return true;
+	}
+
 }

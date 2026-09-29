@@ -15,7 +15,6 @@ public class LoginController {
 	}
 	
 	public User loginValidation(String username, String password) throws SQLException, DatabaseConfigException {
-		
 		return userdb.userLogin(username, password);
 	}
 }

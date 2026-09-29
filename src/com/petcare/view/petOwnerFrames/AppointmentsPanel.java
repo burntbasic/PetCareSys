@@ -94,9 +94,8 @@ public class AppointmentsPanel extends JPanel {
 		upcomingButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		upcomingButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
 				currentFilter = "Upcoming";
-				loadUpcomingAppointments(user);
+				loadUpcomingAppointments();
 			}
 		});
 
@@ -105,7 +104,7 @@ public class AppointmentsPanel extends JPanel {
 		pastButton.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
 		        currentFilter = "Past";
-		    	loadPastAppointments(user);
+		    	loadPastAppointments();
 		    }
 		});
 		
@@ -114,7 +113,7 @@ public class AppointmentsPanel extends JPanel {
 		cancelledButton.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
 		        currentFilter = "Cancelled";
-		    	loadCancelledAppointments(user);
+		    	loadCancelledAppointments();
 		    }
 		});
 
@@ -125,7 +124,6 @@ public class AppointmentsPanel extends JPanel {
 		// TABLE
 
 		String[] columns = {"Pet", "Veterinarian", "Date & Time", "Status", "Actions"};
-		//"Actions" column to be removed for past and cancelled appointments
 
 		tableModel = new DefaultTableModel(columns, 0) {
 			public boolean isCellEditable(int row, int column) {
@@ -182,7 +180,7 @@ public class AppointmentsPanel extends JPanel {
 			}
 		});
 
-		loadUpcomingAppointments(user);
+		loadUpcomingAppointments();
 
 		JScrollPane scrollPane = new JScrollPane(appointmentsTable);
 
@@ -199,20 +197,15 @@ public class AppointmentsPanel extends JPanel {
 	private void refreshAppointments() {
 
 	    if ("Upcoming".equals(currentFilter)) {
-
-	        loadUpcomingAppointments(user);
-
+	        loadUpcomingAppointments();
 	    } else if ("Past".equals(currentFilter)) {
-
-	        loadPastAppointments(user);
-
+	        loadPastAppointments();
 	    } else if ("Cancelled".equals(currentFilter)) {
-
-	        loadCancelledAppointments(user);
+	        loadCancelledAppointments();
 	    }
 	}
 	
-	private void loadUpcomingAppointments(User user) {
+	private void loadUpcomingAppointments() {
 
 		tableModel.setRowCount(0);
 
@@ -237,7 +230,7 @@ public class AppointmentsPanel extends JPanel {
 		}
 	}
 	
-	private void loadPastAppointments(User user) {
+	private void loadPastAppointments() {
 
 	    tableModel.setRowCount(0);
 
@@ -262,7 +255,7 @@ public class AppointmentsPanel extends JPanel {
 		}
 	}
 	
-	private void loadCancelledAppointments(User user) {
+	private void loadCancelledAppointments() {
 
 	    tableModel.setRowCount(0);
 

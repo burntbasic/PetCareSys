@@ -38,6 +38,7 @@ public class AdminAppointmentsPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	private AdminController controller;
+	private User user;
 
 	private JTable appointmentsTable;
 	private DefaultTableModel tableModel;
@@ -48,167 +49,127 @@ public class AdminAppointmentsPanel extends JPanel {
 	public AdminAppointmentsPanel(User user) {
 
 		controller = new AdminController(user);
+		this.user = user;
 
 		setLayout(new BorderLayout(10, 10));
 		setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
 		JPanel headerPanel = new JPanel(new BorderLayout());
 
-	    JLabel titleLabel = new JLabel("Appointments");
-	    titleLabel.setFont(new Font("SansSerif", Font.BOLD, 24));
+		JLabel titleLabel = new JLabel("Appointments");
+		titleLabel.setFont(new Font("SansSerif", Font.BOLD, 24));
 
-	    headerPanel.add(titleLabel, BorderLayout.WEST);
+		headerPanel.add(titleLabel, BorderLayout.WEST);
 
-	    JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
-	    JLabel searchLabel = new JLabel("Search:");
+		JLabel searchLabel = new JLabel("Search:");
 
-	    searchField = new JTextField(20);
-	    searchField.setToolTipText("Search appointments");
+		searchField = new JTextField(20);
+		searchField.setToolTipText("Search appointments");
 
-	    JButton addButton = new JButton("Add Appointment");
+		JButton addButton = new JButton("Add Appointment");
 
-	    addButton.setCursor(
-	            Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		addButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-	    addButton.addActionListener(new ActionListener() {
-	        public void actionPerformed(ActionEvent e) {
+		addButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 
-	            AddAppointmentDialog dialog = new AddAppointmentDialog(user);
+				AddAppointmentDialog dialog = new AddAppointmentDialog(user);
 
-	            dialog.setVisible(true);
+				dialog.setVisible(true);
 
-	            if (dialog.isChanged()) {
-	                loadAppointments();
-	            }
-	        }
-	    });
+				if (dialog.isChanged()) {
+					loadAppointments();
+				}
+			}
+		});
 
-	    searchPanel.add(searchLabel);
-	    searchPanel.add(searchField);
-	    searchPanel.add(addButton);
+		searchPanel.add(searchLabel);
+		searchPanel.add(searchField);
+		searchPanel.add(addButton);
 
-	    headerPanel.add(searchPanel, BorderLayout.EAST);
+		headerPanel.add(searchPanel, BorderLayout.EAST);
 
-	    add(headerPanel, BorderLayout.NORTH);
+		add(headerPanel, BorderLayout.NORTH);
 
-	    searchField.getDocument().addDocumentListener(
-	            new DocumentListener() {
+		searchField.getDocument().addDocumentListener(new DocumentListener() {
 
-	                public void insertUpdate(DocumentEvent e) {
-	                    filterAppointments();
-	                }
+			public void insertUpdate(DocumentEvent e) {
+				filterAppointments();
+			}
 
-	                public void removeUpdate(DocumentEvent e) {
-	                    filterAppointments();
-	                }
+			public void removeUpdate(DocumentEvent e) {
+				filterAppointments();
+			}
 
-	                public void changedUpdate(DocumentEvent e) {
-	                    filterAppointments();
-	                }
-	            });
-		
-	    String[] columns = {
-				"ID",
-				"Pet",
-				"Owner",
-				"Veterinarian",
-				"Date & Time",
-				"Reason",
-				"Status",
-				"View",
-				"Edit",
-				"Cancel",
-				"Delete"
-		};
+			public void changedUpdate(DocumentEvent e) {
+				filterAppointments();
+			}
+		});
+
+		String[] columns = {"ID", "Pet", "Owner", "Veterinarian", "Date & Time", "Reason", "Status", "View", "Edit", "Cancel", "Delete"};
 
 		tableModel = new DefaultTableModel(columns, 0) {
-
 			public boolean isCellEditable(int row, int column) {
 				return false;
 			}
 		};
 
 		appointmentsTable = new JTable(tableModel);
-
 		appointmentsTable.setRowHeight(35);
 		appointmentsTable.setAutoCreateRowSorter(true);
 
-		add(
-				new JScrollPane(appointmentsTable),
-				BorderLayout.CENTER);
+		add(new JScrollPane(appointmentsTable), BorderLayout.CENTER);
 
-		setupButtonColumn(7);
-		setupButtonColumn(8);
-		setupButtonColumn(9);
-		setupButtonColumn(10);
+		appointmentsTable.getColumnModel().getColumn(7).setCellRenderer(new ButtonRenderer());
+		appointmentsTable.getColumnModel().getColumn(8).setCellRenderer(new ButtonRenderer());
+		appointmentsTable.getColumnModel().getColumn(9).setCellRenderer(new ButtonRenderer());
+		appointmentsTable.getColumnModel().getColumn(10).setCellRenderer(new ButtonRenderer());
 
-		appointmentsTable.addMouseListener(
-				new MouseAdapter() {
+		appointmentsTable.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() != 1) {
+					return;
+				}
 
-					public void mouseClicked(MouseEvent e) {
+				int row = appointmentsTable.rowAtPoint(e.getPoint());
+				int column = appointmentsTable.columnAtPoint(e.getPoint());
 
-						if (e.getClickCount() != 1) {
-							return;
-						}
-
-						int row = appointmentsTable.rowAtPoint(
-								e.getPoint());
-
-						int column = appointmentsTable.columnAtPoint(
-								e.getPoint());
-
-						if (row < 0) {
-							return;
-						}
-
-						if (column == 7) {
-
-							viewAppointment(row);
-
-						} else if (column == 8) {
-
-							editAppointment(row, user);
-
-						} else if (column == 9) {
-
-							cancelAppointment(row);
-
-						} else if (column == 10) {
-
-							deleteAppointment(row);
-						}
-					}
-				});
+				if (row < 0) {
+					return;
+				}
+				if (column == 7) {
+					viewAppointment(row);
+				} else if (column == 8) {
+					editAppointment(row);
+				} else if (column == 9) {
+					cancelAppointment(row);
+				} else if (column == 10) {
+					deleteAppointment(row);
+				}
+			}
+		});
 		appointmentsTable.addMouseMotionListener(new MouseMotionAdapter() {
-		    public void mouseMoved(MouseEvent e) {
+			public void mouseMoved(MouseEvent e) {
 
-		        int row = appointmentsTable.rowAtPoint(e.getPoint());
-		        int column = appointmentsTable.columnAtPoint(e.getPoint());
+				int row = appointmentsTable.rowAtPoint(e.getPoint());
+				int column = appointmentsTable.columnAtPoint(e.getPoint());
 
-		        if (row >= 0 && column >= 7 && column <= 10) {
+				if (row >= 0 && column >= 7 && column <= 10) {
 
-		            Object value = appointmentsTable.getValueAt(row, column);
+					Object value = appointmentsTable.getValueAt(row, column);
 
-		            if (value != null) {
-		                appointmentsTable.setCursor(
-		                        Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		                return;
-		            }
-		        }
+					if (value != null) {
+						appointmentsTable.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+						return;
+					}
+				}
 
-		        appointmentsTable.setCursor(
-		                Cursor.getDefaultCursor());
-		    }
+				appointmentsTable.setCursor(Cursor.getDefaultCursor());
+			}
 		});
 		loadAppointments();
-	}
-
-	private void setupButtonColumn(int column) {
-
-		appointmentsTable.getColumnModel()
-				.getColumn(column)
-				.setCellRenderer(new ButtonRenderer());
 	}
 
 	private void loadAppointments() {
@@ -216,7 +177,6 @@ public class AdminAppointmentsPanel extends JPanel {
 		tableModel.setRowCount(0);
 
 		try {
-
 			appointments = controller.getAllAppointments();
 
 			for (Appointment appointment : appointments) {
@@ -224,27 +184,15 @@ public class AdminAppointmentsPanel extends JPanel {
 			}
 
 		} catch (SQLException e) {
-
-			ErrorHandler.handleTableLoadError(
-					e,
-					appointmentsTable,
-					tableModel);
-
+			ErrorHandler.handleTableLoadError(e, appointmentsTable, tableModel);
 		} catch (DatabaseConfigException e) {
-
-			ErrorHandler.handleTableLoadError(
-					e,
-					appointmentsTable,
-					tableModel);
+			ErrorHandler.handleTableLoadError(e, appointmentsTable, tableModel);
 		}
 	}
 
 	private void addAppointmentRow(Appointment appointment) {
 
-		String date = appointment.getAppointmentDate()
-				.toLocalDateTime()
-				.format(DateTimeFormatter.ofPattern(
-						"dd MMM yyyy, h:mm a"));
+		String date = appointment.getAppointmentDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("dd MMM yyyy, h:mm a"));
 
 		tableModel.addRow(new Object[] {
 				appointment.getAppointmentId(),
@@ -256,10 +204,7 @@ public class AdminAppointmentsPanel extends JPanel {
 				appointment.getStatus(),
 				"View",
 				"Edit",
-				"Scheduled".equals(appointment.getStatus())
-						? "Cancel"
-						: null,
-				"Delete"
+				"Scheduled".equals(appointment.getStatus()) ? "Cancel" : null, "Delete"
 		});
 	}
 
@@ -269,21 +214,15 @@ public class AdminAppointmentsPanel extends JPanel {
 			return;
 		}
 
-		String search = searchField.getText()
-				.trim()
-				.toLowerCase();
+		String search = searchField.getText().trim().toLowerCase();
 
 		tableModel.setRowCount(0);
 
 		for (Appointment appointment : appointments) {
 
-			String date = appointment.getAppointmentDate()
-					.toLocalDateTime()
-					.format(DateTimeFormatter.ofPattern(
-							"dd MMM yyyy, h:mm a"));
+			String date = appointment.getAppointmentDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("dd MMM yyyy, h:mm a"));
 
-			String data =
-					appointment.getAppointmentId()
+			String data = appointment.getAppointmentId()
 					+ " "
 					+ appointment.getPetName()
 					+ " "
@@ -311,13 +250,11 @@ public class AdminAppointmentsPanel extends JPanel {
 			return;
 		}
 
-		ViewAppointmentDialog dialog =
-				new ViewAppointmentDialog(appointment);
-
+		ViewAppointmentDialog dialog = new ViewAppointmentDialog(appointment);
 		dialog.setVisible(true);
 	}
 
-	private void editAppointment(int row, User user) {
+	private void editAppointment(int row) {
 
 		Appointment appointment = getAppointmentFromRow(row);
 
@@ -326,7 +263,6 @@ public class AdminAppointmentsPanel extends JPanel {
 		}
 
 		EditAppointmentDialog dialog = new EditAppointmentDialog(appointment, user);
-
 		dialog.setVisible(true);
 
 		if (dialog.isChanged()) {
@@ -346,35 +282,21 @@ public class AdminAppointmentsPanel extends JPanel {
 			return;
 		}
 
-		int result = JOptionPane.showConfirmDialog(
-				this,
-				"Are you sure you want to cancel this appointment?",
-				"Cancel Appointment",
-				JOptionPane.YES_NO_OPTION,
-				JOptionPane.WARNING_MESSAGE);
+		int result = JOptionPane.showConfirmDialog(this, "Are you sure you want to cancel this appointment?", "Cancel Appointment", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
 		if (result != JOptionPane.YES_OPTION) {
 			return;
 		}
 
 		try {
-
 			controller.cancelAppointment(appointment);
 
-			JOptionPane.showMessageDialog(
-					this,
-					"Appointment cancelled successfully.",
-					"Appointment Cancelled",
-					JOptionPane.INFORMATION_MESSAGE);
-
+			JOptionPane.showMessageDialog(this, "Appointment cancelled successfully.", "Appointment Cancelled", JOptionPane.INFORMATION_MESSAGE);
 			loadAppointments();
 
 		} catch (SQLException e) {
-
 			ErrorHandler.handleSQLException(e);
-
 		} catch (DatabaseConfigException e) {
-
 			ErrorHandler.handleDatabaseConfigException(e);
 		}
 	}
@@ -387,58 +309,33 @@ public class AdminAppointmentsPanel extends JPanel {
 			return;
 		}
 
-		int result = JOptionPane.showConfirmDialog(
-				this,
-				"Are you sure you want to permanently delete this appointment?",
-				"Delete Appointment",
-				JOptionPane.YES_NO_OPTION,
-				JOptionPane.WARNING_MESSAGE);
+		int result = JOptionPane.showConfirmDialog(this, "Are you sure you want to permanently delete this appointment?", "Delete Appointment", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
 		if (result != JOptionPane.YES_OPTION) {
 			return;
 		}
 
 		try {
+			controller.deleteAppointment(appointment.getAppointmentId());
 
-			controller.deleteAppointment(
-					appointment.getAppointmentId());
-
-			JOptionPane.showMessageDialog(
-					this,
-					"Appointment deleted successfully.",
-					"Appointment Deleted",
-					JOptionPane.INFORMATION_MESSAGE);
-
+			JOptionPane.showMessageDialog(this, "Appointment deleted successfully.", "Appointment Deleted", JOptionPane.INFORMATION_MESSAGE);
 			loadAppointments();
 
 		} catch (SQLException e) {
-
 			if (e.getErrorCode() == 1451) {
-
-				JOptionPane.showMessageDialog(
-						this,
-						"This appointment cannot be deleted because it has an associated medical treatment.",
-						"Cannot Delete Appointment",
-						JOptionPane.WARNING_MESSAGE);
-
+				JOptionPane.showMessageDialog(this, "This appointment cannot be deleted because it has an associated medical treatment.", "Cannot Delete Appointment", JOptionPane.WARNING_MESSAGE);
 			} else {
-
 				ErrorHandler.handleSQLException(e);
 			}
-
 		} catch (DatabaseConfigException e) {
-
 			ErrorHandler.handleDatabaseConfigException(e);
 		}
 	}
 
 	private Appointment getAppointmentFromRow(int row) {
 
-		int modelRow =
-				appointmentsTable.convertRowIndexToModel(row);
-
-		int appointmentId =
-				(int) tableModel.getValueAt(modelRow, 0);
+		int modelRow = appointmentsTable.convertRowIndexToModel(row);
+		int appointmentId = (int) tableModel.getValueAt(modelRow, 0);
 
 		for (Appointment appointment : appointments) {
 
@@ -454,8 +351,7 @@ public class AdminAppointmentsPanel extends JPanel {
 		loadAppointments();
 	}
 
-	private class ButtonRenderer extends JButton
-			implements TableCellRenderer {
+	private class ButtonRenderer extends JButton implements TableCellRenderer {
 
 		private static final long serialVersionUID = 1L;
 
@@ -463,29 +359,18 @@ public class AdminAppointmentsPanel extends JPanel {
 			setOpaque(true);
 		}
 
-		public Component getTableCellRendererComponent(
-				JTable table,
-				Object value,
-				boolean isSelected,
-				boolean hasFocus,
-				int row,
-				int column) {
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 
 			setText(value == null ? "" : value.toString());
 
 			if (value == null) {
-
 				setEnabled(false);
 				setCursor(Cursor.getDefaultCursor());
 
 			} else {
-
 				setEnabled(true);
-				setCursor(
-						Cursor.getPredefinedCursor(
-								Cursor.HAND_CURSOR));
+				setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			}
-
 			return this;
 		}
 	}

@@ -16,12 +16,10 @@ public class RegisterController {
 	public String validateField(RegisterFieldEnum field, String value) {
 
 	    switch (field) {
-
 	        case FIRST_NAME:
 	            if (value.isEmpty()) {
 	                return "First name is required.";
 	            }
-
 	            if (!value.matches("[a-zA-Z]+")) {
 	                return "First name must contain letters only.";
 	            }
@@ -31,7 +29,6 @@ public class RegisterController {
 	            if (value.isEmpty()) {
 	                return "Last name is required.";
 	            }
-
 	            if (!value.matches("[a-zA-Z]+")) {
 	                return "Last name must contain letters only.";
 	            }
@@ -41,9 +38,7 @@ public class RegisterController {
 	            if (value.isEmpty()) {
 	                return "Email is required.";
 	            }
-
-	            if (!value.matches(
-	                    "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
+	            if (!value.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
 	                return "Enter a valid email address.";
 	            }
 	            break;
@@ -52,11 +47,9 @@ public class RegisterController {
 	            if (value.isEmpty()) {
 	                return "Phone number is required.";
 	            }
-
 	            if (value.length() > 9) {
 	                return "Maximum 9 digits allowed.";
 	            }
-
 	            if (!value.matches("7[0-9]{8}")) {
 	                return "Enter a valid number (7XXXXXXXX) upto 9 digits.";
 	            }
@@ -74,7 +67,6 @@ public class RegisterController {
 	            }
 	            break;
 	    }
-
 	    return null;
 	}
 	
@@ -83,11 +75,9 @@ public class RegisterController {
 	    if (confirmPassword.isEmpty()) {
 	        return "Please confirm your password.";
 	    }
-
 	    if (!password.equals(confirmPassword)) {
 	        return "Passwords do not match.";
 	    }
-
 	    return null;
 	}
 	
@@ -105,5 +95,3 @@ public class RegisterController {
 		return userdb.petOwnerRegister(fName, lName, email, phone, username, password);
 	}
 }
-
-

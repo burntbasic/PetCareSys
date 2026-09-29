@@ -147,7 +147,6 @@ public class TreatmentDAO {
 	            treatments.add(treatment);
 	        }
 	    }
-
 	    return treatments;
 	}
 	
@@ -170,7 +169,6 @@ public class TreatmentDAO {
 	            return result.getInt(1) > 0;
 	        }
 	    }
-
 	    return false;
 	}
 	
@@ -284,8 +282,6 @@ public class TreatmentDAO {
 	            treatments.add(treatment);
 	        }
 	    }
-
 	    return treatments;
 	}
-
 }

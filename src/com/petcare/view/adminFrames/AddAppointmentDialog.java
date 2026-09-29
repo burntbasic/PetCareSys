@@ -69,14 +69,8 @@ public class AddAppointmentDialog extends JDialog {
 		setLocationRelativeTo(null);
 		setLayout(new BorderLayout(15, 15));
 
-		createForm();
-	}
-
-	private void createForm() {
-
 		JPanel formPanel = new JPanel(new GridBagLayout());
-		formPanel.setBorder(
-				BorderFactory.createEmptyBorder(20, 25, 10, 25));
+		formPanel.setBorder(BorderFactory.createEmptyBorder(20, 25, 10, 25));
 
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(8, 5, 8, 5);
@@ -95,7 +89,7 @@ public class AddAppointmentDialog extends JDialog {
 		formPanel.add(titleLabel, gbc);
 
 		gbc.gridwidth = 1;
-		
+
 		// OWNER
 
 		JLabel ownerLabel = new JLabel("Owner:");
@@ -108,45 +102,35 @@ public class AddAppointmentDialog extends JDialog {
 		ownerComboBox = new JComboBox<>();
 
 		ownerComboBox.setRenderer(new DefaultListCellRenderer() {
-		    public Component getListCellRendererComponent(
-		            JList<?> list,
-		            Object value,
-		            int index,
-		            boolean isSelected,
-		            boolean cellHasFocus) {
+			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+				super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
-		        super.getListCellRendererComponent(
-		                list, value, index, isSelected, cellHasFocus);
+				if (value instanceof User) {
+					User owner = (User) value;
+					setText(owner.getFName() + " " + owner.getLName());
+				}
 
-		        if (value instanceof User) {
-		            User owner = (User) value;
-		            setText(owner.getFName() + " " + owner.getLName());
-		        }
-
-		        return this;
-		    }
+				return this;
+			}
 		});
 
 		try {
-		    List<User> owners = controller.getPetOwners();
+			List<User> owners = controller.getPetOwners();
 
-		    for (User owner : owners) {
-		        ownerComboBox.addItem(owner);
-		    }
+			for (User owner : owners) {
+				ownerComboBox.addItem(owner);
+			}
 
 		} catch (SQLException e) {
-
-		    ErrorHandler.handleSQLException(e);
-
+			ErrorHandler.handleSQLException(e);
 		} catch (DatabaseConfigException e) {
-
-		    ErrorHandler.handleDatabaseConfigException(e);
+			ErrorHandler.handleDatabaseConfigException(e);
 		}
 
 		ownerComboBox.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent e) {
-		        loadOwnerPets();
-		    }
+			public void actionPerformed(ActionEvent e) {
+				loadOwnerPets();
+			}
 		});
 
 		gbc.gridx = 1;
@@ -166,15 +150,8 @@ public class AddAppointmentDialog extends JDialog {
 		petComboBox = new JComboBox<>();
 
 		petComboBox.setRenderer(new DefaultListCellRenderer() {
-			public Component getListCellRendererComponent(
-					JList<?> list,
-					Object value,
-					int index,
-					boolean isSelected,
-					boolean cellHasFocus) {
-
-				super.getListCellRendererComponent(
-						list, value, index, isSelected, cellHasFocus);
+			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+				super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
 				if (value instanceof Pet) {
 					Pet pet = (Pet) value;
@@ -203,15 +180,8 @@ public class AddAppointmentDialog extends JDialog {
 		vetComboBox = new JComboBox<>();
 
 		vetComboBox.setRenderer(new DefaultListCellRenderer() {
-			public Component getListCellRendererComponent(
-					JList<?> list,
-					Object value,
-					int index,
-					boolean isSelected,
-					boolean cellHasFocus) {
-
-				super.getListCellRendererComponent(
-						list, value, index, isSelected, cellHasFocus);
+			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+				super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
 				if (value instanceof User) {
 					User vet = (User) value;
@@ -223,7 +193,6 @@ public class AddAppointmentDialog extends JDialog {
 		});
 
 		try {
-
 			List<User> vets = controller.getVeterinarians();
 
 			for (User vet : vets) {
@@ -231,11 +200,8 @@ public class AddAppointmentDialog extends JDialog {
 			}
 
 		} catch (SQLException e) {
-
 			ErrorHandler.handleSQLException(e);
-
 		} catch (DatabaseConfigException e) {
-
 			ErrorHandler.handleDatabaseConfigException(e);
 		}
 
@@ -267,95 +233,32 @@ public class AddAppointmentDialog extends JDialog {
 		Color panelBackground = UIManager.getColor("Panel.background");
 		Color borderColor = UIManager.getColor("Component.borderColor");
 
-		dateSettings.setColor(
-				DatePickerSettings.DateArea.BackgroundOverallCalendarPanel,
-				background);
-
-		dateSettings.setColor(
-				DatePickerSettings.DateArea.TextFieldBackgroundValidDate,
-				background);
-
-		dateSettings.setColor(
-				DatePickerSettings.DateArea.DatePickerTextValidDate,
-				foreground);
-
-		dateSettings.setColor(
-				DatePickerSettings.DateArea.CalendarBackgroundNormalDates,
-				background);
-
-		dateSettings.setColor(
-				DatePickerSettings.DateArea.CalendarTextNormalDates,
-				foreground);
-
-		dateSettings.setColor(
-				DatePickerSettings.DateArea.CalendarBackgroundVetoedDates,
-				background);
-
-		dateSettings.setColorBackgroundWeekdayLabels(
-				panelBackground,
-				false);
-
-		dateSettings.setColor(
-				DatePickerSettings.DateArea.CalendarTextWeekdays,
-				foreground);
-
-		dateSettings.setColor(
-				DatePickerSettings.DateArea.BackgroundMonthAndYearMenuLabels,
-				panelBackground);
-
-		dateSettings.setColor(
-				DatePickerSettings.DateArea.TextMonthAndYearMenuLabels,
-				foreground);
-
-		dateSettings.setColor(
-				DatePickerSettings.DateArea.BackgroundMonthAndYearNavigationButtons,
-				panelBackground);
-
-		dateSettings.setColor(
-				DatePickerSettings.DateArea.TextMonthAndYearNavigationButtons,
-				foreground);
-
-		dateSettings.setColor(
-				DatePickerSettings.DateArea.BackgroundTodayLabel,
-				panelBackground);
-
-		dateSettings.setColor(
-				DatePickerSettings.DateArea.TextTodayLabel,
-				foreground);
-
-		dateSettings.setColor(
-				DatePickerSettings.DateArea.BackgroundClearLabel,
-				panelBackground);
-
-		dateSettings.setColor(
-				DatePickerSettings.DateArea.TextClearLabel,
-				foreground);
-
-		ArrayList<CalendarBorderProperties> borderProperties =
-				new ArrayList<>();
-
-		borderProperties.add(
-				new CalendarBorderProperties(
-						new Point(1, 1),
-						new Point(5, 5),
-						borderColor,
-						1));
-
+		dateSettings.setColor(DatePickerSettings.DateArea.BackgroundOverallCalendarPanel, background);
+		dateSettings.setColor(DatePickerSettings.DateArea.TextFieldBackgroundValidDate, background);
+		dateSettings.setColor(DatePickerSettings.DateArea.DatePickerTextValidDate, foreground);
+		dateSettings.setColor(DatePickerSettings.DateArea.CalendarBackgroundNormalDates, background);
+		dateSettings.setColor(DatePickerSettings.DateArea.CalendarTextNormalDates, foreground);
+		dateSettings.setColor(DatePickerSettings.DateArea.CalendarBackgroundVetoedDates, background);
+		dateSettings.setColorBackgroundWeekdayLabels(panelBackground, false);
+		dateSettings.setColor(DatePickerSettings.DateArea.CalendarTextWeekdays, foreground);
+		dateSettings.setColor(DatePickerSettings.DateArea.BackgroundMonthAndYearMenuLabels, panelBackground);
+		dateSettings.setColor(DatePickerSettings.DateArea.TextMonthAndYearMenuLabels,foreground);
+		dateSettings.setColor(DatePickerSettings.DateArea.BackgroundMonthAndYearNavigationButtons,panelBackground);
+		dateSettings.setColor(DatePickerSettings.DateArea.TextMonthAndYearNavigationButtons, foreground);
+		dateSettings.setColor(DatePickerSettings.DateArea.BackgroundTodayLabel, panelBackground);
+		dateSettings.setColor(DatePickerSettings.DateArea.TextTodayLabel, foreground);
+		dateSettings.setColor(DatePickerSettings.DateArea.BackgroundClearLabel, panelBackground);
+		dateSettings.setColor(DatePickerSettings.DateArea.TextClearLabel, foreground);
+		ArrayList<CalendarBorderProperties> borderProperties = new ArrayList<>();
+		borderProperties.add(new CalendarBorderProperties(new Point(1, 1), new Point(5, 5), borderColor, 1));
 		dateSettings.setBorderPropertiesList(borderProperties);
-
-		dateSettings.setBorderCalendarPopup(
-				BorderFactory.createLineBorder(borderColor));
+		dateSettings.setBorderCalendarPopup(BorderFactory.createLineBorder(borderColor));
 
 		datePicker = new DatePicker(dateSettings);
 
 		dateSettings.setDateRangeLimits(LocalDate.now(), null);
-
-		datePicker.getComponentDateTextField().setBorder(
-				UIManager.getBorder("TextField.border"));
-
-		datePicker.addPropertyChangeListener(
-				"date",
-				new PropertyChangeListener() {
+		datePicker.getComponentDateTextField().setBorder(UIManager.getBorder("TextField.border"));
+		datePicker.addPropertyChangeListener("date", new PropertyChangeListener() {
 					public void propertyChange(PropertyChangeEvent evt) {
 						loadAvailableTimes();
 					}
@@ -379,25 +282,12 @@ public class AddAppointmentDialog extends JDialog {
 		timeComboBox = new JComboBox<>();
 
 		timeComboBox.setRenderer(new DefaultListCellRenderer() {
-			public Component getListCellRendererComponent(
-					JList<?> list,
-					Object value,
-					int index,
-					boolean isSelected,
-					boolean cellHasFocus) {
-
-				super.getListCellRendererComponent(
-						list,
-						value,
-						index,
-						isSelected,
-						cellHasFocus);
+			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+				super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
 				if (value instanceof LocalTime) {
 					LocalTime time = (LocalTime) value;
-					setText(
-							time.format(
-									DateTimeFormatter.ofPattern("h:mm a")));
+					setText(time.format(DateTimeFormatter.ofPattern("h:mm a")));
 				}
 
 				return this;
@@ -437,109 +327,53 @@ public class AddAppointmentDialog extends JDialog {
 
 		// BUTTONS
 
-		JPanel buttonPanel = new JPanel(
-				new FlowLayout(FlowLayout.RIGHT));
+		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
 		JButton addButton = new JButton("Add Appointment");
-
-		addButton.setCursor(
-				Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
+		addButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				Pet selectedPet =
-						(Pet) petComboBox.getSelectedItem();
+				Pet selectedPet = (Pet) petComboBox.getSelectedItem();
 
-				User selectedVet =
-						(User) vetComboBox.getSelectedItem();
+				User selectedVet = (User) vetComboBox.getSelectedItem();
 
-				LocalDate selectedDate =
-						datePicker.getDate();
+				LocalDate selectedDate = datePicker.getDate();
 
-				LocalTime selectedTime =
-						(LocalTime) timeComboBox.getSelectedItem();
+				LocalTime selectedTime = (LocalTime) timeComboBox.getSelectedItem();
 
-				String reason =
-						reasonArea.getText().trim();
+				String reason = reasonArea.getText().trim();
 
 				if (selectedPet == null) {
-
-					JOptionPane.showMessageDialog(
-							AddAppointmentDialog.this,
-							"Please select a pet.",
-							"Validation Error",
-							JOptionPane.ERROR_MESSAGE);
-
+					JOptionPane.showMessageDialog(AddAppointmentDialog.this, "Please select a pet.", "Validation Error", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-
 				if (selectedVet == null) {
-
-					JOptionPane.showMessageDialog(
-							AddAppointmentDialog.this,
-							"Please select a veterinarian.",
-							"Validation Error",
-							JOptionPane.ERROR_MESSAGE);
-
+					JOptionPane.showMessageDialog(AddAppointmentDialog.this, "Please select a veterinarian.", "Validation Error", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-
 				if (selectedDate == null) {
-
-					JOptionPane.showMessageDialog(
-							AddAppointmentDialog.this,
-							"Please select a date.",
-							"Validation Error",
-							JOptionPane.ERROR_MESSAGE);
-
+					JOptionPane.showMessageDialog(AddAppointmentDialog.this, "Please select a date.", "Validation Error", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-
 				if (selectedTime == null) {
-
-					JOptionPane.showMessageDialog(
-							AddAppointmentDialog.this,
-							"Please select a time.",
-							"Validation Error",
-							JOptionPane.ERROR_MESSAGE);
-
+					JOptionPane.showMessageDialog(AddAppointmentDialog.this, "Please select a time.", "Validation Error", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 
 				try {
-
-					controller.addAppointment(
-							selectedPet,
-							selectedVet,
-							selectedDate,
-							selectedTime,
-							reason);
-
+					controller.addAppointment(selectedPet, selectedVet, selectedDate, selectedTime, reason);
+					
 					changed = true;
 
-					JOptionPane.showMessageDialog(
-							AddAppointmentDialog.this,
-							"Appointment added successfully.",
-							"Success",
-							JOptionPane.INFORMATION_MESSAGE);
-
+					JOptionPane.showMessageDialog(AddAppointmentDialog.this, "Appointment added successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
 					dispose();
 
 				} catch (IllegalArgumentException ex) {
-
-					JOptionPane.showMessageDialog(
-							AddAppointmentDialog.this,
-							ex.getMessage(),
-							"Validation Error",
-							JOptionPane.ERROR_MESSAGE);
-
+					JOptionPane.showMessageDialog(AddAppointmentDialog.this, ex.getMessage(), "Validation Error", JOptionPane.ERROR_MESSAGE);
 				} catch (SQLException ex) {
-
 					ErrorHandler.handleSQLException(ex);
-
 				} catch (DatabaseConfigException ex) {
-
 					ErrorHandler.handleDatabaseConfigException(ex);
 				}
 			}
@@ -547,9 +381,7 @@ public class AddAppointmentDialog extends JDialog {
 
 		JButton cancelButton = new JButton("Cancel");
 
-		cancelButton.setCursor(
-				Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
+		cancelButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
@@ -565,59 +397,46 @@ public class AddAppointmentDialog extends JDialog {
 
 	private void loadOwnerPets() {
 
-	    petComboBox.removeAllItems();
+		petComboBox.removeAllItems();
 
-	    User selectedOwner =
-	            (User) ownerComboBox.getSelectedItem();
+		User selectedOwner = (User) ownerComboBox.getSelectedItem();
 
-	    if (selectedOwner == null) {
-	        return;
-	    }
+		if (selectedOwner == null) {
+			return;
+		}
 
-	    try {
+		try {
+			List<Pet> pets = controller.getOwnerPets(selectedOwner);
 
-	        List<Pet> pets =
-	                controller.getOwnerPets(selectedOwner);
+			for (Pet pet : pets) {
+				petComboBox.addItem(pet);
+			}
 
-	        for (Pet pet : pets) {
-	            petComboBox.addItem(pet);
-	        }
-
-	    } catch (SQLException e) {
-
-	        ErrorHandler.handleSQLException(e);
-
-	    } catch (DatabaseConfigException e) {
-
-	        ErrorHandler.handleDatabaseConfigException(e);
-	    }
+		} catch (SQLException e) {
+			ErrorHandler.handleSQLException(e);
+		} catch (DatabaseConfigException e) {
+			ErrorHandler.handleDatabaseConfigException(e);
+		}
 	}
-	
+
 	private void loadAvailableTimes() {
 
 		timeComboBox.removeAllItems();
 
-		User selectedVet =
-				(User) vetComboBox.getSelectedItem();
+		User selectedVet = (User) vetComboBox.getSelectedItem();
 
-		LocalDate selectedDate =
-				datePicker.getDate();
+		LocalDate selectedDate = datePicker.getDate();
 
 		if (selectedVet == null || selectedDate == null) {
 			return;
 		}
 
 		try {
-
-			List<LocalTime> availableTimes =
-					controller.getAvailableTimes(
-							selectedVet.getId(),
-							selectedDate);
+			List<LocalTime> availableTimes = controller.getAvailableTimes(selectedVet.getId(), selectedDate);
 
 			for (LocalTime time : availableTimes) {
 
-				if (selectedDate.equals(LocalDate.now())
-						&& !time.isAfter(LocalTime.now())) {
+				if (selectedDate.equals(LocalDate.now()) && !time.isAfter(LocalTime.now())) {
 					continue;
 				}
 
@@ -625,11 +444,8 @@ public class AddAppointmentDialog extends JDialog {
 			}
 
 		} catch (SQLException e) {
-
 			ErrorHandler.handleSQLException(e);
-
 		} catch (DatabaseConfigException e) {
-
 			ErrorHandler.handleDatabaseConfigException(e);
 		}
 	}

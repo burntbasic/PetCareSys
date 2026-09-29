@@ -78,13 +78,9 @@ public class VetMedicalPanel extends JPanel {
 			public void insertUpdate(DocumentEvent e) {
 				filterMedicalRecords();
 			}
-
-			@Override
 			public void removeUpdate(DocumentEvent e) {
 				filterMedicalRecords();
 			}
-
-			@Override
 			public void changedUpdate(DocumentEvent e) {
 				filterMedicalRecords();
 			}
@@ -96,7 +92,6 @@ public class VetMedicalPanel extends JPanel {
 		String[] columns = {"Pet", "Owner", "Date", "Diagnosis", "Status", "Actions"};
 
 		tableModel = new DefaultTableModel(columns, 0) {
-
 			public boolean isCellEditable(int row, int column) {
 				return false;
 			}
@@ -104,10 +99,7 @@ public class VetMedicalPanel extends JPanel {
 
 		medicalRecordsTable = new JTable(tableModel);
 		medicalRecordsTable.setRowHeight(35);
-
-
 		medicalRecordsTable.getColumnModel().getColumn(5).setCellRenderer(new DefaultTableCellRenderer() {
-
 			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 
 				JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
@@ -166,10 +158,10 @@ public class VetMedicalPanel extends JPanel {
 
 		add(contentPanel, BorderLayout.CENTER);
 
-		loadMedicalRecords(user);
+		loadMedicalRecords();
 	}
 
-	private void loadMedicalRecords(User user) {
+	private void loadMedicalRecords() {
 
 		tableModel.setRowCount(0);
 
@@ -226,7 +218,7 @@ public class VetMedicalPanel extends JPanel {
 	}
 	
 	public void refreshRecords() {
-	    loadMedicalRecords(user);
+	    loadMedicalRecords();
 	    filterMedicalRecords();
 	}
 }
