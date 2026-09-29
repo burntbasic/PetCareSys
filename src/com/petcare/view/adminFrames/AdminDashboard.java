@@ -29,15 +29,17 @@ import com.petcare.view.LoginFrame;
 public class AdminDashboard extends BaseDashboard {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private AdminController controller;
+	private DefaultTableModel activityTableModel;
+	private JTable activityTable;
 
 	public AdminDashboard(User user) {
 
 		super();
-		
-		controller = new AdminController();
-		
+
+		controller = new AdminController(user);
+
 		setTitle("PetCare - Admin Dashboard");
 
 		// =========================
@@ -48,7 +50,6 @@ public class AdminDashboard extends BaseDashboard {
 		JButton usersBtn = createMenuButton("User Management");
 		JButton appointmentsBtn = createMenuButton("Appointments");
 		JButton reportsBtn = createMenuButton("Reports");
-
 		sidebar.add(dashboardBtn);
 		sidebar.add(usersBtn);
 		sidebar.add(appointmentsBtn);
@@ -69,7 +70,7 @@ public class AdminDashboard extends BaseDashboard {
 
 		JPanel headerPanel = new JPanel();
 		headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
-		
+
 		JLabel welcomeLabel = new JLabel("Welcome, " + user.getFName());
 		welcomeLabel.setFont(new Font("SansSerif", Font.BOLD, 28));
 
@@ -80,7 +81,7 @@ public class AdminDashboard extends BaseDashboard {
 		headerPanel.add(subtitleLabel);
 
 		dashboardPanel.add(headerPanel, BorderLayout.NORTH);
-		
+
 		// =========================
 		// MAIN CONTENT
 		// =========================
@@ -93,30 +94,30 @@ public class AdminDashboard extends BaseDashboard {
 		// =========================
 
 		JPanel cardsPanel = new JPanel(new GridLayout(2,2,15,15));
-		
+
 		String petOwnerCount = "N/A";
 		String vetCount = "N/A";
 		String petTotCount = "N/A";
 		String upcomingAppointmentsCount = "N/A";
-		
+
 		try {
 			petOwnerCount = String.valueOf(controller.getOwnerCount());
 		} catch (SQLException | DatabaseConfigException e) {
 			e.printStackTrace();
 		}
-		
+
 		try { 
 			vetCount = String.valueOf(controller.getVetCount());
 		} catch (SQLException | DatabaseConfigException e) {
 			e.printStackTrace();
 		}
-		
+
 		try {
 			petTotCount = String.valueOf(controller.getTotPetCount());
 		} catch (SQLException | DatabaseConfigException e) {
 			e.printStackTrace();
 		}
-		
+
 		try {
 			upcomingAppointmentsCount = String.valueOf(controller.getTotUpcomingCount());
 		} catch (SQLException | DatabaseConfigException e) {
@@ -147,90 +148,65 @@ public class AdminDashboard extends BaseDashboard {
 		// =========================
 
 		String[] columns = {"User","Activity","Date"};
-		
-		DefaultTableModel tableModel = new DefaultTableModel(columns, 0) { //anonymous class
+
+		activityTableModel = new DefaultTableModel(columns, 0) { //anonymous class
 			public boolean isCellEditable(int row, int column) {
 				return false;
 			}
 		};
 
-		try {
-			List<Activity> activities = controller.getRecentActivity();
-
-			for (Activity activity : activities) {
-				tableModel.addRow(new Object[] {
-						activity.getUser(),
-						activity.getActivity(),
-						activity.getActivityDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("dd MMM yyyy, hh:mm a"))
-				});
-			}
-		} catch (SQLException e) {
-			ErrorHandler.handleSQLException(e);
-
-			tableModel.addRow(new Object[] {
-					"ERROR",
-					"Could not load activity",
-					""
-			});
-		} catch (DatabaseConfigException e) {
-			ErrorHandler.handleDatabaseConfigException(e);
-
-			tableModel.addRow(new Object[] {
-					"ERROR",
-					"Could not load activity",
-					""
-			});
-		}
+		activityTable = new JTable(activityTableModel);
+		activityTable.setRowHeight(35);
 		
-		JTable table = new JTable(tableModel);
-        table.setRowHeight(35);
+		loadRecentActivity(activityTable);
 
-		JScrollPane scrollPane = new JScrollPane(table);
+		JScrollPane scrollPane = new JScrollPane(activityTable);
 
 		mainPanel.add(scrollPane);
-		
+
 		dashboardPanel.add(mainPanel, BorderLayout.CENTER);
 		contentPanel.add(dashboardPanel, "dashboard");
+
+		UserManagementPanel usersPanel = new UserManagementPanel(user);
+
+		AdminAppointmentsPanel appointmentsPanel = new AdminAppointmentsPanel(user);
 		
-		JPanel usersPanel = new JPanel();
-		usersPanel.add(new JLabel("User Management"));
-
-		JPanel appointmentsPanel = new JPanel();
-		appointmentsPanel.add(new JLabel("Appointments"));
-
 		JPanel reportsPanel = new JPanel();
 		reportsPanel.add(new JLabel("Reports"));
-		
+
 		contentPanel.add(usersPanel, "users");
 		contentPanel.add(appointmentsPanel, "appointments");
 		contentPanel.add(reportsPanel, "reports");
-		
+
 		dashboardBtn.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent e) {
-		        CardLayout layout = (CardLayout) contentPanel.getLayout();
-		        layout.show(contentPanel, "dashboard");
-		    }
+			public void actionPerformed(ActionEvent e) {
+				
+				loadRecentActivity(activityTable);
+				
+				CardLayout layout = (CardLayout) contentPanel.getLayout();
+				layout.show(contentPanel, "dashboard");
+			}
 		});
-		
+
 		usersBtn.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent e) {
-		        CardLayout layout = (CardLayout) contentPanel.getLayout();
-		        layout.show(contentPanel, "users");
-		    }
+			public void actionPerformed(ActionEvent e) {
+				CardLayout layout = (CardLayout) contentPanel.getLayout();
+				layout.show(contentPanel, "users");
+			}
 		});
-		
+
 		appointmentsBtn.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent e) {
-		        CardLayout layout = (CardLayout) contentPanel.getLayout();
-		        layout.show(contentPanel, "appointments");
-		    }
+			public void actionPerformed(ActionEvent e) {
+				CardLayout layout = (CardLayout) contentPanel.getLayout();
+				layout.show(contentPanel, "appointments");
+			}
 		});
-		
+
 		reportsBtn.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent e) {
-		        CardLayout layout = (CardLayout) contentPanel.getLayout();
-		        layout.show(contentPanel, "reports");
-		    }
+			public void actionPerformed(ActionEvent e) {
+				CardLayout layout = (CardLayout) contentPanel.getLayout();
+				layout.show(contentPanel, "reports");
+			}
 		});
 
 		// =========================
@@ -242,5 +218,42 @@ public class AdminDashboard extends BaseDashboard {
 				dispose();
 				new LoginFrame().setVisible(true);
 			}});
+	}
+	
+	private void loadRecentActivity(JTable table) {
+
+	    activityTableModel.setRowCount(0);
+
+	    try {
+
+	        List<Activity> activities = controller.getRecentActivity();
+
+	        for (Activity activity : activities) {
+
+	            activityTableModel.addRow(new Object[] {
+	                    activity.getUser(),
+	                    activity.getActivity(),
+	                    activity.getActivityDate()
+	                            .toLocalDateTime()
+	                            .format(DateTimeFormatter.ofPattern("dd MMM yyyy, hh:mm a"))
+	            });
+	        }
+
+	    } catch (SQLException e) {
+
+	        ErrorHandler.handleTableLoadError(
+	                e,
+	                table,
+	                activityTableModel
+	        );
+
+	    } catch (DatabaseConfigException e) {
+
+	        ErrorHandler.handleTableLoadError(
+	                e,
+	                table,
+	                activityTableModel
+	        );
+	    }
 	}
 }

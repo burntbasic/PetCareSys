@@ -619,4 +619,99 @@ public class AppointmentDAO {
 			return result.getInt("appointment_count");
 		}
 	}
+	
+	public List<Appointment> getAllAppointments() throws SQLException, DatabaseConfigException {
+
+	    List<Appointment> appointments = new ArrayList<>();
+
+	    String sql = """
+	            SELECT
+	                a.appointment_id,
+	                a.pet_id,
+	                a.vet_id,
+	                p.name AS pet_name,
+	                CONCAT(u.first_name, ' ', u.last_name) AS owner_name,
+	                CONCAT(v.first_name, ' ', v.last_name) AS vet_name,
+	                a.appointment_date,
+	                a.status,
+	                a.reason
+	            FROM Appointments a
+	            JOIN Pets p
+	                ON a.pet_id = p.pet_id
+	            JOIN Users u
+	                ON p.owner_id = u.user_id
+	            JOIN Users v
+	                ON a.vet_id = v.user_id
+	                AND v.role = 'VET'
+	            ORDER BY a.appointment_date DESC
+	            """;
+
+	    try (Connection connection = DBConnection.getConnection();
+	            PreparedStatement statement = connection.prepareStatement(sql)) {
+
+	        ResultSet result = statement.executeQuery();
+
+	        while (result.next()) {
+
+	            Appointment appointment = new Appointment(
+	                    result.getInt("appointment_id"),
+	                    result.getInt("pet_id"),
+	                    result.getInt("vet_id"),
+	                    result.getString("pet_name"),
+	                    result.getString("owner_name"),
+	                    result.getString("vet_name"),
+	                    result.getTimestamp("appointment_date"),
+	                    result.getString("status"),
+	                    result.getString("reason"));
+
+	            appointments.add(appointment);
+	        }
+
+	        return appointments;
+	    }
+	}
+	
+	public boolean updateAppointment(Appointment appointment) throws SQLException, DatabaseConfigException {
+
+	    String sql = """
+	            UPDATE Appointments
+	            SET pet_id = ?,
+	                vet_id = ?,
+	                appointment_date = ?,
+	                reason = ?,
+	                status = ?
+	            WHERE appointment_id = ?
+	            """;
+
+	    try (Connection connection = DBConnection.getConnection();
+	            PreparedStatement statement = connection.prepareStatement(sql)) {
+
+	        statement.setInt(1, appointment.getPetId());
+	        statement.setInt(2, appointment.getVetId());
+	        statement.setTimestamp(3, appointment.getAppointmentDate());
+	        statement.setString(4, appointment.getReason());
+	        statement.setString(5, appointment.getStatus());
+	        statement.setInt(6, appointment.getAppointmentId());
+
+	        return statement.executeUpdate() > 0;
+	    }
+	}
+	
+	public boolean deleteAppointment(int appointmentId) throws SQLException, DatabaseConfigException {
+
+	    String sql = """
+	            DELETE FROM Appointments
+	            WHERE appointment_id = ?
+	            """;
+
+	    try (Connection connection = DBConnection.getConnection();
+	            PreparedStatement statement = connection.prepareStatement(sql)) {
+
+	        statement.setInt(1, appointmentId);
+
+	        return statement.executeUpdate() > 0;
+	    }
+	}
+	
+	
 }

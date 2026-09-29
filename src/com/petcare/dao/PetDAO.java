@@ -196,4 +196,35 @@ public class PetDAO {
 			return result.getInt("pet_count");
 		}
 	}
+	
+	public List<Pet> getAllPets() throws SQLException, DatabaseConfigException {
+
+	    List<Pet> pets = new ArrayList<>();
+
+	    String sql = """
+	            SELECT pet_id, owner_id, name, species, gender
+	            FROM Pets
+	            ORDER BY name
+	            """;
+
+	    try(Connection connection = DBConnection.getConnection();
+	            PreparedStatement statement = connection.prepareStatement(sql)) {
+
+	        ResultSet result = statement.executeQuery();
+
+	        while(result.next()) {
+
+	            Pet pet = new Pet(
+	                    result.getInt("pet_id"),
+	                    result.getInt("owner_id"),
+	                    result.getString("name"),
+	                    result.getString("species"),
+	                    result.getString("gender"));
+
+	            pets.add(pet);
+	        }
+
+	        return pets;
+	    }
+	}
 }

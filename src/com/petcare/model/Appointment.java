@@ -40,7 +40,7 @@ public class Appointment {
 	}
 	
 	public int getAppointmentId() {return appointmentId;}
-	public int getpetId() {return petId;}
+	public int getPetId() {return petId;}
 	public int getVetId() {return vetId;}
 	public String getPetName() {return petName;}
 	public String getOwnerName() {return ownerName;}
