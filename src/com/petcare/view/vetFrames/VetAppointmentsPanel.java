@@ -182,7 +182,7 @@ public class VetAppointmentsPanel extends JPanel {
 
                     Appointment appointment = appointments.get(row);
 
-                    VetAppointmentDialog dialog = new VetAppointmentDialog(appointment);
+                    VetAppointmentDialog dialog = new VetAppointmentDialog(user, appointment);
 
                     dialog.setVisible(true);
 

@@ -164,7 +164,7 @@ public class TreatmentsPanel extends JPanel {
 
                         if(treatment.getPetName().equals(petName) && treatmentDate.equals(date)) {
 
-                            ViewTreatmentDialog dialog = new ViewTreatmentDialog(treatment);
+                            ViewTreatmentDialog dialog = new ViewTreatmentDialog(user, treatment);
                             dialog.setVisible(true);
                             
                             if(dialog.isChanged()) {

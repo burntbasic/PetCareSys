@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import com.petcare.dao.ActivityLogDAO;
 import com.petcare.dao.AppointmentDAO;
 import com.petcare.dao.PetDAO;
 import com.petcare.dao.TreatmentDAO;
@@ -24,12 +25,14 @@ public class PetOwnerController {
 	private AppointmentDAO appointmentdb;
 	private UserDAO userdb;
 	private TreatmentDAO treatmentdb;
+	private ActivityLogDAO activitydb;
 	
 	public PetOwnerController() {
 		petdb = new PetDAO();
 		appointmentdb = new AppointmentDAO();
-		userdb =  new UserDAO();
+		userdb = new UserDAO();
 		treatmentdb = new TreatmentDAO();
+		activitydb = new ActivityLogDAO();
 	}
 	
 	//Dashboard Cards
@@ -55,7 +58,7 @@ public class PetOwnerController {
 		return petdb.getOwnerPets(user);
 	}
 	
-	public void updatePet(Pet pet, String name, String species, String otherSpecies, String gender) throws SQLException, DatabaseConfigException {
+	public void updatePet(User user, Pet pet, String name, String species, String otherSpecies, String gender) throws SQLException, DatabaseConfigException {
 
 	    if (name == null || name.trim().isEmpty()) {
 	        throw new IllegalArgumentException("Pet name cannot be empty.");
@@ -79,10 +82,12 @@ public class PetOwnerController {
 	    }
 
 	    petdb.updatePet(pet, name, species, gender);
+	    activitydb.addActivity(user.getId(), "Updated pet");
 	}
 	
-	public void deletePet(Pet pet) throws SQLException, DatabaseConfigException {
+	public void deletePet(User user, Pet pet) throws SQLException, DatabaseConfigException {
 	    petdb.deletePet(pet);
+	    activitydb.addActivity(user.getId(), "Deleted pet");
 	}
 	
 	public void addPet(User user, String name, String species, String otherSpecies, String gender)
@@ -110,12 +115,14 @@ public class PetOwnerController {
 	    }
 	    
 	    petdb.addPet(user, name.trim(), species, gender);
+	    activitydb.addActivity(user.getId(), "Added pet");
 	}
 	
 	//Appointments Panel
-	public void cancelAppointment(Appointment appointment) throws SQLException, DatabaseConfigException {
+	public void cancelAppointment(User user, Appointment appointment) throws SQLException, DatabaseConfigException {
 
 	    appointmentdb.cancelAppointment(appointment);
+	    activitydb.addActivity(user.getId(), "Cancelled appointment");
 	}
 	
 	public List<Appointment> getOwnerPast(User user) throws SQLException, DatabaseConfigException {
@@ -182,6 +189,8 @@ public class PetOwnerController {
 	            vet.getId(),
 	            appointmentDate,
 	            reason.trim());
+
+	    activitydb.addActivity(owner.getId(), "Added appointment");
 	}
 	
 	public boolean isVetAvailable(int vetId, Timestamp appointmentDate) throws SQLException, DatabaseConfigException {

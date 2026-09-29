@@ -222,7 +222,11 @@ public class TreatmentDAO {
 	        statement.setString(4, status);
 	        statement.setInt(5, treatment.getTreatmentId());
 
-	        statement.executeUpdate();
+	        int rowsUpdated = statement.executeUpdate();
+	        
+	        if(rowsUpdated == 0) {
+	            throw new SQLException("Treatment could not be updated.");
+	        }
 	    }
 	}
 	

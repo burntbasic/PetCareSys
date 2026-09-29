@@ -172,7 +172,7 @@ public class AppointmentsPanel extends JPanel {
 
 					Appointment appointment = appointments.get(row);
 											
-					ViewAppointmentDialog dialog = new ViewAppointmentDialog(appointment);
+					ViewAppointmentDialog dialog = new ViewAppointmentDialog(user, appointment);
 					dialog.setVisible(true);
 
 					if(dialog.isChanged()) {

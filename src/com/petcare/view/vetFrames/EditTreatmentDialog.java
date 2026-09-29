@@ -23,6 +23,7 @@ import javax.swing.JTextField;
 import com.petcare.controller.VetController;
 import com.petcare.exception.DatabaseConfigException;
 import com.petcare.model.Treatment;
+import com.petcare.model.User;
 import com.petcare.util.ErrorHandler;
 
 public class EditTreatmentDialog extends JDialog {
@@ -37,7 +38,7 @@ public class EditTreatmentDialog extends JDialog {
 	private VetController controller;
 	private boolean changed = false;
 
-	public EditTreatmentDialog(Treatment treatment) {
+	public EditTreatmentDialog(User user, Treatment treatment) {
 
 		controller = new VetController();
 
@@ -205,7 +206,7 @@ public class EditTreatmentDialog extends JDialog {
 					return;
 				}
 				try {
-					controller.updateTreatment(treatment, diagnosis, treatmentDescription, medication, status);
+					controller.updateTreatment(user, treatment, diagnosis, treatmentDescription, medication, status);
 
 					changed = true;
 

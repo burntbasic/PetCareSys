@@ -29,6 +29,7 @@ import javax.swing.plaf.basic.ComboPopup;
 import com.petcare.controller.PetOwnerController;
 import com.petcare.exception.DatabaseConfigException;
 import com.petcare.model.Pet;
+import com.petcare.model.User;
 import com.petcare.util.ErrorHandler;
 
 public class EditPetDialog extends JDialog {
@@ -42,8 +43,8 @@ public class EditPetDialog extends JDialog {
 		return changed;
 	}
 
-	public EditPetDialog(Pet pet) {
-
+	public EditPetDialog(User user, Pet pet) {
+		
 		controller = new PetOwnerController();
 		changed = false;
 
@@ -169,7 +170,7 @@ public class EditPetDialog extends JDialog {
 				if (result == JOptionPane.YES_OPTION) {
 
 					try { 
-						controller.deletePet(pet);
+						controller.deletePet(user, pet);
 
 						changed = true;
 
@@ -207,7 +208,7 @@ public class EditPetDialog extends JDialog {
 				String gender = (String) genderComboBox.getSelectedItem();
 
 				try {
-					controller.updatePet(pet, name, species, otherSpecies, gender);
+					controller.updatePet(user, pet, name, species, otherSpecies, gender);
 
 					changed = true;
 

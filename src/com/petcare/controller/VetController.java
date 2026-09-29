@@ -3,6 +3,7 @@ package com.petcare.controller;
 import java.sql.SQLException;
 import java.util.List;
 
+import com.petcare.dao.ActivityLogDAO;
 import com.petcare.dao.AppointmentDAO;
 import com.petcare.dao.PetDAO;
 import com.petcare.dao.TreatmentDAO;
@@ -17,11 +18,13 @@ public class VetController {
     private AppointmentDAO appointmentdb;
     private TreatmentDAO treatmentdb;
     private PetDAO petdb;
+    private ActivityLogDAO activitydb;
 
     public VetController() {
         appointmentdb = new AppointmentDAO();
         treatmentdb = new TreatmentDAO();
         petdb = new PetDAO();
+        activitydb = new ActivityLogDAO();
     }
 
     //Dashboard Cards
@@ -55,8 +58,9 @@ public class VetController {
         return appointmentdb.getVetCancelled(user);
     }
     
-    public void completeAppointment(Appointment appointment) throws SQLException, DatabaseConfigException {
+    public void completeAppointment(User user, Appointment appointment) throws SQLException, DatabaseConfigException {
         appointmentdb.completeAppointment(appointment);
+        activitydb.addActivity(user.getId(), "Completed appointment");
     }
     
     //Patients Panel
@@ -74,7 +78,7 @@ public class VetController {
         return treatmentdb.getVetTreatments(user);
     }
     
-    public void updateTreatment(Treatment treatment, String diagnosis, String treatmentDescription, String medication, String status) throws SQLException, DatabaseConfigException {
+    public void updateTreatment(User user, Treatment treatment, String diagnosis, String treatmentDescription, String medication, String status) throws SQLException, DatabaseConfigException {
 
         if(treatment == null) {
             throw new IllegalArgumentException("Treatment cannot be null.");
@@ -97,6 +101,7 @@ public class VetController {
         }
 
         treatmentdb.updateTreatment(treatment, diagnosis.trim(), treatmentDescription.trim(), medication.trim(), status);
+        activitydb.addActivity(user.getId(), "Updated treatment");
     }
     
     public List<Appointment> getVetCompletedForTreatment(User user) throws SQLException, DatabaseConfigException {
@@ -131,6 +136,7 @@ public class VetController {
         }
 
         treatmentdb.addTreatment(appointmentId, user.getId(), diagnosis.trim(), treatmentDescription.trim(), medication.trim(), status);
+        activitydb.addActivity(user.getId(), "Added treatment");
     }
 
 }

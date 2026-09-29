@@ -143,7 +143,7 @@ public class MyPetsPanel extends JPanel {
 
 					Pet pet = pets.get(row);
 
-					EditPetDialog dialog = new EditPetDialog(pet);
+					EditPetDialog dialog = new EditPetDialog(user, pet);
 					dialog.setVisible(true);
 
 					if (dialog.isChanged()) {

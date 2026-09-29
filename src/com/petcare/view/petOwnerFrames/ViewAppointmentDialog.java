@@ -25,6 +25,7 @@ import javax.swing.JPanel;
 import com.petcare.controller.PetOwnerController;
 import com.petcare.exception.DatabaseConfigException;
 import com.petcare.model.Appointment;
+import com.petcare.model.User;
 import com.petcare.util.ErrorHandler;
 
 public class ViewAppointmentDialog extends JDialog {
@@ -38,7 +39,7 @@ public class ViewAppointmentDialog extends JDialog {
 		return changed;
 	}
 
-	public ViewAppointmentDialog(Appointment appointment) {
+	public ViewAppointmentDialog(User user, Appointment appointment) {
 
 		controller = new PetOwnerController();
 
@@ -88,7 +89,7 @@ public class ViewAppointmentDialog extends JDialog {
 
 					if (result == JOptionPane.YES_OPTION) {
 						try {	
-							controller.cancelAppointment(appointment);
+							controller.cancelAppointment(user, appointment);
 
 							changed = true;
 

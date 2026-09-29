@@ -18,13 +18,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.petcare.model.Treatment;
+import com.petcare.model.User;
 
 public class ViewTreatmentDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 	private boolean changed = false;
 
-	public ViewTreatmentDialog(Treatment treatment) {
+	public ViewTreatmentDialog(User user, Treatment treatment) {
 
 		setTitle("Treatment Details");
 		setSize(500, 450);
@@ -87,7 +88,7 @@ public class ViewTreatmentDialog extends JDialog {
 		editButton.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
 
-		        EditTreatmentDialog dialog = new EditTreatmentDialog(treatment);
+		        EditTreatmentDialog dialog = new EditTreatmentDialog(user, treatment);
 		        dialog.setVisible(true);
 
 		        if(dialog.isChanged()) {

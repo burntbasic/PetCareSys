@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 import com.petcare.controller.VetController;
 import com.petcare.exception.DatabaseConfigException;
 import com.petcare.model.Appointment;
+import com.petcare.model.User;
 import com.petcare.util.ErrorHandler;
 
 public class VetAppointmentDialog extends JDialog {
@@ -33,7 +34,7 @@ public class VetAppointmentDialog extends JDialog {
 
 	private boolean changed = false;
 
-	public VetAppointmentDialog(Appointment appointment) {
+	public VetAppointmentDialog(User user, Appointment appointment) {
 
 		this.appointment = appointment;
 		controller = new VetController();
@@ -95,7 +96,7 @@ public class VetAppointmentDialog extends JDialog {
 			completeButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			completeButton.addActionListener(new ActionListener() {
 			    public void actionPerformed(ActionEvent e) {
-			        completeAppointment();
+			        completeAppointment(user);
 			    }
 			});
 
@@ -123,7 +124,7 @@ public class VetAppointmentDialog extends JDialog {
 	    panel.add(valueLabel, gbc);
 	}
 
-	private void completeAppointment() {
+	private void completeAppointment(User user) {
 
 		int result = JOptionPane.showConfirmDialog(this, "Are you sure you want to mark this appointment as completed?", "Complete Appointment", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
@@ -132,7 +133,7 @@ public class VetAppointmentDialog extends JDialog {
 		}
 
 		try {
-			controller.completeAppointment(appointment);
+			controller.completeAppointment(user, appointment);
 
 			changed = true;
 
