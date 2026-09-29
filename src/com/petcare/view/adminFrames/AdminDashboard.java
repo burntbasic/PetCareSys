@@ -48,13 +48,11 @@ public class AdminDashboard extends BaseDashboard {
 		JButton usersBtn = createMenuButton("User Management");
 		JButton appointmentsBtn = createMenuButton("Appointments");
 		JButton reportsBtn = createMenuButton("Reports");
-		JButton systemBtn = createMenuButton("System Management");
 
 		sidebar.add(dashboardBtn);
 		sidebar.add(usersBtn);
 		sidebar.add(appointmentsBtn);
 		sidebar.add(reportsBtn);
-		sidebar.add(systemBtn);
 
 		sidebar.add(Box.createVerticalGlue());
 
@@ -202,14 +200,10 @@ public class AdminDashboard extends BaseDashboard {
 
 		JPanel reportsPanel = new JPanel();
 		reportsPanel.add(new JLabel("Reports"));
-
-		JPanel systemPanel = new JPanel();
-		systemPanel.add(new JLabel("System Management"));
 		
 		contentPanel.add(usersPanel, "users");
 		contentPanel.add(appointmentsPanel, "appointments");
 		contentPanel.add(reportsPanel, "reports");
-		contentPanel.add(systemPanel, "system");
 		
 		dashboardBtn.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
@@ -236,13 +230,6 @@ public class AdminDashboard extends BaseDashboard {
 		    public void actionPerformed(ActionEvent e) {
 		        CardLayout layout = (CardLayout) contentPanel.getLayout();
 		        layout.show(contentPanel, "reports");
-		    }
-		});
-		
-		systemBtn.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent e) {
-		        CardLayout layout = (CardLayout) contentPanel.getLayout();
-		        layout.show(contentPanel, "system");
 		    }
 		});
 
