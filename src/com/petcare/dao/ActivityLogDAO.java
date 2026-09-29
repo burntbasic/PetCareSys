@@ -42,5 +42,19 @@ public class ActivityLogDAO {
 			return activities;
 		}
 	}
+	
+	public boolean addActivity(int userId, String activity) throws SQLException, DatabaseConfigException {
+
+		String sql = "INSERT INTO ActivityLog (user_id, activity) VALUES (?, ?)";
+
+		try(Connection connection = DBConnection.getConnection();
+			PreparedStatement statement = connection.prepareStatement(sql)) {
+
+			statement.setInt(1, userId);
+			statement.setString(2, activity);
+
+			return statement.executeUpdate() > 0;
+		}
+	}
 
 }
