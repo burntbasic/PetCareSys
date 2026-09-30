@@ -171,8 +171,7 @@ public class AdminDashboard extends BaseDashboard {
 
 		AdminAppointmentsPanel appointmentsPanel = new AdminAppointmentsPanel(user);
 		
-		JPanel reportsPanel = new JPanel();
-		reportsPanel.add(new JLabel("Reports"));
+		AdminReportsPanel reportsPanel = new AdminReportsPanel(user);
 
 		contentPanel.add(usersPanel, "users");
 		contentPanel.add(appointmentsPanel, "appointments");
@@ -180,9 +179,7 @@ public class AdminDashboard extends BaseDashboard {
 
 		dashboardBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
 				loadRecentActivity(activityTable);
-				
 				CardLayout layout = (CardLayout) contentPanel.getLayout();
 				layout.show(contentPanel, "dashboard");
 			}
