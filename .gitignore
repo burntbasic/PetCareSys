@@ -1,0 +1,17 @@
+# Ignore everything
+*
+
+# Keep .gitignore
+!.gitignore
+
+# Allow Git to enter src
+!src/
+!src/com/
+!src/com/petcare/
+
+# Ignore everything directly inside petcare
+src/com/petcare/*
+
+# Keep only view
+!src/com/petcare/view/
+!src/com/petcare/view/**
