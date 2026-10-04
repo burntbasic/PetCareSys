@@ -1,24 +1,12 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
+ */
 package com.petcare.view.vetFrames;
 
-import java.awt.BorderLayout;
-import java.awt.Cursor;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.Color;
 import java.sql.SQLException;
-
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 import com.petcare.controller.VetController;
 import com.petcare.exception.DatabaseConfigException;
@@ -26,204 +14,275 @@ import com.petcare.model.Treatment;
 import com.petcare.model.User;
 import com.petcare.util.ErrorHandler;
 
-public class EditTreatmentDialog extends JDialog {
+/**
+ *
+ * @author hirunaka
+ */
+public class EditTreatmentDialog extends javax.swing.JDialog {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private JTextField diagnosisField;
-	private JTextField treatmentField;
-	private JTextField medicationField;
-	private JComboBox<String> statusComboBox;
+    private Treatment treatment;
 
-	private VetController controller;
-	private boolean changed = false;
+    private VetController controller;
+    private User user;
 
-	public EditTreatmentDialog(User user, Treatment treatment) {
+    private boolean changed = false;
 
-		controller = new VetController();
+    /**
+     * Creates new form EditTreatmentDialog
+     */
+    public EditTreatmentDialog(User user, Treatment treatment) {
+        this.user = user;
+        this.treatment = treatment;
+        controller = new VetController();
 
-		setTitle("Edit Treatment");
-		setSize(500, 400);
-		setLayout(new BorderLayout(15, 15));
-		setLocationRelativeTo(null);
-		setModal(true);
+        initComponents();
 
+        getContentPane().setBackground(Color.WHITE);
+        setLocationRelativeTo(null);
 
-		// FORM
-		JPanel formPanel = new JPanel(new GridBagLayout());
-		formPanel.setBorder(BorderFactory.createEmptyBorder(20, 25, 10, 25));
+        // Pre-fill the form with the treatment's current details
+        lblPetValue.setText(treatment.getPetName());
+        lblOwnerValue.setText(treatment.getOwnerName());
+        txtDiagnosis.setText(treatment.getDiagnosis());
+        txtTreatment.setText(treatment.getTreatmentDescription());
+        txtMedication.setText(treatment.getMedication());
+        cmbStatus.setSelectedItem(treatment.getStatus());
+    }
 
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.insets = new Insets(7, 5, 7, 5);
-		gbc.anchor = GridBagConstraints.WEST;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
+    private void saveTreatment() {
 
-		JLabel titleLabel = new JLabel("Edit Treatment");
-		titleLabel.setFont(new Font("SansSerif", Font.BOLD, 24));
+        String diagnosis = txtDiagnosis.getText().trim();
+        String treatmentDescription = txtTreatment.getText().trim();
+        String medication = txtMedication.getText().trim();
+        String status = (String) cmbStatus.getSelectedItem();
 
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.gridwidth = 2;
+        if (diagnosis.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Diagnosis cannot be empty.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (treatmentDescription.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Treatment cannot be empty.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (medication.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Medication cannot be empty.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-		formPanel.add(titleLabel, gbc);
+        try {
+            controller.updateTreatment(user, treatment, diagnosis, treatmentDescription, medication, status);
 
-		gbc.gridwidth = 1;
+            changed = true;
 
-		// PET
-		gbc.gridx = 0;
-		gbc.gridy = 1;
+            JOptionPane.showMessageDialog(this, "Treatment updated successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+            dispose();
 
-		JLabel petLabel = new JLabel("Pet");
-		petLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
+        } catch (IllegalArgumentException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Validation Error", JOptionPane.ERROR_MESSAGE);
+        } catch (SQLException ex) {
+            ErrorHandler.handleSQLException(ex);
+        } catch (DatabaseConfigException ex) {
+            ErrorHandler.handleDatabaseConfigException(ex);
+        }
+    }
 
-		formPanel.add(petLabel, gbc);
+    public boolean isChanged() {
+        return changed;
+    }
 
-		gbc.gridx = 1;
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
 
-		formPanel.add(new JLabel(treatment.getPetName()),gbc);
+        lblTitle = new javax.swing.JLabel();
+        lblPet = new javax.swing.JLabel();
+        lblPetValue = new javax.swing.JLabel();
+        lblOwner = new javax.swing.JLabel();
+        lblOwnerValue = new javax.swing.JLabel();
+        lblDiagnosis = new javax.swing.JLabel();
+        txtDiagnosis = new javax.swing.JTextField();
+        lblTreatment = new javax.swing.JLabel();
+        txtTreatment = new javax.swing.JTextField();
+        lblMedication = new javax.swing.JLabel();
+        txtMedication = new javax.swing.JTextField();
+        lblStatus = new javax.swing.JLabel();
+        cmbStatus = new javax.swing.JComboBox<>();
+        btnCancel = new javax.swing.JButton();
+        btnSave = new javax.swing.JButton();
 
-		// OWNER
-		gbc.gridx = 0;
-		gbc.gridy = 2;
+        setTitle("Edit Treatment");
+        setModal(true);
+        setResizable(false);
 
-		JLabel ownerLabel = new JLabel("Owner");
-		ownerLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
+        lblTitle.setFont(new java.awt.Font("Segoe UI", 1, 22)); // NOI18N
+        lblTitle.setForeground(new java.awt.Color(33, 37, 41));
+        lblTitle.setText("Edit Treatment");
 
-		formPanel.add(ownerLabel, gbc);
+        lblPet.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblPet.setForeground(new java.awt.Color(73, 80, 87));
+        lblPet.setText("Pet");
 
-		gbc.gridx = 1;
+        lblPetValue.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lblPetValue.setForeground(new java.awt.Color(33, 37, 41));
+        lblPetValue.setText("Pet name");
 
-		formPanel.add(new JLabel(treatment.getOwnerName()),gbc);
+        lblOwner.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblOwner.setForeground(new java.awt.Color(73, 80, 87));
+        lblOwner.setText("Owner");
 
-		// DIAGNOSIS
-		gbc.gridx = 0;
-		gbc.gridy = 3;
+        lblOwnerValue.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lblOwnerValue.setForeground(new java.awt.Color(33, 37, 41));
+        lblOwnerValue.setText("Owner name");
 
-		JLabel diagnosisLabel = new JLabel("Diagnosis");
-		diagnosisLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
+        lblDiagnosis.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblDiagnosis.setForeground(new java.awt.Color(73, 80, 87));
+        lblDiagnosis.setText("Diagnosis");
 
-		formPanel.add(diagnosisLabel, gbc);
+        txtDiagnosis.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtDiagnosis.setForeground(new java.awt.Color(33, 37, 41));
+        txtDiagnosis.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(206, 212, 218)), javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 10)));
 
-		gbc.gridx = 1;
+        lblTreatment.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblTreatment.setForeground(new java.awt.Color(73, 80, 87));
+        lblTreatment.setText("Treatment");
 
-		diagnosisField = new JTextField(treatment.getDiagnosis(), 20);
+        txtTreatment.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtTreatment.setForeground(new java.awt.Color(33, 37, 41));
+        txtTreatment.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(206, 212, 218)), javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 10)));
 
-		formPanel.add(diagnosisField, gbc);
+        lblMedication.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblMedication.setForeground(new java.awt.Color(73, 80, 87));
+        lblMedication.setText("Medication");
 
-		// TREATMENT
-		gbc.gridx = 0;
-		gbc.gridy = 4;
+        txtMedication.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtMedication.setForeground(new java.awt.Color(33, 37, 41));
+        txtMedication.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(206, 212, 218)), javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 10)));
 
-		JLabel treatmentLabel = new JLabel("Treatment");
-		treatmentLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
+        lblStatus.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblStatus.setForeground(new java.awt.Color(73, 80, 87));
+        lblStatus.setText("Status");
 
-		formPanel.add(treatmentLabel, gbc);
+        cmbStatus.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        cmbStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pending", "Completed" }));
 
-		gbc.gridx = 1;
+        btnCancel.setBackground(new java.awt.Color(255, 255, 255));
+        btnCancel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnCancel.setForeground(new java.awt.Color(33, 37, 41));
+        btnCancel.setText("Cancel");
+        btnCancel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(206, 212, 218)));
+        btnCancel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnCancel.setFocusPainted(false);
+        btnCancel.addActionListener(this::btnCancelActionPerformed);
 
-		treatmentField = new JTextField(treatment.getTreatmentDescription(), 20);
+        btnSave.setBackground(new java.awt.Color(0, 121, 107));
+        btnSave.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnSave.setForeground(new java.awt.Color(255, 255, 255));
+        btnSave.setText("Save Changes");
+        btnSave.setBorderPainted(false);
+        btnSave.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnSave.setFocusPainted(false);
+        btnSave.addActionListener(this::btnSaveActionPerformed);
 
-		formPanel.add(treatmentField, gbc);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(28, 28, 28)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblTitle)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblPet)
+                            .addComponent(lblPetValue, 0, 180, Short.MAX_VALUE))
+                        .addGap(24, 24, 24)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblOwner)
+                            .addComponent(lblOwnerValue, 0, 180, Short.MAX_VALUE)))
+                    .addComponent(lblDiagnosis)
+                    .addComponent(txtDiagnosis, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblTreatment)
+                    .addComponent(txtTreatment, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblMedication)
+                    .addComponent(txtMedication, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblStatus)
+                    .addComponent(cmbStatus, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(10, 10, 10)
+                        .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(28, 28, 28))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(24, 24, 24)
+                .addComponent(lblTitle)
+                .addGap(20, 20, 20)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblPet)
+                    .addComponent(lblOwner))
+                .addGap(4, 4, 4)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblPetValue)
+                    .addComponent(lblOwnerValue))
+                .addGap(12, 12, 12)
+                .addComponent(lblDiagnosis)
+                .addGap(4, 4, 4)
+                .addComponent(txtDiagnosis, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(lblTreatment)
+                .addGap(4, 4, 4)
+                .addComponent(txtTreatment, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(lblMedication)
+                .addGap(4, 4, 4)
+                .addComponent(txtMedication, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(lblStatus)
+                .addGap(4, 4, 4)
+                .addComponent(cmbStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 20, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(24, 24, 24))
+        );
 
-		// MEDICATION
-		gbc.gridx = 0;
-		gbc.gridy = 5;
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
 
-		JLabel medicationLabel = new JLabel("Medication");
-		medicationLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
+    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
+        dispose();
+    }//GEN-LAST:event_btnCancelActionPerformed
 
-		formPanel.add(medicationLabel, gbc);
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        saveTreatment();
+    }//GEN-LAST:event_btnSaveActionPerformed
 
-		gbc.gridx = 1;
-
-		medicationField = new JTextField(treatment.getMedication(), 20);
-
-		formPanel.add(medicationField, gbc);
-
-		// STATUS
-		gbc.gridx = 0;
-		gbc.gridy = 6;
-
-		JLabel statusLabel = new JLabel("Status");
-		statusLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
-
-		formPanel.add(statusLabel, gbc);
-
-		gbc.gridx = 1;
-
-		String[] statuses = {"Pending", "Completed"};
-
-		statusComboBox = new JComboBox<>(statuses);
-		statusComboBox.setSelectedItem(treatment.getStatus());
-
-		formPanel.add(statusComboBox, gbc);
-
-		add(formPanel, BorderLayout.CENTER);
-
-		// BUTTONS
-		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-
-		JButton cancelButton = new JButton("Cancel");
-		JButton saveButton = new JButton("Save Changes");
-
-		cancelButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-		saveButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-		buttonPanel.add(cancelButton);
-		buttonPanel.add(saveButton);
-
-		add(buttonPanel, BorderLayout.SOUTH);
-
-		// CANCEL
-		cancelButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				dispose();
-			}
-		});
-
-		// SAVE
-		saveButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String diagnosis = diagnosisField.getText().trim();
-				String treatmentDescription = treatmentField.getText().trim();
-				String medication = medicationField.getText().trim();
-				String status = (String) statusComboBox.getSelectedItem();
-
-				// UI VALIDATION
-				if(diagnosis.isEmpty()) {
-					JOptionPane.showMessageDialog(EditTreatmentDialog.this, "Diagnosis cannot be empty.", "Validation Error", JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				if(treatmentDescription.isEmpty()) {
-					JOptionPane.showMessageDialog(EditTreatmentDialog.this, "Treatment cannot be empty.", "Validation Error", JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				if(medication.isEmpty()) {
-					JOptionPane.showMessageDialog(EditTreatmentDialog.this, "Medication cannot be empty.", "Validation Error", JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				
-				try {
-					controller.updateTreatment(user, treatment, diagnosis, treatmentDescription, medication, status);
-
-					changed = true;
-
-					JOptionPane.showMessageDialog(EditTreatmentDialog.this, "Treatment updated successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
-					dispose();
-
-				} catch(IllegalArgumentException ex) {
-					JOptionPane.showMessageDialog(EditTreatmentDialog.this, ex.getMessage(), "Validation Error", JOptionPane.ERROR_MESSAGE);
-				} catch(SQLException ex) {
-					ErrorHandler.handleSQLException(ex);
-				} catch(DatabaseConfigException ex) {
-					ErrorHandler.handleDatabaseConfigException(ex);
-				}
-			}
-		});     
-	}
-
-	public boolean isChanged() {
-		return changed;
-	}
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCancel;
+    private javax.swing.JButton btnSave;
+    private javax.swing.JComboBox<String> cmbStatus;
+    private javax.swing.JLabel lblDiagnosis;
+    private javax.swing.JLabel lblMedication;
+    private javax.swing.JLabel lblOwner;
+    private javax.swing.JLabel lblOwnerValue;
+    private javax.swing.JLabel lblPet;
+    private javax.swing.JLabel lblPetValue;
+    private javax.swing.JLabel lblStatus;
+    private javax.swing.JLabel lblTitle;
+    private javax.swing.JLabel lblTreatment;
+    private javax.swing.JTextField txtDiagnosis;
+    private javax.swing.JTextField txtMedication;
+    private javax.swing.JTextField txtTreatment;
+    // End of variables declaration//GEN-END:variables
 }
