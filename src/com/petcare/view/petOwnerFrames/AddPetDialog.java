@@ -87,7 +87,6 @@ public class AddPetDialog extends javax.swing.JDialog {
         txtName = new javax.swing.JTextField();
         lblSpecies = new javax.swing.JLabel();
         cmbSpecies = new javax.swing.JComboBox<>();
-        otherPanel = new javax.swing.JPanel();
         lblOtherSpecies = new javax.swing.JLabel();
         txtOtherSpecies = new javax.swing.JTextField();
         lblGender = new javax.swing.JLabel();
@@ -123,32 +122,14 @@ public class AddPetDialog extends javax.swing.JDialog {
         cmbSpecies.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Dog", "Cat", "Squirrel", "Hamster", "Other" }));
         cmbSpecies.addActionListener(this::cmbSpeciesActionPerformed);
 
-        otherPanel.setOpaque(false);
-        otherPanel.setVisible(false);
-
         lblOtherSpecies.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         lblOtherSpecies.setForeground(new java.awt.Color(73, 80, 87));
         lblOtherSpecies.setText("Other Species");
 
         txtOtherSpecies.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         txtOtherSpecies.setForeground(new java.awt.Color(33, 37, 41));
+        txtOtherSpecies.setEnabled(false);
         txtOtherSpecies.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(206, 212, 218)), javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 10)));
-
-        javax.swing.GroupLayout otherPanelLayout = new javax.swing.GroupLayout(otherPanel);
-        otherPanel.setLayout(otherPanelLayout);
-        otherPanelLayout.setHorizontalGroup(
-            otherPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(lblOtherSpecies)
-            .addComponent(txtOtherSpecies, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        otherPanelLayout.setVerticalGroup(
-            otherPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(otherPanelLayout.createSequentialGroup()
-                .addGap(12, 12, 12)
-                .addComponent(lblOtherSpecies)
-                .addGap(4, 4, 4)
-                .addComponent(txtOtherSpecies, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
 
         lblGender.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         lblGender.setForeground(new java.awt.Color(73, 80, 87));
@@ -188,7 +169,8 @@ public class AddPetDialog extends javax.swing.JDialog {
                     .addComponent(txtName, javax.swing.GroupLayout.DEFAULT_SIZE, 344, Short.MAX_VALUE)
                     .addComponent(lblSpecies)
                     .addComponent(cmbSpecies, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(otherPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblOtherSpecies)
+                    .addComponent(txtOtherSpecies, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lblGender)
                     .addComponent(cmbGender, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
@@ -213,12 +195,15 @@ public class AddPetDialog extends javax.swing.JDialog {
                 .addComponent(lblSpecies)
                 .addGap(4, 4, 4)
                 .addComponent(cmbSpecies, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(otherPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(lblOtherSpecies)
+                .addGap(4, 4, 4)
+                .addComponent(txtOtherSpecies, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12)
                 .addComponent(lblGender)
                 .addGap(4, 4, 4)
                 .addComponent(cmbGender, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 76, Short.MAX_VALUE)
+                .addGap(0, 20, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -229,11 +214,8 @@ public class AddPetDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void cmbSpeciesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbSpeciesActionPerformed
-        // Only show the extra field when "Other" is selected
-        otherPanel.setVisible("Other".equals(cmbSpecies.getSelectedItem()));
-
-        getContentPane().revalidate();
-        getContentPane().repaint();
+        // The extra field is only usable when "Other" is selected
+        txtOtherSpecies.setEnabled("Other".equals(cmbSpecies.getSelectedItem()));
     }//GEN-LAST:event_cmbSpeciesActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
@@ -288,7 +270,6 @@ public class AddPetDialog extends javax.swing.JDialog {
     private javax.swing.JLabel lblSpecies;
     private javax.swing.JLabel lblSubtitle;
     private javax.swing.JLabel lblTitle;
-    private javax.swing.JPanel otherPanel;
     private javax.swing.JTextField txtName;
     private javax.swing.JTextField txtOtherSpecies;
     // End of variables declaration//GEN-END:variables
