@@ -19,188 +19,208 @@ import com.petcare.model.User;
 
 public class AdminController {
 
-	private UserDAO userdb;
-	private PetDAO petdb;
-	private AppointmentDAO appointmentdb;
-	private ActivityLogDAO activitydb;
-	private User loggedInUser;
+    private UserDAO userdb;
+    private PetDAO petdb;
+    private AppointmentDAO appointmentdb;
+    private ActivityLogDAO activitydb;
+    private User loggedInUser;
 
-	public AdminController(User user) {
+    public AdminController(User user) {
 
-		loggedInUser = user;
+        loggedInUser = user;
 
-		userdb = new UserDAO();
-		petdb = new PetDAO();
-		appointmentdb = new AppointmentDAO();
-		activitydb = new ActivityLogDAO();
-	}
+        userdb = new UserDAO();
+        petdb = new PetDAO();
+        appointmentdb = new AppointmentDAO();
+        activitydb = new ActivityLogDAO();
+    }
 
-	// Dashboard Cards
+    // Dashboard Cards
+    public int getOwnerCount() throws SQLException, DatabaseConfigException {
+        return userdb.getOwnerCount();
+    }
 
-	public int getOwnerCount() throws SQLException, DatabaseConfigException {
-		return userdb.getOwnerCount();
-	}
+    public int getVetCount() throws SQLException, DatabaseConfigException {
+        return userdb.getVetCount();
+    }
 
-	public int getVetCount() throws SQLException, DatabaseConfigException {
-		return userdb.getVetCount();
-	}
+    public int getTotPetCount() throws SQLException, DatabaseConfigException {
+        return petdb.getTotPetCount();
+    }
 
-	public int getTotPetCount() throws SQLException, DatabaseConfigException {
-		return petdb.getTotPetCount();
-	}
+    public int getTotUpcomingCount() throws SQLException, DatabaseConfigException {
+        return appointmentdb.getTotUpcomingCount();
+    }
 
-	public int getTotUpcomingCount() throws SQLException, DatabaseConfigException {
-		return appointmentdb.getTotUpcomingCount();
-	}
+    // Dashboard Table
+    public List<Activity> getRecentActivity() throws SQLException, DatabaseConfigException {
+        return activitydb.getRecentActivity();
+    }
 
-	// Dashboard Table
+    // User Management
+    public List<User> getAllUsers() throws SQLException, DatabaseConfigException {
+        return userdb.getAllUsers();
+    }
 
-	public List<Activity> getRecentActivity() throws SQLException, DatabaseConfigException {
-		return activitydb.getRecentActivity();
-	}
+    public boolean updateUser(int userId, String fName, String lName, String email, String phone, String username, String role) throws SQLException, DatabaseConfigException {
 
-	// User Management
+        phone = "+94" + phone;
+        boolean updated = userdb.updateUser(userId, fName, lName, email, phone, username, role);
 
-	public List<User> getAllUsers() throws SQLException, DatabaseConfigException {
-		return userdb.getAllUsers();
-	}
+        if (updated) {
+            activitydb.addActivity(loggedInUser.getId(), "Updated user");
+        }
 
-	public boolean updateUser(int userId, String fName, String lName, String email, String phone, String username, String role) throws SQLException, DatabaseConfigException {
+        return updated;
+    }
 
-		phone = "+94" + phone;
-		boolean updated = userdb.updateUser(userId, fName, lName, email, phone, username, role);
+    public boolean deleteUser(int userId) throws SQLException, DatabaseConfigException {
 
-		if (updated) {
-			activitydb.addActivity(loggedInUser.getId(), "Updated user");
-		}
+        boolean deleted = userdb.deleteUser(userId);
 
-		return updated;
-	}
+        if (deleted) {
+            activitydb.addActivity(loggedInUser.getId(), "Deleted user");
+        }
 
-	public boolean deleteUser(int userId) throws SQLException, DatabaseConfigException {
+        return deleted;
+    }
 
-		boolean deleted = userdb.deleteUser(userId);
+    public boolean addUser(String fName, String lName, String email, String phone, String username, String password, String role) throws SQLException, DatabaseConfigException {
 
-		if (deleted) {
-			activitydb.addActivity(loggedInUser.getId(), "Deleted user");
-		}
+        phone = "+94" + phone;
+        boolean added = userdb.addUser(fName, lName, email, phone, username, password, role);
 
-		return deleted;
-	}
+        if (added) {
+            activitydb.addActivity(loggedInUser.getId(), "Added user");
+        }
 
-	public boolean addUser(String fName, String lName, String email, String phone, String username, String password, String role) throws SQLException, DatabaseConfigException {
+        return added;
+    }
 
-		phone = "+94" + phone;
-		boolean added = userdb.addUser(fName, lName, email, phone, username, password, role);
+    public boolean usernameExistsForOtherUser(String username, int userId) throws SQLException, DatabaseConfigException {
+        return userdb.usernameExistsForOtherUser(username, userId);
+    }
 
-		if (added) {
-			activitydb.addActivity(loggedInUser.getId(), "Added user");
-		}
+    public boolean emailExistsForOtherUser(String email, int userId) throws SQLException, DatabaseConfigException {
+        return userdb.emailExistsForOtherUser(email, userId);
+    }
 
-		return added;
-	}
+    // Pets
+    public List<Pet> getOwnerPets(User owner) throws SQLException, DatabaseConfigException {
+        return petdb.getOwnerPets(owner);
+    }
 
-	public boolean usernameExists(String username) throws SQLException, DatabaseConfigException {
-		return userdb.usernameExists(username);
-	}
+    public List<Pet> getAllPets() throws SQLException, DatabaseConfigException {
+        return petdb.getAllPets();
+    }
 
-	public boolean emailExists(String email) throws SQLException, DatabaseConfigException {
-		return userdb.emailExists(email);
-	}
+    public List<User> getPetOwners() throws SQLException, DatabaseConfigException {
+        return userdb.getPetOwners();
+    }
 
-	// Pets
+    public void addPet(User selectedOwner, String name, String species, String otherSpecies, String gender) throws SQLException, DatabaseConfigException {
 
-	public List<Pet> getOwnerPets(User owner) throws SQLException, DatabaseConfigException {
-		return petdb.getOwnerPets(owner);
-	}
+        if (selectedOwner == null) {
+            throw new IllegalArgumentException("Please select a pet owner.");
+        }
 
-	public List<Pet> getAllPets() throws SQLException, DatabaseConfigException {
-		return petdb.getAllPets();
-	}
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Pet name cannot be empty.");
+        }
 
-	public List<User> getPetOwners() throws SQLException, DatabaseConfigException {
-		return userdb.getPetOwners();
-	}
+        if (name.length() > 100) {
+            throw new IllegalArgumentException("Pet name cannot exceed 100 characters.");
+        }
 
-	public void addPet(User user, String name, String species, String gender) throws SQLException, DatabaseConfigException {
+        if (species.equals("Other")) {
 
-		petdb.addPet(user, name, species, gender);
-		activitydb.addActivity(loggedInUser.getId(), "Added pet");
-	}
+            if (otherSpecies == null || otherSpecies.trim().isEmpty()) {
+                throw new IllegalArgumentException("Please enter the animal type.");
+            }
 
-	// Appointments
+            if (otherSpecies.length() > 50) {
+                throw new IllegalArgumentException("Animal type cannot exceed 50 characters.");
+            }
 
-	public List<Appointment> getAllAppointments() throws SQLException, DatabaseConfigException {
-		return appointmentdb.getAllAppointments();
-	}
+            species = otherSpecies.trim();
+        }
 
-	public boolean updateAppointment(Appointment appointment) throws SQLException, DatabaseConfigException {
+        petdb.addPet(selectedOwner, name.trim(), species, gender);
+        activitydb.addActivity(loggedInUser.getId(), "Added pet");
+    }
 
-		boolean updated = appointmentdb.updateAppointment(appointment);
+    // Appointments
+    public List<Appointment> getAllAppointments() throws SQLException, DatabaseConfigException {
+        return appointmentdb.getAllAppointments();
+    }
 
-		if (updated) {
-			activitydb.addActivity(loggedInUser.getId(), "Updated appointment");
-		}
+    public boolean updateAppointment(Appointment appointment) throws SQLException, DatabaseConfigException {
 
-		return updated;
-	}
+        boolean updated = appointmentdb.updateAppointment(appointment);
 
-	public void cancelAppointment(Appointment appointment) throws SQLException, DatabaseConfigException {
+        if (updated) {
+            activitydb.addActivity(loggedInUser.getId(), "Updated appointment");
+        }
 
-		appointmentdb.cancelAppointment(appointment);
-		activitydb.addActivity(loggedInUser.getId(), "Cancelled appointment");
-	}
+        return updated;
+    }
 
-	public boolean deleteAppointment(int appointmentId) throws SQLException, DatabaseConfigException {
+    public void cancelAppointment(Appointment appointment) throws SQLException, DatabaseConfigException {
 
-		boolean deleted = appointmentdb.deleteAppointment(appointmentId);
+        appointmentdb.cancelAppointment(appointment);
+        activitydb.addActivity(loggedInUser.getId(), "Cancelled appointment");
+    }
 
-		if (deleted) {
-			activitydb.addActivity(loggedInUser.getId(), "Deleted appointment");
-		}
+    public boolean deleteAppointment(int appointmentId) throws SQLException, DatabaseConfigException {
 
-		return deleted;
-	}
+        boolean deleted = appointmentdb.deleteAppointment(appointmentId);
 
-	public List<User> getVeterinarians() throws SQLException, DatabaseConfigException {
-		return userdb.getVeterinarians();
-	}
+        if (deleted) {
+            activitydb.addActivity(loggedInUser.getId(), "Deleted appointment");
+        }
 
-	public List<LocalTime> getAvailableTimes(int vetId, LocalDate date) throws SQLException, DatabaseConfigException {
+        return deleted;
+    }
 
-		List<Timestamp> bookedTimes = appointmentdb.getBookedTimes(vetId, date);
-		List<LocalTime> availableTimes = new ArrayList<>();
+    public List<User> getVeterinarians() throws SQLException, DatabaseConfigException {
+        return userdb.getVeterinarians();
+    }
 
-		LocalTime startTime = LocalTime.of(8, 30);
-		LocalTime endTime = LocalTime.of(17, 30);
+    public List<LocalTime> getAvailableTimes(int vetId, LocalDate date) throws SQLException, DatabaseConfigException {
 
-		for (LocalTime time = startTime; !time.isAfter(endTime); time = time.plusMinutes(30)) {
+        List<Timestamp> bookedTimes = appointmentdb.getBookedTimes(vetId, date);
+        List<LocalTime> availableTimes = new ArrayList<>();
 
-			boolean booked = false;
+        LocalTime startTime = LocalTime.of(8, 30);
+        LocalTime endTime = LocalTime.of(17, 30);
 
-			for (Timestamp bookedTimestamp : bookedTimes) {
+        for (LocalTime time = startTime; !time.isAfter(endTime); time = time.plusMinutes(30)) {
 
-				LocalTime bookedTime = bookedTimestamp.toLocalDateTime().toLocalTime();
+            boolean booked = false;
 
-				if (bookedTime.equals(time)) {
-					booked = true;
-					break;
-				}
-			}
+            for (Timestamp bookedTimestamp : bookedTimes) {
 
-			if (!booked) {
-				availableTimes.add(time);
-			}
-		}
+                LocalTime bookedTime = bookedTimestamp.toLocalDateTime().toLocalTime();
 
-		return availableTimes;
-	}
+                if (bookedTime.equals(time)) {
+                    booked = true;
+                    break;
+                }
+            }
 
-	public void addAppointment(Pet pet, User vet, LocalDate date, LocalTime time, String reason) throws SQLException, DatabaseConfigException {
+            if (!booked) {
+                availableTimes.add(time);
+            }
+        }
 
-		Timestamp appointmentDate = Timestamp.valueOf(date.atTime(time));
+        return availableTimes;
+    }
 
-		appointmentdb.bookAppointment(pet.getPetId(), vet.getId(), appointmentDate, reason);
-		activitydb.addActivity(loggedInUser.getId(), "Added appointment");
-	}
+    public void addAppointment(Pet pet, User vet, LocalDate date, LocalTime time, String reason) throws SQLException, DatabaseConfigException {
+
+        Timestamp appointmentDate = Timestamp.valueOf(date.atTime(time));
+
+        appointmentdb.bookAppointment(pet.getPetId(), vet.getId(), appointmentDate, reason);
+        activitydb.addActivity(loggedInUser.getId(), "Added appointment");
+    }
 }

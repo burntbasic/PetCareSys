@@ -17,7 +17,7 @@ Other highlights:
 - Login and registration screens
 - Activity logging of user actions
 - PDF-style reports (appointments, pets, treatments, users, medical) using JasperReports
-- Modern dark UI using FlatLaf
+- Modern light UI using FlatLaf
 - Structured with MVC, DAO, and Factory patterns
 
 ## Prerequisites
