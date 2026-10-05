@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JDialogFormInfo">
+  <Properties>
+    <Property name="title" type="java.lang.String" value="Add Appointment"/>
+    <Property name="modal" type="boolean" value="true"/>
+    <Property name="resizable" type="boolean" value="false"/>
+  </Properties>
+  <SyntheticProperties>
+    <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
+    <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
+  </SyntheticProperties>
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="3"/>
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+  </AuxValues>
+  <Layout>
+    <DimensionLayout dim="0">
+      <Group type="103" groupAlignment="0" attributes="0">
+        <Group type="102" alignment="0" attributes="0">
+          <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
+          <Group type="103" groupAlignment="0" attributes="0">
+            <Component id="lblTitle" alignment="0" min="-2" max="-2" attributes="0"/>
+            <Component id="lblSubtitle" alignment="0" min="-2" max="-2" attributes="0"/>
+<Component id="lblOwner" alignment="0" min="-2" max="-2" attributes="0"/>
+<Component id="cmbOwner" alignment="0" min="0" max="32767" attributes="0"/>
+            <Component id="lblPet" alignment="0" min="-2" max="-2" attributes="0"/>
+            <Component id="cmbPet" alignment="0" min="0" pref="384" max="32767" attributes="0"/>
+            <Component id="lblVet" alignment="0" min="-2" max="-2" attributes="0"/>
+            <Component id="cmbVet" alignment="0" min="0" max="32767" attributes="0"/>
+            <Component id="lblDate" alignment="0" min="-2" max="-2" attributes="0"/>
+            <Component id="datePanel" alignment="0" max="32767" attributes="0"/>
+            <Component id="lblTime" alignment="0" min="-2" max="-2" attributes="0"/>
+            <Component id="cmbTime" alignment="0" min="0" max="32767" attributes="0"/>
+            <Component id="lblReason" alignment="0" min="-2" max="-2" attributes="0"/>
+            <Component id="reasonScrollPane" alignment="0" max="32767" attributes="0"/>
+            <Group type="102" alignment="0" attributes="0">
+              <EmptySpace max="32767" attributes="0"/>
+              <Component id="btnCancel" min="-2" pref="100" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+              <Component id="btnAdd" min="-2" pref="170" max="-2" attributes="0"/>
+            </Group>
+          </Group>
+          <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
+        </Group>
+      </Group>
+    </DimensionLayout>
+    <DimensionLayout dim="1">
+      <Group type="103" groupAlignment="0" attributes="0">
+        <Group type="102" alignment="0" attributes="0">
+          <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
+          <Component id="lblTitle" min="-2" max="-2" attributes="0"/>
+          <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
+          <Component id="lblSubtitle" min="-2" max="-2" attributes="0"/>
+          <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+          <Component id="lblOwner" min="-2" max="-2" attributes="0"/>
+<EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
+<Component id="cmbOwner" min="-2" pref="36" max="-2" attributes="0"/>
+<EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+<Component id="lblPet" min="-2" max="-2" attributes="0"/>
+          <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
+          <Component id="cmbPet" min="-2" pref="36" max="-2" attributes="0"/>
+          <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+          <Component id="lblVet" min="-2" max="-2" attributes="0"/>
+          <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
+          <Component id="cmbVet" min="-2" pref="36" max="-2" attributes="0"/>
+          <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+          <Component id="lblDate" min="-2" max="-2" attributes="0"/>
+          <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
+          <Component id="datePanel" min="-2" pref="36" max="-2" attributes="0"/>
+          <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+          <Component id="lblTime" min="-2" max="-2" attributes="0"/>
+          <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
+          <Component id="cmbTime" min="-2" pref="36" max="-2" attributes="0"/>
+          <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+          <Component id="lblReason" min="-2" max="-2" attributes="0"/>
+          <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
+          <Component id="reasonScrollPane" pref="90" max="32767" attributes="0"/>
+          <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+          <Group type="103" groupAlignment="3" attributes="0">
+            <Component id="btnCancel" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
+            <Component id="btnAdd" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
+          </Group>
+          <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
+        </Group>
+      </Group>
+    </DimensionLayout>
+  </Layout>
+  <SubComponents>
+    <Component class="javax.swing.JLabel" name="lblTitle">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Segoe UI" size="22" style="1"/>
+        </Property>
+        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="29" green="25" red="21" type="rgb"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Add Appointment"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblSubtitle">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Segoe UI" size="14" style="0"/>
+        </Property>
+        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="7d" green="75" red="6c" type="rgb"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Schedule an appointment for any pet owner"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblOwner">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Segoe UI" size="13" style="1"/>
+        </Property>
+        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="57" green="50" red="49" type="rgb"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Owner"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JComboBox" name="cmbOwner">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Segoe UI" size="14" style="0"/>
+        </Property>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;com.petcare.model.User&gt;"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblPet">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Segoe UI" size="13" style="1"/>
+        </Property>
+        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="57" green="50" red="49" type="rgb"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Pet"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JComboBox" name="cmbPet">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Segoe UI" size="14" style="0"/>
+        </Property>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;com.petcare.model.Pet&gt;"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblVet">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Segoe UI" size="13" style="1"/>
+        </Property>
+        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="57" green="50" red="49" type="rgb"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Veterinarian"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JComboBox" name="cmbVet">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Segoe UI" size="14" style="0"/>
+        </Property>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;com.petcare.model.User&gt;"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblDate">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Segoe UI" size="13" style="1"/>
+        </Property>
+        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="57" green="50" red="49" type="rgb"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Date"/>
+      </Properties>
+    </Component>
+    <Container class="javax.swing.JPanel" name="datePanel">
+      <Properties>
+        <Property name="opaque" type="boolean" value="false"/>
+      </Properties>
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+            <EmptySpace min="0" pref="100" max="32767" attributes="0"/>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+            <EmptySpace min="0" pref="36" max="32767" attributes="0"/>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+    </Container>
+    <Component class="javax.swing.JLabel" name="lblTime">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Segoe UI" size="13" style="1"/>
+        </Property>
+        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="57" green="50" red="49" type="rgb"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Time"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JComboBox" name="cmbTime">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Segoe UI" size="14" style="0"/>
+        </Property>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;java.time.LocalTime&gt;"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblReason">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Segoe UI" size="13" style="1"/>
+        </Property>
+        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="57" green="50" red="49" type="rgb"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Reason"/>
+      </Properties>
+    </Component>
+    <Container class="javax.swing.JScrollPane" name="reasonScrollPane">
+      <Properties>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="javax.swing.BorderFactory.createLineBorder(new java.awt.Color(206, 212, 218))" type="code"/>
+        </Property>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+      </AuxValues>
+      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+      <SubComponents>
+        <Component class="javax.swing.JTextArea" name="txtReason">
+          <Properties>
+            <Property name="columns" type="int" value="20"/>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Segoe UI" size="14" style="0"/>
+            </Property>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="29" green="25" red="21" type="rgb"/>
+            </Property>
+            <Property name="lineWrap" type="boolean" value="true"/>
+            <Property name="rows" type="int" value="5"/>
+            <Property name="wrapStyleWord" type="boolean" value="true"/>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="javax.swing.BorderFactory.createEmptyBorder(6, 10, 6, 10)" type="code"/>
+            </Property>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
+    <Component class="javax.swing.JButton" name="btnCancel">
+      <Properties>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="ff" green="ff" red="ff" type="rgb"/>
+        </Property>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Segoe UI" size="14" style="0"/>
+        </Property>
+        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="29" green="25" red="21" type="rgb"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Cancel"/>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="javax.swing.BorderFactory.createLineBorder(new java.awt.Color(206, 212, 218))" type="code"/>
+        </Property>
+        <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR)" type="code"/>
+        </Property>
+        <Property name="focusPainted" type="boolean" value="false"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCancelActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnAdd">
+      <Properties>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="6b" green="79" red="0" type="rgb"/>
+        </Property>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Segoe UI" size="14" style="1"/>
+        </Property>
+        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="ff" green="ff" red="ff" type="rgb"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Add Appointment"/>
+        <Property name="borderPainted" type="boolean" value="false"/>
+        <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR)" type="code"/>
+        </Property>
+        <Property name="focusPainted" type="boolean" value="false"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddActionPerformed"/>
+      </Events>
+    </Component>
+  </SubComponents>
+</Form>
