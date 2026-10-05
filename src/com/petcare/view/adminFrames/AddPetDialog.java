@@ -1,74 +1,54 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
+ */
 package com.petcare.view.adminFrames;
 
-import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.List;
-
-import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 import com.petcare.controller.AdminController;
 import com.petcare.exception.DatabaseConfigException;
 import com.petcare.model.User;
 import com.petcare.util.ErrorHandler;
 
-public class AddPetDialog extends JDialog {
+/**
+ *
+ * @author hirunaka
+ */
+public class AddPetDialog extends javax.swing.JDialog {
 
     private static final long serialVersionUID = 1L;
 
     private AdminController controller;
 
-    private JComboBox<User> ownerComboBox;
-    private JTextField nameField;
-    private JComboBox<String> speciesComboBox;
-    private JComboBox<String> genderComboBox;
-
     private boolean changed = false;
 
+    /**
+     * Creates new form AddPetDialog
+     */
     public AddPetDialog(User user) {
-
         controller = new AdminController(user);
 
-        setTitle("Add Pet");
-        setSize(400, 300);
+        initComponents();
+
+        getContentPane().setBackground(Color.WHITE);
         setLocationRelativeTo(null);
-        setModal(true);
 
-        JPanel formPanel = new JPanel(new GridBagLayout());
+        initOwnerRenderer();
+        loadOwners();
+    }
 
-        formPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 10, 15));
-
-        GridBagConstraints gbc = new GridBagConstraints();
-
-        gbc.insets = new Insets(6, 6, 6, 6);
-        gbc.anchor = GridBagConstraints.WEST;
-
-        // OWNER
-
-        JLabel ownerLabel = new JLabel("Owner:");
-
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-
-        formPanel.add(ownerLabel, gbc);
-
-        ownerComboBox = new JComboBox<>();
-        ownerComboBox.setRenderer(new DefaultListCellRenderer() {
+    /**
+     * Shows the owner's name in the dropdown instead of the object itself.
+     */
+    private void initOwnerRenderer() {
+        cmbOwner.setRenderer(new DefaultListCellRenderer() {
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
@@ -79,12 +59,14 @@ public class AddPetDialog extends JDialog {
                 return this;
             }
         });
+    }
 
+    private void loadOwners() {
         try {
             List<User> owners = controller.getPetOwners();
 
             for (User owner : owners) {
-                ownerComboBox.addItem(owner);
+                cmbOwner.addItem(owner);
             }
 
         } catch (SQLException e) {
@@ -92,122 +74,219 @@ public class AddPetDialog extends JDialog {
         } catch (DatabaseConfigException e) {
             ErrorHandler.handleDatabaseConfigException(e);
         }
-
-        gbc.gridx = 1;
-        gbc.weightx = 1;
-
-        formPanel.add(ownerComboBox, gbc);
-
-        // PET NAME
-
-        JLabel nameLabel = new JLabel("Pet Name:");
-
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-
-        formPanel.add(nameLabel, gbc);
-
-        nameField = new JTextField(15);
-
-        gbc.gridx = 1;
-
-        formPanel.add(nameField, gbc);
-
-        // SPECIES
-
-        JLabel speciesLabel = new JLabel("Species:");
-
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-
-        formPanel.add(speciesLabel, gbc);
-
-        String[] species = {"Dog", "Cat", "Bird", "Rabbit", "Other"};
-
-        speciesComboBox = new JComboBox<>(species);
-
-        gbc.gridx = 1;
-
-        formPanel.add(speciesComboBox, gbc);
-
-        // GENDER
-
-        JLabel genderLabel = new JLabel("Gender:");
-
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-
-        formPanel.add(genderLabel, gbc);
-
-        String[] genders = {"Male", "Female"};
-
-        genderComboBox = new JComboBox<>(genders);
-
-        gbc.gridx = 1;
-
-        formPanel.add(genderComboBox, gbc);
-
-        add(formPanel, BorderLayout.CENTER);
-
-        // BUTTONS
-
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-
-        JButton cancelButton = new JButton("Cancel");
-        JButton addButton = new JButton("Add Pet");
-
-        buttonPanel.add(cancelButton);
-        buttonPanel.add(addButton);
-
-        add(buttonPanel, BorderLayout.SOUTH);
-
-        // CANCEL
-
-        cancelButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-            }
-        });
-
-        // ADD PET
-
-        addButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-            	User selectedOwner = (User) ownerComboBox.getSelectedItem();
-                String name = nameField.getText().trim();
-                String species = (String) speciesComboBox.getSelectedItem();
-                String gender = (String) genderComboBox.getSelectedItem();
-
-                if (selectedOwner == null) {
-                    JOptionPane.showMessageDialog(AddPetDialog.this, "Please select a pet owner.", "Validation Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                if (name.isEmpty()) {
-
-                    JOptionPane.showMessageDialog(AddPetDialog.this, "Pet name cannot be empty.", "Validation Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                try {
-                    controller.addPet(selectedOwner, name, species, gender);
-                    
-                    changed = true;
-
-                    JOptionPane.showMessageDialog(AddPetDialog.this, "Pet added successfully.", "Pet Added", JOptionPane.INFORMATION_MESSAGE);
-                    dispose();
-
-                } catch (SQLException ex) {
-                    ErrorHandler.handleSQLException(ex);
-                } catch (DatabaseConfigException ex) {
-                    ErrorHandler.handleDatabaseConfigException(ex);
-                }
-            }
-        });
     }
 
     public boolean isChanged() {
-
         return changed;
     }
+
+    private void cmbSpeciesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbSpeciesActionPerformed
+        // The extra field is only usable when "Other" is selected
+        txtOtherSpecies.setEnabled("Other".equals(cmbSpecies.getSelectedItem()));
+    }//GEN-LAST:event_cmbSpeciesActionPerformed
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        lblTitle = new javax.swing.JLabel();
+        lblSubtitle = new javax.swing.JLabel();
+        lblOwner = new javax.swing.JLabel();
+        cmbOwner = new javax.swing.JComboBox<>();
+        lblName = new javax.swing.JLabel();
+        txtName = new javax.swing.JTextField();
+        lblSpecies = new javax.swing.JLabel();
+        cmbSpecies = new javax.swing.JComboBox<>();
+        lblOtherSpecies = new javax.swing.JLabel();
+        txtOtherSpecies = new javax.swing.JTextField();
+        lblGender = new javax.swing.JLabel();
+        cmbGender = new javax.swing.JComboBox<>();
+        btnCancel = new javax.swing.JButton();
+        btnAdd = new javax.swing.JButton();
+
+        setTitle("Add Pet");
+        setModal(true);
+        setResizable(false);
+
+        lblTitle.setFont(new java.awt.Font("Segoe UI", 1, 22)); // NOI18N
+        lblTitle.setForeground(new java.awt.Color(33, 37, 41));
+        lblTitle.setText("Add Pet");
+
+        lblSubtitle.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lblSubtitle.setForeground(new java.awt.Color(108, 117, 125));
+        lblSubtitle.setText("Register a pet for an owner");
+
+        lblOwner.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblOwner.setForeground(new java.awt.Color(73, 80, 87));
+        lblOwner.setText("Owner");
+
+        cmbOwner.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        lblName.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblName.setForeground(new java.awt.Color(73, 80, 87));
+        lblName.setText("Pet Name");
+
+        txtName.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtName.setForeground(new java.awt.Color(33, 37, 41));
+        txtName.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(206, 212, 218)), javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 10)));
+
+        lblSpecies.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblSpecies.setForeground(new java.awt.Color(73, 80, 87));
+        lblSpecies.setText("Species");
+
+        cmbSpecies.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        cmbSpecies.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Dog", "Cat", "Squirrel", "Hamster", "Other" }));
+        cmbSpecies.addActionListener(this::cmbSpeciesActionPerformed);
+
+        lblOtherSpecies.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblOtherSpecies.setForeground(new java.awt.Color(73, 80, 87));
+        lblOtherSpecies.setText("Other Species");
+
+        txtOtherSpecies.setEnabled(false);
+        txtOtherSpecies.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtOtherSpecies.setForeground(new java.awt.Color(33, 37, 41));
+        txtOtherSpecies.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(206, 212, 218)), javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 10)));
+
+        lblGender.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblGender.setForeground(new java.awt.Color(73, 80, 87));
+        lblGender.setText("Gender");
+
+        cmbGender.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        cmbGender.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Male", "Female" }));
+
+        btnCancel.setBackground(new java.awt.Color(255, 255, 255));
+        btnCancel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnCancel.setForeground(new java.awt.Color(33, 37, 41));
+        btnCancel.setText("Cancel");
+        btnCancel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(206, 212, 218)));
+        btnCancel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnCancel.setFocusPainted(false);
+        btnCancel.addActionListener(this::btnCancelActionPerformed);
+
+        btnAdd.setBackground(new java.awt.Color(0, 121, 107));
+        btnAdd.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnAdd.setForeground(new java.awt.Color(255, 255, 255));
+        btnAdd.setText("Add Pet");
+        btnAdd.setBorderPainted(false);
+        btnAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAdd.setFocusPainted(false);
+        btnAdd.addActionListener(this::btnAddActionPerformed);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(28, 28, 28)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblTitle)
+                    .addComponent(lblSubtitle)
+                    .addComponent(lblOwner)
+                    .addComponent(cmbOwner, 0, 384, Short.MAX_VALUE)
+                    .addComponent(lblName)
+                    .addComponent(txtName)
+                    .addComponent(lblSpecies)
+                    .addComponent(cmbSpecies, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblOtherSpecies)
+                    .addComponent(txtOtherSpecies)
+                    .addComponent(lblGender)
+                    .addComponent(cmbGender, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(10, 10, 10)
+                        .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(28, 28, 28))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(24, 24, 24)
+                .addComponent(lblTitle)
+                .addGap(2, 2, 2)
+                .addComponent(lblSubtitle)
+                .addGap(18, 18, 18)
+                .addComponent(lblOwner)
+                .addGap(4, 4, 4)
+                .addComponent(cmbOwner, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(lblName)
+                .addGap(4, 4, 4)
+                .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(lblSpecies)
+                .addGap(4, 4, 4)
+                .addComponent(cmbSpecies, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(lblOtherSpecies)
+                .addGap(4, 4, 4)
+                .addComponent(txtOtherSpecies, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(lblGender)
+                .addGap(4, 4, 4)
+                .addComponent(cmbGender, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 24, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(24, 24, 24))
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
+        dispose();
+    }//GEN-LAST:event_btnCancelActionPerformed
+
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        User selectedOwner = (User) cmbOwner.getSelectedItem();
+        String name = txtName.getText().trim();
+        String species = (String) cmbSpecies.getSelectedItem();
+        String otherSpecies = txtOtherSpecies.getText().trim();
+        String gender = (String) cmbGender.getSelectedItem();
+
+        try {
+            controller.addPet(selectedOwner, name, species, otherSpecies, gender);
+
+            changed = true;
+
+            JOptionPane.showMessageDialog(this, "Pet added successfully.", "Pet Added", JOptionPane.INFORMATION_MESSAGE);
+            dispose();
+
+        } catch (IllegalArgumentException ex) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    ex.getMessage(),
+                    "Validation Error",
+                    JOptionPane.ERROR_MESSAGE);
+
+        } catch (SQLException ex) {
+            ErrorHandler.handleSQLException(ex);
+        } catch (DatabaseConfigException ex) {
+            ErrorHandler.handleDatabaseConfigException(ex);
+        }
+    }//GEN-LAST:event_btnAddActionPerformed
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnCancel;
+    private javax.swing.JComboBox<String> cmbGender;
+    private javax.swing.JComboBox<com.petcare.model.User> cmbOwner;
+    private javax.swing.JComboBox<String> cmbSpecies;
+    private javax.swing.JLabel lblGender;
+    private javax.swing.JLabel lblName;
+    private javax.swing.JLabel lblOtherSpecies;
+    private javax.swing.JLabel lblOwner;
+    private javax.swing.JLabel lblSpecies;
+    private javax.swing.JLabel lblSubtitle;
+    private javax.swing.JLabel lblTitle;
+    private javax.swing.JTextField txtName;
+    private javax.swing.JTextField txtOtherSpecies;
+    // End of variables declaration//GEN-END:variables
 }

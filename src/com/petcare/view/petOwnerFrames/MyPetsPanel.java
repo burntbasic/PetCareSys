@@ -1,22 +1,16 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
+ */
 package com.petcare.view.petOwnerFrames;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.util.List;
-
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -26,143 +20,198 @@ import com.petcare.exception.DatabaseConfigException;
 import com.petcare.model.Pet;
 import com.petcare.model.User;
 import com.petcare.util.ErrorHandler;
+import com.petcare.view.UiStyle;
 
-public class MyPetsPanel extends JPanel {
+/**
+ *
+ * @author hirunaka
+ */
+public class MyPetsPanel extends javax.swing.JPanel {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private PetOwnerController controller;
-	private User user;
-	private List<Pet> pets;
-	
-	private DefaultTableModel tableModel;
-	private JTable petsTable;
-	/**
-	 * Create the panel.
-	 */
-	public MyPetsPanel(User user) {
+    private PetOwnerController controller;
+    private User user;
+    private List<Pet> pets;
 
-		controller = new PetOwnerController();
-		this.user = user;
+    // Created before initComponents() because the form's table uses it as its model
+    private final DefaultTableModel tableModel = new DefaultTableModel(
+            new String[] {"Name", "Species", "Gender", "Actions"}, 0) {
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+    };
 
-		setLayout(new BorderLayout(15, 15));
-		setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+    /**
+     * Creates new form MyPetsPanel
+     */
+    public MyPetsPanel(User user) {
+        controller = new PetOwnerController();
+        this.user = user;
 
-		// HEADER
-		JPanel headerPanel = new JPanel(new BorderLayout());
+        initComponents();
 
-		JLabel titleLabel = new JLabel("My Pets");
-		titleLabel.setFont(new Font("SansSerif", Font.BOLD, 28));
+        UiStyle.styleTable(petsTable);
+        UiStyle.styleScrollPane(scrollPane);
+        initTableBehaviour();
 
-		JLabel subtitleLabel = new JLabel("Manage your registered pets");
+        loadPets();
+    }
 
-		JPanel headerText = new JPanel();
-		headerText.setLayout(new BoxLayout(headerText, BoxLayout.Y_AXIS));
+    /**
+     * "Edit" link column: renderer, click and hover cursor.
+     */
+    private void initTableBehaviour() {
+        DefaultTableCellRenderer editRenderer = new DefaultTableCellRenderer() {
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 
-		headerText.add(titleLabel);
-		headerText.add(subtitleLabel);
+                JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-		headerPanel.add(headerText, BorderLayout.WEST);
+                label.setText("<html><u>Edit</u></html>");
+                label.setHorizontalAlignment(JLabel.CENTER);
+                if (!isSelected) {
+                    label.setForeground(UiStyle.ACCENT);
+                }
 
-		JButton addPetButton = new JButton("+ Add Pet");
-		addPetButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		addPetButton.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent e) {
+                return label;
+            }
+        };
 
-		        AddPetDialog dialog = new AddPetDialog(user);
-		        dialog.setVisible(true);
+        petsTable.getColumnModel().getColumn(3).setCellRenderer(editRenderer);
 
-		        if (dialog.isChanged()) {
-		            loadPets();
-		        }
-		    }
-		});
-		headerPanel.add(addPetButton, BorderLayout.EAST);
+        petsTable.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
 
-		add(headerPanel, BorderLayout.NORTH);
+                int row = petsTable.rowAtPoint(e.getPoint());
+                int column = petsTable.columnAtPoint(e.getPoint());
 
-		// TABLE
-		String[] columns = {"Name", "Species", "Gender", "Actions"};
+                if (column == 3 && row >= 0 && pets != null && row < pets.size()) {
 
-		tableModel = new DefaultTableModel(columns, 0) {
-			public boolean isCellEditable(int row, int column) {
-				return false;
-			}
-		};
+                    Pet pet = pets.get(row);
 
-		petsTable = new JTable(tableModel);
-		petsTable.setRowHeight(35);
-		
-		loadPets();
+                    EditPetDialog dialog = new EditPetDialog(user, pet);
+                    dialog.setVisible(true);
 
-		DefaultTableCellRenderer editRenderer = new DefaultTableCellRenderer() {
-			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                    if (dialog.isChanged()) {
+                        loadPets();
+                    }
+                }
+            }
+        });
 
-				JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        petsTable.addMouseMotionListener(new MouseAdapter() {
+            public void mouseMoved(MouseEvent e) {
 
-				label.setText("<html><u>Edit</u></html>");
-				label.setHorizontalAlignment(JLabel.CENTER);
+                int row = petsTable.rowAtPoint(e.getPoint());
+                int column = petsTable.columnAtPoint(e.getPoint());
 
-				return label;
-			}
-		};
+                if (column == 3 && row >= 0 && pets != null && row < pets.size()) {
+                    petsTable.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                } else {
+                    petsTable.setCursor(Cursor.getDefaultCursor());
+                }
+            }
+        });
+    }
 
-		petsTable.getColumnModel().getColumn(3).setCellRenderer(editRenderer);
-		petsTable.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
+    private void loadPets() {
+        tableModel.setRowCount(0);
 
-				int row = petsTable.rowAtPoint(e.getPoint());
-				int column = petsTable.columnAtPoint(e.getPoint());
+        try {
+            pets = controller.getOwnerPets(user);
 
-				if (column == 3 && row >= 0) {
+            for (Pet pet : pets) {
+                tableModel.addRow(new Object[] {
+                        pet.getName(),
+                        pet.getSpecies(),
+                        pet.getGender(),
+                        "Edit"
+                });
+            }
+        } catch (SQLException e) {
+            ErrorHandler.handleTableLoadError(e, petsTable, tableModel);
+        } catch (DatabaseConfigException e) {
+            ErrorHandler.handleTableLoadError(e, petsTable, tableModel);
+        }
+    }
 
-					Pet pet = pets.get(row);
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
 
-					EditPetDialog dialog = new EditPetDialog(user, pet);
-					dialog.setVisible(true);
+        lblTitle = new javax.swing.JLabel();
+        lblSubtitle = new javax.swing.JLabel();
+        btnAddPet = new javax.swing.JButton();
+        scrollPane = new javax.swing.JScrollPane();
+        petsTable = new javax.swing.JTable();
 
-					if (dialog.isChanged()) {
-						loadPets();
-					}
-				}
-			}
-		});
-		petsTable.addMouseMotionListener(new MouseAdapter() { 
-			public void mouseMoved(MouseEvent e) { 
+        setOpaque(false);
 
-				int row = petsTable.rowAtPoint(e.getPoint());
-				int column = petsTable.columnAtPoint(e.getPoint());
+        lblTitle.setFont(new java.awt.Font("Segoe UI", 1, 26)); // NOI18N
+        lblTitle.setForeground(new java.awt.Color(33, 37, 41));
+        lblTitle.setText("My Pets");
 
-				if (column == 3 && row >= 0 && row < pets.size()) { 
-					petsTable.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); 
-				} else { 
-					petsTable.setCursor(Cursor.getDefaultCursor()); 
-				}
-			}
-		});
+        lblSubtitle.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lblSubtitle.setForeground(new java.awt.Color(108, 117, 125));
+        lblSubtitle.setText("Manage your registered pets");
 
-		JScrollPane scrollPane = new JScrollPane(petsTable);
-		add(scrollPane, BorderLayout.CENTER);
-	}
-	
-	private void loadPets() {
-		tableModel.setRowCount(0);
+        btnAddPet.setBackground(new java.awt.Color(0, 121, 107));
+        btnAddPet.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnAddPet.setForeground(new java.awt.Color(255, 255, 255));
+        btnAddPet.setText("+ Add Pet");
+        btnAddPet.setBorderPainted(false);
+        btnAddPet.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAddPet.setFocusPainted(false);
+        btnAddPet.addActionListener(this::btnAddPetActionPerformed);
 
-		try {
-			pets = controller.getOwnerPets(user);
+        petsTable.setModel(tableModel);
+        scrollPane.setViewportView(petsTable);
 
-			for (Pet pet : pets) {
-				tableModel.addRow(new Object[] {
-						pet.getName(),
-						pet.getSpecies(),
-						pet.getGender(),
-						"Edit"
-				});
-			}
-		} catch (SQLException e) {
-		    ErrorHandler.handleTableLoadError(e, petsTable, tableModel);
-		} catch (DatabaseConfigException e) {
-		    ErrorHandler.handleTableLoadError(e, petsTable, tableModel);
-		}
-	}
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblTitle)
+                    .addComponent(lblSubtitle))
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(btnAddPet, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblTitle)
+                        .addGap(4, 4, 4)
+                        .addComponent(lblSubtitle))
+                    .addComponent(btnAddPet, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(20, 20, 20)
+                .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE))
+        );
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void btnAddPetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddPetActionPerformed
+        AddPetDialog dialog = new AddPetDialog(user);
+        dialog.setVisible(true);
+
+        if (dialog.isChanged()) {
+            loadPets();
+        }
+    }//GEN-LAST:event_btnAddPetActionPerformed
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAddPet;
+    private javax.swing.JLabel lblSubtitle;
+    private javax.swing.JLabel lblTitle;
+    private javax.swing.JTable petsTable;
+    private javax.swing.JScrollPane scrollPane;
+    // End of variables declaration//GEN-END:variables
 }

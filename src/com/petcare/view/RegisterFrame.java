@@ -1,334 +1,549 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+ */
 package com.petcare.view;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.JTextField;
+import java.sql.SQLException;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import java.awt.Font;
-import javax.swing.JPasswordField;
-import javax.swing.JButton;
-import javax.swing.SwingConstants;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.sql.SQLException;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import com.petcare.controller.RegisterController;
 import com.petcare.controller.RegisterFieldEnum;
 import com.petcare.exception.DatabaseConfigException;
 import com.petcare.util.ErrorHandler;
 
-public class RegisterFrame extends JFrame {
+/**
+ *
+ * @author hirunaka
+ */
+public class RegisterFrame extends javax.swing.JFrame {
 
-	private static final long serialVersionUID = 1L;
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(RegisterFrame.class.getName());
 
-	private RegisterController controller;
+    private static final java.awt.Color ACCENT = new java.awt.Color(0, 121, 107);
+    private static final java.awt.Color ACCENT_DISABLED = new java.awt.Color(176, 190, 197);
+    private static final String NO_ERROR = " ";
 
-	public RegisterFrame() {
+    private RegisterController controller;
 
-		controller = new RegisterController();
+    /**
+     * Creates new form RegisterFrame
+     */
+    public RegisterFrame() {
+        controller = new RegisterController();
+        initComponents();
+        setLocationRelativeTo(null);
+        initFieldListeners();
+        updateSubmitButton();
+    }
 
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 527, 764);
-		JPanel contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
+    /**
+     * Enables the submit button only when every field is filled.
+     */
+    private void updateSubmitButton() {
+        boolean filled = !txtFName.getText().trim().isEmpty()
+                && !txtLName.getText().trim().isEmpty()
+                && !txtEmail.getText().trim().isEmpty()
+                && !txtPhone.getText().trim().isEmpty()
+                && !txtUsername.getText().trim().isEmpty()
+                && pwField.getPassword().length > 0
+                && confirmPwField.getPassword().length > 0;
 
-		JLabel lblNewLabel = new JLabel("First Name");
-		lblNewLabel.setFont(new Font("Dialog", Font.BOLD, 14));
-		lblNewLabel.setBounds(76, 32, 167, 41);
-		contentPane.add(lblNewLabel);
+        btnSubmit.setEnabled(filled);
+        btnSubmit.setBackground(filled ? ACCENT : ACCENT_DISABLED);
+    }
 
-		JTextField txtFName = new JTextField();
-		txtFName.setColumns(10);
-		txtFName.setBounds(76, 69, 167, 32);
-		contentPane.add(txtFName);
+    private void initFieldListeners() {
+        DocumentListener listener = new DocumentListener() {
+            public void insertUpdate(DocumentEvent e) {
+                updateSubmitButton();
+            }
 
-		JLabel lblNewLabel_1 = new JLabel("Last name");
-		lblNewLabel_1.setFont(new Font("Dialog", Font.BOLD, 14));
-		lblNewLabel_1.setBounds(279, 32, 167, 41);
-		contentPane.add(lblNewLabel_1);
+            public void removeUpdate(DocumentEvent e) {
+                updateSubmitButton();
+            }
 
-		JTextField txtLName = new JTextField();
-		txtLName.setColumns(10);
-		txtLName.setBounds(279, 69, 167, 32);
-		contentPane.add(txtLName);
+            public void changedUpdate(DocumentEvent e) {
+                updateSubmitButton();
+            }
+        };
+        txtFName.getDocument().addDocumentListener(listener);
+        txtLName.getDocument().addDocumentListener(listener);
+        txtEmail.getDocument().addDocumentListener(listener);
+        txtPhone.getDocument().addDocumentListener(listener);
+        txtUsername.getDocument().addDocumentListener(listener);
+        pwField.getDocument().addDocumentListener(listener);
+        confirmPwField.getDocument().addDocumentListener(listener);
+    }
 
-		JLabel lblNewLabel_2 = new JLabel("Email");
-		lblNewLabel_2.setFont(new Font("Dialog", Font.BOLD, 14));
-		lblNewLabel_2.setBounds(76, 113, 167, 41);
-		contentPane.add(lblNewLabel_2);
+    private void clearErrors() {
+        fNameError.setText(NO_ERROR);
+        lNameError.setText(NO_ERROR);
+        emailError.setText(NO_ERROR);
+        phoneError.setText(NO_ERROR);
+        usernameError.setText(NO_ERROR);
+        pwError.setText(NO_ERROR);
+        confirmPwError.setText(NO_ERROR);
+    }
 
-		JTextField txtEmail = new JTextField();
-		txtEmail.setColumns(10);
-		txtEmail.setBounds(76, 148, 370, 32);
-		contentPane.add(txtEmail);
+    // Helper method
+    private boolean showValidationError(RegisterFieldEnum field, String value, JLabel errorLabel) {
+        String error = controller.validateField(field, value);
 
-		JLabel lblNewLabel_2_1 = new JLabel("+94");
-		lblNewLabel_2_1.setFont(new Font("Dialog", Font.PLAIN, 12));
-		lblNewLabel_2_1.setBounds(76, 227, 46, 32);
-		contentPane.add(lblNewLabel_2_1);
+        if (error != null) {
+            errorLabel.setText(error);
+            return false;
+        }
 
-		JTextField txtPhone = new JTextField();
-		txtPhone.setColumns(10);
-		txtPhone.setBounds(102, 228, 344, 32);
-		contentPane.add(txtPhone);
+        return true;
+    }
 
-		JLabel lblNewLabel_3 = new JLabel("Phone no.");
-		lblNewLabel_3.setFont(new Font("Dialog", Font.BOLD, 14));
-		lblNewLabel_3.setBounds(76, 190, 167, 41);
-		contentPane.add(lblNewLabel_3);
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
 
-		JTextField txtUsername = new JTextField();
-		txtUsername.setColumns(10);
-		txtUsername.setBounds(136, 345, 263, 32);
-		contentPane.add(txtUsername);
+        headerPanel = new javax.swing.JPanel();
+        lblTitle = new javax.swing.JLabel();
+        lblSubtitle = new javax.swing.JLabel();
+        bodyPanel = new javax.swing.JPanel();
+        lblFirstName = new javax.swing.JLabel();
+        txtFName = new javax.swing.JTextField();
+        fNameError = new javax.swing.JLabel();
+        lblLastName = new javax.swing.JLabel();
+        txtLName = new javax.swing.JTextField();
+        lNameError = new javax.swing.JLabel();
+        lblEmail = new javax.swing.JLabel();
+        txtEmail = new javax.swing.JTextField();
+        emailError = new javax.swing.JLabel();
+        lblPhone = new javax.swing.JLabel();
+        lblPhonePrefix = new javax.swing.JLabel();
+        txtPhone = new javax.swing.JTextField();
+        phoneError = new javax.swing.JLabel();
+        lblUsername = new javax.swing.JLabel();
+        txtUsername = new javax.swing.JTextField();
+        usernameError = new javax.swing.JLabel();
+        lblPassword = new javax.swing.JLabel();
+        pwField = new javax.swing.JPasswordField();
+        pwError = new javax.swing.JLabel();
+        lblConfirmPw = new javax.swing.JLabel();
+        confirmPwField = new javax.swing.JPasswordField();
+        confirmPwError = new javax.swing.JLabel();
+        btnSubmit = new javax.swing.JButton();
+        lblBackToLogin = new javax.swing.JLabel();
 
-		JLabel lblNewLabel_4 = new JLabel("Username");
-		lblNewLabel_4.setFont(new Font("Dialog", Font.BOLD, 14));
-		lblNewLabel_4.setBounds(136, 308, 263, 41);
-		contentPane.add(lblNewLabel_4);
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("PetCare - Register");
+        setResizable(false);
 
-		JLabel lblNewLabel_5 = new JLabel("Password");
-		lblNewLabel_5.setFont(new Font("Dialog", Font.BOLD, 14));
-		lblNewLabel_5.setBounds(136, 389, 263, 41);
-		contentPane.add(lblNewLabel_5);
+        headerPanel.setBackground(new java.awt.Color(0, 121, 107));
 
-		JPasswordField pwField = new JPasswordField();
-		pwField.setBounds(136, 426, 263, 32);
-		contentPane.add(pwField);
+        lblTitle.setFont(new java.awt.Font("Segoe UI", 1, 30)); // NOI18N
+        lblTitle.setForeground(new java.awt.Color(255, 255, 255));
+        lblTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTitle.setText("Create Account");
 
-		JLabel lblNewLabel_6 = new JLabel("Confirm Password");
-		lblNewLabel_6.setFont(new Font("Dialog", Font.BOLD, 14));
-		lblNewLabel_6.setBounds(136, 470, 263, 41);
-		contentPane.add(lblNewLabel_6);
+        lblSubtitle.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lblSubtitle.setForeground(new java.awt.Color(224, 242, 241));
+        lblSubtitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblSubtitle.setText("Join PetCareSys in a few quick steps");
 
-		JPasswordField confirmPwField = new JPasswordField();
-		confirmPwField.setBounds(136, 507, 263, 32);
-		contentPane.add(confirmPwField);
+        javax.swing.GroupLayout headerPanelLayout = new javax.swing.GroupLayout(headerPanel);
+        headerPanel.setLayout(headerPanelLayout);
+        headerPanelLayout.setHorizontalGroup(
+            headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(lblTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(lblSubtitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        headerPanelLayout.setVerticalGroup(
+            headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(headerPanelLayout.createSequentialGroup()
+                .addContainerGap(27, Short.MAX_VALUE)
+                .addComponent(lblTitle)
+                .addGap(4, 4, 4)
+                .addComponent(lblSubtitle)
+                .addContainerGap(27, Short.MAX_VALUE))
+        );
 
-		JLabel fNameError = new JLabel("New label");
-		fNameError.setVisible(false);
-		fNameError.setForeground(Color.RED);
-		fNameError.setFont(new Font("Dialog", Font.PLAIN, 10));
-		fNameError.setBounds(76, 100, 185, 17);
-		contentPane.add(fNameError);
+        bodyPanel.setBackground(new java.awt.Color(255, 255, 255));
 
-		JLabel lNameError = new JLabel("New label");
-		lNameError.setVisible(false);
-		lNameError.setForeground(Color.RED);
-		lNameError.setFont(new Font("Dialog", Font.PLAIN, 10));
-		lNameError.setBounds(279, 99, 208, 17);
-		contentPane.add(lNameError);
+        lblFirstName.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblFirstName.setForeground(new java.awt.Color(73, 80, 87));
+        lblFirstName.setText("First Name");
 
-		JLabel emailError = new JLabel("New label");
-		emailError.setVisible(false);
-		emailError.setForeground(Color.RED);
-		emailError.setFont(new Font("Dialog", Font.PLAIN, 10));
-		emailError.setBounds(76, 179, 370, 17);
-		contentPane.add(emailError);
+        txtFName.setBackground(new java.awt.Color(204, 204, 204));
+        txtFName.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtFName.setForeground(new java.awt.Color(33, 37, 41));
+        txtFName.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(206, 212, 218)), javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 10)));
+        txtFName.setCaretColor(new java.awt.Color(51, 51, 51));
 
-		JLabel phoneError = new JLabel("New label");
-		phoneError.setVisible(false);
-		phoneError.setForeground(Color.RED);
-		phoneError.setFont(new Font("Dialog", Font.PLAIN, 10));
-		phoneError.setBounds(102, 262, 344, 17);
-		contentPane.add(phoneError);
+        fNameError.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        fNameError.setForeground(new java.awt.Color(220, 53, 69));
+        fNameError.setText(" ");
 
-		JLabel usernameError = new JLabel("New label");
-		usernameError.setVisible(false);
-		usernameError.setForeground(Color.RED);
-		usernameError.setFont(new Font("Dialog", Font.PLAIN, 10));
-		usernameError.setBounds(136, 377, 263, 17);
-		contentPane.add(usernameError);
+        lblLastName.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblLastName.setForeground(new java.awt.Color(73, 80, 87));
+        lblLastName.setText("Last Name");
 
-		JLabel pwError = new JLabel("New label");
-		pwError.setVisible(false);
-		pwError.setForeground(Color.RED);
-		pwError.setFont(new Font("Dialog", Font.PLAIN, 10));
-		pwError.setBounds(136, 458, 263, 17);
-		contentPane.add(pwError);
+        txtLName.setBackground(new java.awt.Color(204, 204, 204));
+        txtLName.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtLName.setForeground(new java.awt.Color(33, 37, 41));
+        txtLName.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(206, 212, 218)), javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 10)));
+        txtLName.setCaretColor(new java.awt.Color(51, 51, 51));
 
-		JLabel confirmPwError = new JLabel("New label");
-		confirmPwError.setVisible(false);
-		confirmPwError.setForeground(Color.RED);
-		confirmPwError.setFont(new Font("Dialog", Font.PLAIN, 10));
-		confirmPwError.setBounds(136, 540, 263, 17);
-		contentPane.add(confirmPwError);
+        lNameError.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        lNameError.setForeground(new java.awt.Color(220, 53, 69));
+        lNameError.setText(" ");
 
-		JButton btnSubmit = new JButton("Submit");
-		btnSubmit.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String fName = txtFName.getText().trim();
-				String lName = txtLName.getText().trim();
-				String email = txtEmail.getText().trim();
-				String phone = txtPhone.getText().trim();
-				String username = txtUsername.getText().trim();
+        lblEmail.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblEmail.setForeground(new java.awt.Color(73, 80, 87));
+        lblEmail.setText("Email");
 
-				String password = new String(pwField.getPassword());
-				String confirmPassword = new String(confirmPwField.getPassword());
+        txtEmail.setBackground(new java.awt.Color(204, 204, 204));
+        txtEmail.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtEmail.setForeground(new java.awt.Color(33, 37, 41));
+        txtEmail.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(206, 212, 218)), javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 10)));
+        txtEmail.setCaretColor(new java.awt.Color(51, 51, 51));
 
-				//Clearing any previous error message
-				fNameError.setVisible(false);
-				lNameError.setVisible(false);
-				emailError.setVisible(false);
-				phoneError.setVisible(false);
-				usernameError.setVisible(false);
-				pwError.setVisible(false);
-				confirmPwError.setVisible(false);
+        emailError.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        emailError.setForeground(new java.awt.Color(220, 53, 69));
+        emailError.setText(" ");
 
-				// Validate individual fields
-				boolean valid = true;
+        lblPhone.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblPhone.setForeground(new java.awt.Color(73, 80, 87));
+        lblPhone.setText("Phone no.");
 
-				valid = showValidationError(RegisterFieldEnum.FIRST_NAME, fName, fNameError) && valid;
-				valid = showValidationError(RegisterFieldEnum.LAST_NAME, lName, lNameError) && valid;
-				valid = showValidationError(RegisterFieldEnum.EMAIL, email, emailError) && valid;
-				valid = showValidationError(RegisterFieldEnum.PHONE, phone, phoneError) && valid;
-				valid = showValidationError(RegisterFieldEnum.USERNAME, username, usernameError) && valid;
-				valid = showValidationError(RegisterFieldEnum.PASSWORD, password, pwError) && valid;
+        lblPhonePrefix.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lblPhonePrefix.setForeground(new java.awt.Color(73, 80, 87));
+        lblPhonePrefix.setText("+94");
 
-				// Validate confirm password
-				String confirmError = controller.validateConfirmPassword(password, confirmPassword);
+        txtPhone.setBackground(new java.awt.Color(204, 204, 204));
+        txtPhone.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtPhone.setForeground(new java.awt.Color(33, 37, 41));
+        txtPhone.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(206, 212, 218)), javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 10)));
+        txtPhone.setCaretColor(new java.awt.Color(51, 51, 51));
 
-				if (confirmError != null) {
-					confirmPwError.setText(confirmError);
-					confirmPwError.setVisible(true);
-					valid = false;
-				}
+        phoneError.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        phoneError.setForeground(new java.awt.Color(220, 53, 69));
+        phoneError.setText(" ");
 
-				// Stop execution if invalid prior to database validation
-				if (!valid) {
-					return;
-				}
+        lblUsername.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblUsername.setForeground(new java.awt.Color(73, 80, 87));
+        lblUsername.setText("Username");
 
-				//DB Validation
-				try {
-					if(controller.usernameExists(username)) {
-						usernameError.setText("Username already exists");
-						usernameError.setVisible(true);
-						valid = false;
-					}
+        txtUsername.setBackground(new java.awt.Color(204, 204, 204));
+        txtUsername.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtUsername.setForeground(new java.awt.Color(33, 37, 41));
+        txtUsername.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(206, 212, 218)), javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 10)));
+        txtUsername.setCaretColor(new java.awt.Color(51, 51, 51));
 
-					if(controller.emailExists(email)) {
-						emailError.setText("Email already exists");
-						emailError.setVisible(true);
-						valid = false;
-					}
+        usernameError.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        usernameError.setForeground(new java.awt.Color(220, 53, 69));
+        usernameError.setText(" ");
 
-					if (!valid) {
-						return;
-					}
+        lblPassword.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblPassword.setForeground(new java.awt.Color(73, 80, 87));
+        lblPassword.setText("Password");
 
-					boolean success = controller.petOwnerRegister(fName, lName, email, phone, username, password);
+        pwField.setBackground(new java.awt.Color(204, 204, 204));
+        pwField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        pwField.setForeground(new java.awt.Color(33, 37, 41));
+        pwField.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(206, 212, 218)), javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 10)));
+        pwField.setCaretColor(new java.awt.Color(51, 51, 51));
 
-					if (success) {
-						JOptionPane.showMessageDialog(null, "Registration Successful");
-						dispose();
-						new LoginFrame().setVisible(true);
-					}
-					else {
-						JOptionPane.showMessageDialog(null, "Registration Failed", "Registration Error", JOptionPane.ERROR_MESSAGE);
-					}
-				} catch (SQLException ex) {
-					ErrorHandler.handleSQLException(ex);
-				} catch (DatabaseConfigException ex) {
-					ErrorHandler.handleDatabaseConfigException(ex);
-				}
-			}});
-		btnSubmit.setCursor(new Cursor(Cursor.HAND_CURSOR));
-		btnSubmit.setFont(new Font("Dialog", Font.BOLD, 14));
-		btnSubmit.setBounds(195, 564, 131, 41);
-		btnSubmit.setEnabled(false);
-		contentPane.add(btnSubmit);
+        pwError.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        pwError.setForeground(new java.awt.Color(220, 53, 69));
+        pwError.setText(" ");
 
-		confirmPwField.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				btnSubmit.doClick();
-			}
-		});
+        lblConfirmPw.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblConfirmPw.setForeground(new java.awt.Color(73, 80, 87));
+        lblConfirmPw.setText("Confirm Password");
 
-		DocumentListener listener = new DocumentListener() {
+        confirmPwField.setBackground(new java.awt.Color(204, 204, 204));
+        confirmPwField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        confirmPwField.setForeground(new java.awt.Color(33, 37, 41));
+        confirmPwField.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(206, 212, 218)), javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 10)));
+        confirmPwField.setCaretColor(new java.awt.Color(51, 51, 51));
+        confirmPwField.addActionListener(this::confirmPwFieldActionPerformed);
 
-			private void checkFields() {
+        confirmPwError.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        confirmPwError.setForeground(new java.awt.Color(220, 53, 69));
+        confirmPwError.setText(" ");
 
-				boolean filled =
-						!txtFName.getText().trim().isEmpty()
-						&& !txtLName.getText().trim().isEmpty()
-						&& !txtEmail.getText().trim().isEmpty()
-						&& !txtPhone.getText().trim().isEmpty()
-						&& !txtUsername.getText().trim().isEmpty()
-						&& pwField.getPassword().length > 0
-						&& confirmPwField.getPassword().length > 0;
+        btnSubmit.setBackground(new java.awt.Color(0, 121, 107));
+        btnSubmit.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnSubmit.setForeground(new java.awt.Color(255, 255, 255));
+        btnSubmit.setText("Submit");
+        btnSubmit.setBorderPainted(false);
+        btnSubmit.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnSubmit.setEnabled(false);
+        btnSubmit.setFocusPainted(false);
+        btnSubmit.addActionListener(this::btnSubmitActionPerformed);
 
-						btnSubmit.setEnabled(filled);
-			}
+        lblBackToLogin.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        lblBackToLogin.setForeground(new java.awt.Color(0, 121, 107));
+        lblBackToLogin.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblBackToLogin.setText("Back to Login");
+        lblBackToLogin.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lblBackToLogin.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblBackToLoginMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                lblBackToLoginMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                lblBackToLoginMouseExited(evt);
+            }
+        });
 
-			public void insertUpdate(DocumentEvent e) {
-				checkFields();
-			}
+        javax.swing.GroupLayout bodyPanelLayout = new javax.swing.GroupLayout(bodyPanel);
+        bodyPanel.setLayout(bodyPanelLayout);
+        bodyPanelLayout.setHorizontalGroup(
+            bodyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(bodyPanelLayout.createSequentialGroup()
+                .addGap(56, 56, 56)
+                .addGroup(bodyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(bodyPanelLayout.createSequentialGroup()
+                        .addGroup(bodyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblFirstName)
+                            .addComponent(txtFName, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(fNameError, 0, 206, Short.MAX_VALUE))
+                        .addGap(16, 16, 16)
+                        .addGroup(bodyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(bodyPanelLayout.createSequentialGroup()
+                                .addComponent(lblLastName)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(lNameError, 0, 207, Short.MAX_VALUE)
+                            .addComponent(txtLName)))
+                    .addComponent(lblEmail)
+                    .addComponent(txtEmail)
+                    .addComponent(emailError, 0, 0, Short.MAX_VALUE)
+                    .addComponent(lblPhone)
+                    .addGroup(bodyPanelLayout.createSequentialGroup()
+                        .addComponent(lblPhonePrefix)
+                        .addGap(8, 8, 8)
+                        .addComponent(txtPhone))
+                    .addComponent(phoneError, 0, 0, Short.MAX_VALUE)
+                    .addComponent(lblUsername)
+                    .addComponent(txtUsername)
+                    .addComponent(usernameError, 0, 0, Short.MAX_VALUE)
+                    .addComponent(lblPassword)
+                    .addComponent(pwField)
+                    .addComponent(pwError, 0, 0, Short.MAX_VALUE)
+                    .addComponent(lblConfirmPw)
+                    .addComponent(confirmPwField)
+                    .addComponent(confirmPwError, 0, 0, Short.MAX_VALUE)
+                    .addComponent(btnSubmit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblBackToLogin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(56, 56, 56))
+        );
+        bodyPanelLayout.setVerticalGroup(
+            bodyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(bodyPanelLayout.createSequentialGroup()
+                .addGap(28, 28, 28)
+                .addGroup(bodyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblFirstName)
+                    .addComponent(lblLastName))
+                .addGap(4, 4, 4)
+                .addGroup(bodyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtFName, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtLName, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(2, 2, 2)
+                .addGroup(bodyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(fNameError)
+                    .addComponent(lNameError))
+                .addGap(6, 6, 6)
+                .addComponent(lblEmail)
+                .addGap(4, 4, 4)
+                .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(2, 2, 2)
+                .addComponent(emailError)
+                .addGap(6, 6, 6)
+                .addComponent(lblPhone)
+                .addGap(4, 4, 4)
+                .addGroup(bodyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblPhonePrefix)
+                    .addComponent(txtPhone, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(2, 2, 2)
+                .addComponent(phoneError)
+                .addGap(6, 6, 6)
+                .addComponent(lblUsername)
+                .addGap(4, 4, 4)
+                .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(2, 2, 2)
+                .addComponent(usernameError)
+                .addGap(6, 6, 6)
+                .addComponent(lblPassword)
+                .addGap(4, 4, 4)
+                .addComponent(pwField, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(2, 2, 2)
+                .addComponent(pwError)
+                .addGap(6, 6, 6)
+                .addComponent(lblConfirmPw)
+                .addGap(4, 4, 4)
+                .addComponent(confirmPwField, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(2, 2, 2)
+                .addComponent(confirmPwError)
+                .addGap(14, 14, 14)
+                .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(14, 14, 14)
+                .addComponent(lblBackToLogin)
+                .addContainerGap(36, Short.MAX_VALUE))
+        );
 
-			public void removeUpdate(DocumentEvent e) {
-				checkFields();
-			}
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(headerPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(bodyPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(headerPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(bodyPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
-			public void changedUpdate(DocumentEvent e) {
-				checkFields();
-			}
-		};
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
 
-		txtFName.getDocument().addDocumentListener(listener);
-		txtLName.getDocument().addDocumentListener(listener);
-		txtEmail.getDocument().addDocumentListener(listener);
-		txtPhone.getDocument().addDocumentListener(listener);
-		txtUsername.getDocument().addDocumentListener(listener);
-		pwField.getDocument().addDocumentListener(listener);
-		confirmPwField.getDocument().addDocumentListener(listener);
+    private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
+        String fName = txtFName.getText().trim();
+        String lName = txtLName.getText().trim();
+        String email = txtEmail.getText().trim();
+        String phone = txtPhone.getText().trim();
+        String username = txtUsername.getText().trim();
 
-		JLabel lblBacktoLogin = new JLabel("Back to Login");
-		lblBacktoLogin.setForeground(new Color(0, 102, 204));
-		lblBacktoLogin.setCursor(new Cursor(Cursor.HAND_CURSOR));
-		lblBacktoLogin.addMouseListener(new MouseAdapter() {
-			public void mouseEntered(MouseEvent e) {
-				lblBacktoLogin.setText("<html><u>Back to Login</u></html>");
-			}
+        String password = new String(pwField.getPassword());
+        String confirmPassword = new String(confirmPwField.getPassword());
 
-			public void mouseExited(MouseEvent e) {
-				lblBacktoLogin.setText("Back to Login");
+        // Clearing any previous error message
+        clearErrors();
 
-			}
+        // Validate individual fields
+        boolean valid = true;
 
-			public void mouseClicked(MouseEvent e) {
-				dispose();
-				new LoginFrame().setVisible(true);
-			}
-		});
-		lblBacktoLogin.setVerticalAlignment(SwingConstants.BOTTOM);
-		lblBacktoLogin.setHorizontalAlignment(SwingConstants.CENTER);
-		lblBacktoLogin.setFont(new Font("Dialog", Font.PLAIN, 12));
-		lblBacktoLogin.setBounds(175, 617, 167, 17);
-		contentPane.add(lblBacktoLogin);
-	}
+        valid = showValidationError(RegisterFieldEnum.FIRST_NAME, fName, fNameError) && valid;
+        valid = showValidationError(RegisterFieldEnum.LAST_NAME, lName, lNameError) && valid;
+        valid = showValidationError(RegisterFieldEnum.EMAIL, email, emailError) && valid;
+        valid = showValidationError(RegisterFieldEnum.PHONE, phone, phoneError) && valid;
+        valid = showValidationError(RegisterFieldEnum.USERNAME, username, usernameError) && valid;
+        valid = showValidationError(RegisterFieldEnum.PASSWORD, password, pwError) && valid;
 
-	//Helper method
-	private boolean showValidationError(RegisterFieldEnum field, String value, JLabel errorLabel) {
+        // Validate confirm password
+        String confirmError = controller.validateConfirmPassword(password, confirmPassword);
 
-		String error = controller.validateField(field, value);
+        if (confirmError != null) {
+            confirmPwError.setText(confirmError);
+            valid = false;
+        }
 
-		if (error != null) {
-			errorLabel.setText(error);
-			errorLabel.setVisible(true);
-			return false;
-		}
+        // Stop execution if invalid prior to database validation
+        if (!valid) {
+            return;
+        }
 
-		return true;
-	}
+        // DB Validation
+        try {
+            if (controller.usernameExists(username)) {
+                usernameError.setText("Username already exists");
+                valid = false;
+            }
 
+            if (controller.emailExists(email)) {
+                emailError.setText("Email already exists");
+                valid = false;
+            }
+
+            if (!valid) {
+                return;
+            }
+
+            boolean success = controller.petOwnerRegister(fName, lName, email, phone, username, password);
+
+            if (success) {
+                JOptionPane.showMessageDialog(null, "Registration Successful");
+                dispose();
+                new LoginFrame().setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(null, "Registration Failed", "Registration Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (SQLException ex) {
+            ErrorHandler.handleSQLException(ex);
+        } catch (DatabaseConfigException ex) {
+            ErrorHandler.handleDatabaseConfigException(ex);
+        }
+    }//GEN-LAST:event_btnSubmitActionPerformed
+
+    private void confirmPwFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmPwFieldActionPerformed
+        btnSubmit.doClick();
+    }//GEN-LAST:event_confirmPwFieldActionPerformed
+
+    private void lblBackToLoginMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblBackToLoginMouseClicked
+        dispose();
+        new LoginFrame().setVisible(true);
+    }//GEN-LAST:event_lblBackToLoginMouseClicked
+
+    private void lblBackToLoginMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblBackToLoginMouseEntered
+        lblBackToLogin.setText("<html><u>Back to Login</u></html>");
+    }//GEN-LAST:event_lblBackToLoginMouseEntered
+
+    private void lblBackToLoginMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblBackToLoginMouseExited
+        lblBackToLogin.setText("Back to Login");
+    }//GEN-LAST:event_lblBackToLoginMouseExited
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(() -> {
+            try {
+                new RegisterFrame().setVisible(true);
+            } catch (Exception e) {
+                logger.log(java.util.logging.Level.SEVERE, null, e);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel bodyPanel;
+    private javax.swing.JButton btnSubmit;
+    private javax.swing.JLabel confirmPwError;
+    private javax.swing.JPasswordField confirmPwField;
+    private javax.swing.JLabel emailError;
+    private javax.swing.JLabel fNameError;
+    private javax.swing.JPanel headerPanel;
+    private javax.swing.JLabel lNameError;
+    private javax.swing.JLabel lblBackToLogin;
+    private javax.swing.JLabel lblConfirmPw;
+    private javax.swing.JLabel lblEmail;
+    private javax.swing.JLabel lblFirstName;
+    private javax.swing.JLabel lblLastName;
+    private javax.swing.JLabel lblPassword;
+    private javax.swing.JLabel lblPhone;
+    private javax.swing.JLabel lblPhonePrefix;
+    private javax.swing.JLabel lblSubtitle;
+    private javax.swing.JLabel lblTitle;
+    private javax.swing.JLabel lblUsername;
+    private javax.swing.JLabel phoneError;
+    private javax.swing.JLabel pwError;
+    private javax.swing.JPasswordField pwField;
+    private javax.swing.JTextField txtEmail;
+    private javax.swing.JTextField txtFName;
+    private javax.swing.JTextField txtLName;
+    private javax.swing.JTextField txtPhone;
+    private javax.swing.JTextField txtUsername;
+    private javax.swing.JLabel usernameError;
+    // End of variables declaration//GEN-END:variables
 }

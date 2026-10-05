@@ -1,9 +1,11 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
+ */
 package com.petcare.view.vetFrames;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
-import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -11,14 +13,8 @@ import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -29,188 +25,248 @@ import com.petcare.exception.DatabaseConfigException;
 import com.petcare.model.Pet;
 import com.petcare.model.User;
 import com.petcare.util.ErrorHandler;
+import com.petcare.view.UiStyle;
 
-public class PatientsPanel extends JPanel {
+/**
+ *
+ * @author hirunaka
+ */
+public class PatientsPanel extends javax.swing.JPanel {
 
-	private static final long serialVersionUID = 1L;
-	
-	private JTable patientsTable;
-	private DefaultTableModel tableModel;
-	private JTextField searchField;
+    private static final long serialVersionUID = 1L;
 
-	private List<Pet> patients = new ArrayList<>();
-	private VetController controller;
-	private User user;
+    private List<Pet> patients = new ArrayList<>();
+    private VetController controller;
+    private User user;
 
-	/**
-	 * Create the panel.
-	 */
-	public PatientsPanel(User user) {
-		
-		controller = new VetController();
-		this.user = user;
+    // Created before initComponents() because the form's table uses it as its model
+    private final DefaultTableModel tableModel = new DefaultTableModel(
+            new String[] {"Pet", "Species", "Owner", "Last Appointment", "Actions"}, 0) {
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+    };
 
-		setLayout(new BorderLayout(15, 15));
-		setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+    /**
+     * Creates new form PatientsPanel
+     */
+    public PatientsPanel(User user) {
+        controller = new VetController();
+        this.user = user;
 
-		JPanel headerPanel = new JPanel(new BorderLayout());
+        initComponents();
 
-		JLabel titleLabel = new JLabel("Patients");
-		titleLabel.setFont(new Font("SansSerif", Font.BOLD, 28));
+        UiStyle.styleTable(patientsTable);
+        UiStyle.styleScrollPane(scrollPane);
+        initSearch();
+        initTableBehaviour();
 
-		JLabel subtitleLabel = new JLabel("View and manage your patients");
+        loadPatients();
+    }
 
-		JPanel headerText = new JPanel();
-		headerText.setLayout(new BoxLayout(headerText, BoxLayout.Y_AXIS));
+    /**
+     * Filters the table as the user types.
+     */
+    private void initSearch() {
+        txtSearch.getDocument().addDocumentListener(new DocumentListener() {
 
-		headerText.add(titleLabel);
-		headerText.add(subtitleLabel);
+            public void insertUpdate(DocumentEvent e) {
+                filterPatients();
+            }
 
-		headerPanel.add(headerText, BorderLayout.WEST);
+            public void removeUpdate(DocumentEvent e) {
+                filterPatients();
+            }
 
-		add(headerPanel, BorderLayout.NORTH);
+            public void changedUpdate(DocumentEvent e) {
+                filterPatients();
+            }
+        });
+    }
 
-		JPanel searchPanel = new JPanel(new BorderLayout(10, 10));
+    /**
+     * "View" link column: renderer, click and hover cursor.
+     */
+    private void initTableBehaviour() {
+        patientsTable.getColumnModel().getColumn(4).setCellRenderer(new DefaultTableCellRenderer() {
 
-		JLabel searchLabel = new JLabel("Search:");
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 
-		searchField = new JTextField();
-		searchField.setToolTipText("Search by pet name");
+                JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-		searchPanel.add(searchLabel, BorderLayout.WEST);
-		searchPanel.add(searchField, BorderLayout.CENTER);
-		searchField.getDocument().addDocumentListener(new DocumentListener() {
+                label.setText("<html><u>View</u></html>");
+                label.setHorizontalAlignment(JLabel.CENTER);
+                if (!isSelected) {
+                    label.setForeground(UiStyle.ACCENT);
+                }
 
-		    public void insertUpdate(DocumentEvent e) {
-		        filterPatients();
-		    }
-		    public void removeUpdate(DocumentEvent e) {
-		        filterPatients();
-		    }
-		    public void changedUpdate(DocumentEvent e) {
-		        filterPatients();
-		    }
-		});
+                return label;
+            }
+        });
 
-		String[] columns = {"Pet", "Species", "Owner", "Last Appointment", "Actions"};
+        patientsTable.addMouseMotionListener(new MouseMotionAdapter() {
+            public void mouseMoved(MouseEvent e) {
 
-		tableModel = new DefaultTableModel(columns, 0) {
-			public boolean isCellEditable(int row, int column) {
-				return false;
-			}
-		};
+                int column = patientsTable.columnAtPoint(e.getPoint());
 
-		patientsTable = new JTable(tableModel);
-		patientsTable.setRowHeight(35);
-		patientsTable.getColumnModel().getColumn(4).setCellRenderer(new DefaultTableCellRenderer() {
+                if (column == 4) {
+                    patientsTable.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                } else {
+                    patientsTable.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                }
+            }
+        });
 
-		    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+        patientsTable.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
 
-		        JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                int row = patientsTable.rowAtPoint(e.getPoint());
+                int column = patientsTable.columnAtPoint(e.getPoint());
 
-		        label.setText("<html><u>View</u></html>");
-		        label.setHorizontalAlignment(JLabel.CENTER);
+                if (row >= 0 && column == 4) {
 
-		        return label;
-		    }
-		});
-		patientsTable.addMouseMotionListener(new MouseMotionAdapter() {
-		    public void mouseMoved(MouseEvent e) {
+                    // The table can be filtered, so find the pet by its name and owner
+                    String petName = patientsTable.getValueAt(row, 0).toString();
+                    String ownerName = patientsTable.getValueAt(row, 2).toString();
 
-		        int column = patientsTable.columnAtPoint(e.getPoint());
+                    for (Pet pet : patients) {
 
-		        if(column == 4) {
-		            patientsTable.setCursor(new Cursor(Cursor.HAND_CURSOR));
-		        } else {
-		            patientsTable.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-		        }
-		    }
-		});
-		patientsTable.addMouseListener(new MouseAdapter() {
-		    public void mouseClicked(MouseEvent e) {
+                        if (pet.getName().equals(petName) && pet.getOwnerName().equals(ownerName)) {
 
-		        int row = patientsTable.rowAtPoint(e.getPoint());
-		        int column = patientsTable.columnAtPoint(e.getPoint());
+                            ViewPatientDialog dialog = new ViewPatientDialog(pet);
+                            dialog.setVisible(true);
+                            break;
+                        }
+                    }
+                }
+            }
+        });
+    }
 
-		        if(row >= 0 && column == 4) {
+    private void loadPatients() {
 
-		            String petName = patientsTable.getValueAt(row, 0).toString();
+        tableModel.setRowCount(0);
 
-		            for(Pet pet : patients) {
+        try {
+            patients = controller.getVetPatients(user);
 
-		                if(pet.getName().equals(petName)) {
+            for (Pet pet : patients) {
 
-		                    ViewPatientDialog dialog = new ViewPatientDialog(pet);
-		                    dialog.setVisible(true);
-		                    break;
-		                }
-		            }
-		        }
-		    }
-		});
+                String lastAppointment = pet.getLastAppointment().toLocalDateTime().format(DateTimeFormatter.ofPattern("dd MMM yyyy, h:mm a"));
 
-		JScrollPane scrollPane = new JScrollPane(patientsTable);
+                tableModel.addRow(new Object[] {
+                        pet.getName(),
+                        pet.getSpecies(),
+                        pet.getOwnerName(),
+                        lastAppointment,
+                        "View"
+                });
+            }
+        } catch (SQLException e) {
+            ErrorHandler.handleTableLoadError(e, patientsTable, tableModel);
+        } catch (DatabaseConfigException e) {
+            ErrorHandler.handleTableLoadError(e, patientsTable, tableModel);
+        }
+    }
 
-		JPanel contentPanel = new JPanel(new BorderLayout(10, 10));
+    private void filterPatients() {
 
-		contentPanel.add(searchPanel, BorderLayout.NORTH);
-		contentPanel.add(scrollPane, BorderLayout.CENTER);
+        String search = txtSearch.getText().trim().toLowerCase();
 
-		add(contentPanel, BorderLayout.CENTER);
-		
-		loadPatients();
-	}
-	
-	private void loadPatients() {
+        tableModel.setRowCount(0);
 
-	    tableModel.setRowCount(0);
+        for (Pet pet : patients) {
 
-	    try {
-	        patients = controller.getVetPatients(user);
+            String petName = pet.getName().toLowerCase();
+            String species = pet.getSpecies().toLowerCase();
+            String ownerName = pet.getOwnerName().toLowerCase();
 
-	        for(Pet pet : patients) {
+            String lastAppointment = pet.getLastAppointment().toLocalDateTime().format(DateTimeFormatter.ofPattern("dd MMM yyyy, h:mm a"));
 
-	            String lastAppointment = pet.getLastAppointment().toLocalDateTime().format(DateTimeFormatter.ofPattern("dd MMM yyyy, h:mm a"));
+            if (petName.contains(search) || species.contains(search) || ownerName.contains(search) || lastAppointment.toLowerCase().contains(search)) {
 
-	            tableModel.addRow(new Object[] {
-	                    pet.getName(),
-	                    pet.getSpecies(),
-	                    pet.getOwnerName(),
-	                    lastAppointment,
-	                    "View"
-	            });
-	        }
-	    } catch(SQLException e) {
-	        ErrorHandler.handleTableLoadError(e, patientsTable, tableModel);
-	    } catch(DatabaseConfigException e) {
-	        ErrorHandler.handleTableLoadError(e, patientsTable, tableModel);
-	    }
-	}
-	
-	private void filterPatients() {
+                tableModel.addRow(new Object[] {
+                        pet.getName(),
+                        pet.getSpecies(),
+                        pet.getOwnerName(),
+                        lastAppointment,
+                        "View"
+                });
+            }
+        }
+    }
 
-		String search = searchField.getText().trim().toLowerCase();
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
 
-		tableModel.setRowCount(0);
+        lblTitle = new javax.swing.JLabel();
+        lblSubtitle = new javax.swing.JLabel();
+        lblSearch = new javax.swing.JLabel();
+        txtSearch = new javax.swing.JTextField();
+        scrollPane = new javax.swing.JScrollPane();
+        patientsTable = new javax.swing.JTable();
 
-		for(Pet pet : patients) {
+        setOpaque(false);
 
-			String petName = pet.getName().toLowerCase();
-			String species = pet.getSpecies().toLowerCase();
-			String ownerName = pet.getOwnerName().toLowerCase();
+        lblTitle.setFont(new java.awt.Font("Segoe UI", 1, 26)); // NOI18N
+        lblTitle.setForeground(new java.awt.Color(33, 37, 41));
+        lblTitle.setText("Patients");
 
-			String lastAppointment = pet.getLastAppointment().toLocalDateTime().format(DateTimeFormatter.ofPattern("dd MMM yyyy, h:mm a"));
+        lblSubtitle.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lblSubtitle.setForeground(new java.awt.Color(108, 117, 125));
+        lblSubtitle.setText("View and manage your patients");
 
-			if(petName.contains(search) || species.contains(search) || ownerName.contains(search) || lastAppointment.toLowerCase().contains(search)) {
+        lblSearch.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblSearch.setForeground(new java.awt.Color(73, 80, 87));
+        lblSearch.setText("Search");
 
-				tableModel.addRow(new Object[] {
-						pet.getName(),
-						pet.getSpecies(),
-						pet.getOwnerName(),
-						lastAppointment,
-						"View"
-				});
-			}
-		}
-	}
+        txtSearch.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtSearch.setForeground(new java.awt.Color(33, 37, 41));
+        txtSearch.setToolTipText("Search by pet name");
+        txtSearch.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(206, 212, 218)), javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 10)));
+
+        patientsTable.setModel(tableModel);
+        scrollPane.setViewportView(patientsTable);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(lblTitle)
+            .addComponent(lblSubtitle)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(lblSearch)
+                .addGap(10, 10, 10)
+                .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(lblTitle)
+                .addGap(4, 4, 4)
+                .addComponent(lblSubtitle)
+                .addGap(20, 20, 20)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblSearch)
+                    .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12)
+                .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE))
+        );
+    }// </editor-fold>//GEN-END:initComponents
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel lblSearch;
+    private javax.swing.JLabel lblSubtitle;
+    private javax.swing.JLabel lblTitle;
+    private javax.swing.JTable patientsTable;
+    private javax.swing.JScrollPane scrollPane;
+    private javax.swing.JTextField txtSearch;
+    // End of variables declaration//GEN-END:variables
 }

@@ -1,24 +1,21 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
+ */
 package com.petcare.view.vetFrames;
 
-import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -28,13 +25,18 @@ import com.petcare.exception.DatabaseConfigException;
 import com.petcare.model.Appointment;
 import com.petcare.model.User;
 import com.petcare.util.ErrorHandler;
+import com.petcare.view.UiStyle;
 
-public class VetAppointmentsPanel extends JPanel {
+/**
+ *
+ * @author hirunaka
+ */
+public class VetAppointmentsPanel extends javax.swing.JPanel {
 
     private static final long serialVersionUID = 1L;
 
-    private JTable appointmentsTable;
-    private DefaultTableModel tableModel;
+    private static final String TIME_ONLY = "h:mm a";
+    private static final String DATE_AND_TIME = "dd MMM yyyy, h:mm a";
 
     private VetController controller;
     private List<Appointment> appointments;
@@ -42,99 +44,36 @@ public class VetAppointmentsPanel extends JPanel {
 
     private String currentFilter = "Today";
 
+    // Created before initComponents() because the form's table uses it as its model
+    private final DefaultTableModel tableModel = new DefaultTableModel(
+            new String[] {"Date & Time", "Pet", "Owner", "Reason", "Status", "Actions"}, 0) {
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+    };
+
     /**
-     * Create the panel.
+     * Creates new form VetAppointmentsPanel
      */
     public VetAppointmentsPanel(User user) {
-
         this.user = user;
         controller = new VetController();
 
-        setLayout(new BorderLayout(15, 15));
-        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        initComponents();
 
-        // HEADER
+        UiStyle.styleTable(appointmentsTable);
+        UiStyle.styleScrollPane(scrollPane);
+        initTableBehaviour();
 
-        JPanel headerPanel = new JPanel(new BorderLayout());
+        // LOAD DEFAULT FILTER
+        loadTodayAppointments();
+        updateFilterButtons();
+    }
 
-        JLabel titleLabel = new JLabel("Appointments");
-        titleLabel.setFont(new Font("SansSerif", Font.BOLD, 28));
-
-        JLabel subtitleLabel = new JLabel("Manage your veterinary appointments");
-
-        JPanel headerText = new JPanel();
-        headerText.setLayout(new BoxLayout(headerText, BoxLayout.Y_AXIS));
-
-        headerText.add(titleLabel);
-        headerText.add(subtitleLabel);
-
-        headerPanel.add(headerText, BorderLayout.WEST);
-
-        add(headerPanel, BorderLayout.NORTH);
-
-        // FILTER BUTTONS
-
-        JPanel filterPanel = new JPanel();
-
-        JButton todayButton = new JButton("Today");
-        JButton upcomingButton = new JButton("Upcoming");
-        JButton pastButton = new JButton("Past");
-        JButton cancelledButton = new JButton("Cancelled");
-
-        todayButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        upcomingButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        pastButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        cancelledButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
-        todayButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                currentFilter = "Today";
-                loadTodayAppointments();
-            }
-        });
-
-        upcomingButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                currentFilter = "Upcoming";
-                loadUpcomingAppointments();
-            }
-        });
-
-        pastButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                currentFilter = "Past";
-                loadPastAppointments();
-            }
-        });
-
-        cancelledButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                currentFilter = "Cancelled";
-                loadCancelledAppointments();
-            }
-        });
-
-        filterPanel.add(todayButton);
-        filterPanel.add(upcomingButton);
-        filterPanel.add(pastButton);
-        filterPanel.add(cancelledButton);
-
-        // TABLE
-
-        String[] columns = {"Time", "Pet", "Owner", "Reason", "Status", "Actions"};
-
-        tableModel = new DefaultTableModel(columns, 0) {
-
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-
-        appointmentsTable = new JTable(tableModel);
-        appointmentsTable.setRowHeight(35);
-
-        // ACTIONS COLUMN
-
+    /**
+     * "View" link column: renderer, click and hover cursor.
+     */
+    private void initTableBehaviour() {
         appointmentsTable.getColumnModel().getColumn(5).setCellRenderer(new DefaultTableCellRenderer() {
 
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -143,12 +82,13 @@ public class VetAppointmentsPanel extends JPanel {
 
                 label.setText("<html><u>View</u></html>");
                 label.setHorizontalAlignment(JLabel.CENTER);
+                if (!isSelected) {
+                    label.setForeground(UiStyle.ACCENT);
+                }
 
                 return label;
             }
         });
-
-        // ACTIONS COLUMN CURSOR
 
         appointmentsTable.addMouseMotionListener(new MouseMotionAdapter() {
 
@@ -165,8 +105,6 @@ public class VetAppointmentsPanel extends JPanel {
             }
         });
 
-        // ACTIONS COLUMN CLICK
-
         appointmentsTable.addMouseListener(new MouseAdapter() {
 
             public void mouseClicked(MouseEvent e) {
@@ -174,36 +112,35 @@ public class VetAppointmentsPanel extends JPanel {
                 int row = appointmentsTable.rowAtPoint(e.getPoint());
                 int column = appointmentsTable.columnAtPoint(e.getPoint());
 
-                if (row >= 0 && column == 5 && appointments != null) {
+                if (row >= 0 && column == 5 && appointments != null && row < appointments.size()) {
 
                     Appointment appointment = appointments.get(row);
 
                     VetAppointmentDialog dialog = new VetAppointmentDialog(user, appointment);
                     dialog.setVisible(true);
 
-                    if(dialog.isChanged()) {
+                    if (dialog.isChanged()) {
                         refreshAppointments();
                     }
                 }
             }
         });
+    }
 
-        // SCROLL PANE
+    /**
+     * Highlights the button of the filter that is currently shown.
+     */
+    private void updateFilterButtons() {
+        styleFilterButton(btnToday, "Today".equals(currentFilter));
+        styleFilterButton(btnUpcoming, "Upcoming".equals(currentFilter));
+        styleFilterButton(btnPast, "Past".equals(currentFilter));
+        styleFilterButton(btnCancelled, "Cancelled".equals(currentFilter));
+    }
 
-        JScrollPane scrollPane = new JScrollPane(appointmentsTable);
-
-        // CONTENT
-
-        JPanel contentPanel = new JPanel(new BorderLayout(10, 10));
-
-        contentPanel.add(filterPanel, BorderLayout.NORTH);
-        contentPanel.add(scrollPane, BorderLayout.CENTER);
-
-        add(contentPanel, BorderLayout.CENTER);
-
-        // LOAD DEFAULT FILTER
-
-        loadTodayAppointments();
+    private void styleFilterButton(JButton button, boolean active) {
+        button.setBackground(active ? UiStyle.ACCENT : Color.WHITE);
+        button.setForeground(active ? Color.WHITE : UiStyle.TEXT_DARK);
+        button.setBorder(BorderFactory.createLineBorder(active ? UiStyle.ACCENT : new Color(206, 212, 218)));
     }
 
     // REFRESH
@@ -229,21 +166,8 @@ public class VetAppointmentsPanel extends JPanel {
 
         try {
             appointments = controller.getVetTodays(user);
+            fillTable(TIME_ONLY);
 
-            for (Appointment appointment : appointments) {
-
-                String time = appointment.getAppointmentDate().toLocalDateTime().format(
-                        DateTimeFormatter.ofPattern("h:mm a"));
-
-                tableModel.addRow(new Object[] {
-                        time,
-                        appointment.getPetName(),
-                        appointment.getOwnerName(),
-                        appointment.getReason(),
-                        appointment.getStatus(),
-                        "View"
-                });
-            }
         } catch (SQLException e) {
             ErrorHandler.handleTableLoadError(e, appointmentsTable, tableModel);
         } catch (DatabaseConfigException e) {
@@ -259,21 +183,8 @@ public class VetAppointmentsPanel extends JPanel {
 
         try {
             appointments = controller.getVetUpcoming(user);
+            fillTable(DATE_AND_TIME);
 
-            for (Appointment appointment : appointments) {
-
-                String time = appointment.getAppointmentDate().toLocalDateTime().format(
-                        DateTimeFormatter.ofPattern("dd MMM yyyy, h:mm a"));
-
-                tableModel.addRow(new Object[] {
-                        time,
-                        appointment.getPetName(),
-                        appointment.getOwnerName(),
-                        appointment.getReason(),
-                        appointment.getStatus(),
-                        "View"
-                });
-            }
         } catch (SQLException e) {
             ErrorHandler.handleTableLoadError(e, appointmentsTable, tableModel);
         } catch (DatabaseConfigException e) {
@@ -289,21 +200,8 @@ public class VetAppointmentsPanel extends JPanel {
 
         try {
             appointments = controller.getVetPast(user);
+            fillTable(DATE_AND_TIME);
 
-            for (Appointment appointment : appointments) {
-
-                String time = appointment.getAppointmentDate().toLocalDateTime().format(
-                        DateTimeFormatter.ofPattern("dd MMM yyyy, h:mm a"));
-
-                tableModel.addRow(new Object[] {
-                        time,
-                        appointment.getPetName(),
-                        appointment.getOwnerName(),
-                        appointment.getReason(),
-                        appointment.getStatus(),
-                        "View"
-                });
-            }
         } catch (SQLException e) {
             ErrorHandler.handleTableLoadError(e, appointmentsTable, tableModel);
         } catch (DatabaseConfigException e) {
@@ -318,25 +216,168 @@ public class VetAppointmentsPanel extends JPanel {
         tableModel.setRowCount(0);
 
         try {
-        	appointments = controller.getVetCancelled(user);
+            appointments = controller.getVetCancelled(user);
+            fillTable(DATE_AND_TIME);
 
-            for (Appointment appointment : appointments) {
-
-                String time = appointment.getAppointmentDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("dd MMM yyyy, h:mm a"));
-
-                tableModel.addRow(new Object[] {
-                        time,
-                        appointment.getPetName(),
-                        appointment.getOwnerName(),
-                        appointment.getReason(),
-                        appointment.getStatus(),
-                        "View"
-                });
-            }
         } catch (SQLException e) {
             ErrorHandler.handleTableLoadError(e, appointmentsTable, tableModel);
         } catch (DatabaseConfigException e) {
             ErrorHandler.handleTableLoadError(e, appointmentsTable, tableModel);
         }
     }
+
+    /**
+     * Adds a table row for every loaded appointment, using the given time format.
+     */
+    private void fillTable(String timePattern) {
+        for (Appointment appointment : appointments) {
+
+            String time = appointment.getAppointmentDate().toLocalDateTime().format(
+                    DateTimeFormatter.ofPattern(timePattern));
+
+            tableModel.addRow(new Object[] {
+                    time,
+                    appointment.getPetName(),
+                    appointment.getOwnerName(),
+                    appointment.getReason(),
+                    appointment.getStatus(),
+                    "View"
+            });
+        }
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        lblTitle = new javax.swing.JLabel();
+        lblSubtitle = new javax.swing.JLabel();
+        btnToday = new javax.swing.JButton();
+        btnUpcoming = new javax.swing.JButton();
+        btnPast = new javax.swing.JButton();
+        btnCancelled = new javax.swing.JButton();
+        scrollPane = new javax.swing.JScrollPane();
+        appointmentsTable = new javax.swing.JTable();
+
+        setOpaque(false);
+
+        lblTitle.setFont(new java.awt.Font("Segoe UI", 1, 26)); // NOI18N
+        lblTitle.setForeground(new java.awt.Color(33, 37, 41));
+        lblTitle.setText("Appointments");
+
+        lblSubtitle.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lblSubtitle.setForeground(new java.awt.Color(108, 117, 125));
+        lblSubtitle.setText("Manage your veterinary appointments");
+
+        btnToday.setBackground(new java.awt.Color(0, 121, 107));
+        btnToday.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        btnToday.setForeground(new java.awt.Color(255, 255, 255));
+        btnToday.setText("Today");
+        btnToday.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 121, 107)));
+        btnToday.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnToday.setFocusPainted(false);
+        btnToday.addActionListener(this::btnTodayActionPerformed);
+
+        btnUpcoming.setBackground(new java.awt.Color(255, 255, 255));
+        btnUpcoming.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        btnUpcoming.setForeground(new java.awt.Color(33, 37, 41));
+        btnUpcoming.setText("Upcoming");
+        btnUpcoming.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(206, 212, 218)));
+        btnUpcoming.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnUpcoming.setFocusPainted(false);
+        btnUpcoming.addActionListener(this::btnUpcomingActionPerformed);
+
+        btnPast.setBackground(new java.awt.Color(255, 255, 255));
+        btnPast.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        btnPast.setForeground(new java.awt.Color(33, 37, 41));
+        btnPast.setText("Past");
+        btnPast.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(206, 212, 218)));
+        btnPast.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnPast.setFocusPainted(false);
+        btnPast.addActionListener(this::btnPastActionPerformed);
+
+        btnCancelled.setBackground(new java.awt.Color(255, 255, 255));
+        btnCancelled.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        btnCancelled.setForeground(new java.awt.Color(33, 37, 41));
+        btnCancelled.setText("Cancelled");
+        btnCancelled.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(206, 212, 218)));
+        btnCancelled.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnCancelled.setFocusPainted(false);
+        btnCancelled.addActionListener(this::btnCancelledActionPerformed);
+
+        appointmentsTable.setModel(tableModel);
+        scrollPane.setViewportView(appointmentsTable);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(lblTitle)
+            .addComponent(lblSubtitle)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(btnToday, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(8, 8, 8)
+                .addComponent(btnUpcoming, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(8, 8, 8)
+                .addComponent(btnPast, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(8, 8, 8)
+                .addComponent(btnCancelled, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(lblTitle)
+                .addGap(4, 4, 4)
+                .addComponent(lblSubtitle)
+                .addGap(20, 20, 20)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnToday, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnUpcoming, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnPast, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCancelled, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12)
+                .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE))
+        );
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void btnTodayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTodayActionPerformed
+        currentFilter = "Today";
+        loadTodayAppointments();
+        updateFilterButtons();
+    }//GEN-LAST:event_btnTodayActionPerformed
+
+    private void btnUpcomingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpcomingActionPerformed
+        currentFilter = "Upcoming";
+        loadUpcomingAppointments();
+        updateFilterButtons();
+    }//GEN-LAST:event_btnUpcomingActionPerformed
+
+    private void btnPastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPastActionPerformed
+        currentFilter = "Past";
+        loadPastAppointments();
+        updateFilterButtons();
+    }//GEN-LAST:event_btnPastActionPerformed
+
+    private void btnCancelledActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelledActionPerformed
+        currentFilter = "Cancelled";
+        loadCancelledAppointments();
+        updateFilterButtons();
+    }//GEN-LAST:event_btnCancelledActionPerformed
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable appointmentsTable;
+    private javax.swing.JButton btnCancelled;
+    private javax.swing.JButton btnPast;
+    private javax.swing.JButton btnToday;
+    private javax.swing.JButton btnUpcoming;
+    private javax.swing.JLabel lblSubtitle;
+    private javax.swing.JLabel lblTitle;
+    private javax.swing.JScrollPane scrollPane;
+    // End of variables declaration//GEN-END:variables
 }

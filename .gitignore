@@ -1,10 +1,12 @@
 # Database credentials
 config/database.properties
 
-# Eclipse
-.classpath
-.project
-.settings/
+# IDE
+build/
+lib/CopyLibs
+lib/nblibraries.properties
+nbproject/
+build.xml
 
 # Compiled Java files
 bin/

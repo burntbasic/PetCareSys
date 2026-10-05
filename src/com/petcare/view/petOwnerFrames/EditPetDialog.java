@@ -1,27 +1,16 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
+ */
 package com.petcare.view.petOwnerFrames;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
-
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.plaf.basic.ComboPopup;
@@ -32,211 +21,298 @@ import com.petcare.model.Pet;
 import com.petcare.model.User;
 import com.petcare.util.ErrorHandler;
 
-public class EditPetDialog extends JDialog {
+/**
+ *
+ * @author hirunaka
+ */
+public class EditPetDialog extends javax.swing.JDialog {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private PetOwnerController controller;
-	private boolean changed;
+    private PetOwnerController controller;
+    private User user;
+    private Pet pet;
+    private boolean changed;
 
-	public EditPetDialog(User user, Pet pet) {
-		
-		controller = new PetOwnerController();
-		changed = false;
+    public boolean isChanged() {
+        return changed;
+    }
 
-		setTitle("Edit Pet");
-		setSize(350, 250);
-		setLocationRelativeTo(null);
-		setModal(true);
+    /**
+     * Creates new form EditPetDialog
+     */
+    public EditPetDialog(User user, Pet pet) {
+        this.user = user;
+        this.pet = pet;
+        controller = new PetOwnerController();
+        changed = false;
 
-		// FORM
-		JPanel formPanel = new JPanel(new GridBagLayout());
-		formPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 10, 15));
+        initComponents();
 
-		GridBagConstraints gbc = new GridBagConstraints(); 
-		gbc.insets = new Insets(5, 5, 5, 5); 
-		gbc.anchor = GridBagConstraints.WEST;
+        getContentPane().setBackground(Color.WHITE);
 
-		JLabel nameLabel = new JLabel("Pet Name:");
-		JTextField nameField = new JTextField(pet.getName(), 15);
+        // Pre-fill the form with the pet's current details
+        txtName.setText(pet.getName());
 
-		JLabel speciesLabel = new JLabel("Species:");
+        String petSpecies = pet.getSpecies();
+        if (petSpecies.equals("Dog") || petSpecies.equals("Cat") || petSpecies.equals("Squirrel") || petSpecies.equals("Hamster")) {
+            cmbSpecies.setSelectedItem(petSpecies);
+        } else {
+            cmbSpecies.setSelectedItem("Other");
+            txtOtherSpecies.setText(petSpecies);
+            txtOtherSpecies.setEnabled(true);
+        }
 
-		String[] species = {"Dog", "Cat", "Squirrel", "Hamster", "Other"};
-		JComboBox<String> speciesComboBox = new JComboBox<>(species);
+        cmbGender.setSelectedItem(pet.getGender());
 
-		JLabel otherSpeciesLabel = new JLabel("Other Species:");
-		otherSpeciesLabel.setVisible(false);
+        setLocationRelativeTo(null);
 
-		JTextField otherSpeciesField = new JTextField(15);
-		otherSpeciesField.setVisible(false);
+        setComboBoxHandCursor(cmbSpecies);
+        setComboBoxHandCursor(cmbGender);
+    }
 
-		String petSpecies = pet.getSpecies();
-		if (petSpecies.equals("Dog") || petSpecies.equals("Cat") || petSpecies.equals("Squirrel") || petSpecies.equals("Hamster")) { 
-			speciesComboBox.setSelectedItem(petSpecies); 
-		} else { 
-			speciesComboBox.setSelectedItem("Other"); 
-			otherSpeciesField.setText(petSpecies); 
-			otherSpeciesLabel.setVisible(true); 
-			otherSpeciesField.setVisible(true); 
-		}
+    private void setComboBoxHandCursor(JComboBox<String> comboBox) {
 
-		JLabel genderLabel = new JLabel("Gender:");
+        comboBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        comboBox.addPopupMenuListener(new PopupMenuListener() {
 
-		String[] genders = {"Male", "Female"};
-		JComboBox<String> genderComboBox = new JComboBox<>(genders);
-		genderComboBox.setSelectedItem(pet.getGender());
+            public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+                Object popup = comboBox.getUI().getAccessibleChild(comboBox, 0);
 
-		gbc.gridx = 0;
-		gbc.gridy = 0; 
-		formPanel.add(nameLabel, gbc); 
+                if (popup instanceof ComboPopup) {
+                    JList<?> list = ((ComboPopup) popup).getList();
+                    list.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                }
+            }
 
-		gbc.gridx = 1; 
-		formPanel.add(nameField, gbc); 
+            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {}
 
-		gbc.gridx = 0; 
-		gbc.gridy = 1; 
-		formPanel.add(speciesLabel, gbc); 
+            public void popupMenuCanceled(PopupMenuEvent e) {}
+        });
+    }
 
-		gbc.gridx = 1; 
-		formPanel.add(speciesComboBox, gbc); 
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
 
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-		formPanel.add(otherSpeciesLabel, gbc);
+        lblTitle = new javax.swing.JLabel();
+        lblSubtitle = new javax.swing.JLabel();
+        lblName = new javax.swing.JLabel();
+        txtName = new javax.swing.JTextField();
+        lblSpecies = new javax.swing.JLabel();
+        cmbSpecies = new javax.swing.JComboBox<>();
+        lblOtherSpecies = new javax.swing.JLabel();
+        txtOtherSpecies = new javax.swing.JTextField();
+        lblGender = new javax.swing.JLabel();
+        cmbGender = new javax.swing.JComboBox<>();
+        btnDelete = new javax.swing.JButton();
+        btnCancel = new javax.swing.JButton();
+        btnSave = new javax.swing.JButton();
 
-		gbc.gridx = 1;
-		formPanel.add(otherSpeciesField, gbc);
+        setTitle("Edit Pet");
+        setModal(true);
+        setResizable(false);
 
-		gbc.gridx = 0; 
-		gbc.gridy = 3; 
-		formPanel.add(genderLabel, gbc); 
+        lblTitle.setFont(new java.awt.Font("Segoe UI", 1, 22)); // NOI18N
+        lblTitle.setForeground(new java.awt.Color(33, 37, 41));
+        lblTitle.setText("Edit Pet");
 
-		gbc.gridx = 1; 
-		formPanel.add(genderComboBox, gbc); 
+        lblSubtitle.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lblSubtitle.setForeground(new java.awt.Color(108, 117, 125));
+        lblSubtitle.setText("Update your pet's details");
 
-		add(formPanel, BorderLayout.CENTER);
+        lblName.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblName.setForeground(new java.awt.Color(73, 80, 87));
+        lblName.setText("Pet Name");
 
-		speciesComboBox.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+        txtName.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtName.setForeground(new java.awt.Color(33, 37, 41));
+        txtName.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(206, 212, 218)), javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 10)));
 
-				if ("Other".equals(speciesComboBox.getSelectedItem())) {
-					otherSpeciesLabel.setVisible(true);
-					otherSpeciesField.setVisible(true);
-				} else {
-					otherSpeciesLabel.setVisible(false);
-					otherSpeciesField.setVisible(false);
-				}
-				formPanel.revalidate();
-				formPanel.repaint();
-			}
-		});
+        lblSpecies.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblSpecies.setForeground(new java.awt.Color(73, 80, 87));
+        lblSpecies.setText("Species");
 
-		// BUTTONS
-		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        cmbSpecies.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        cmbSpecies.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Dog", "Cat", "Squirrel", "Hamster", "Other" }));
+        cmbSpecies.addActionListener(this::cmbSpeciesActionPerformed);
 
-		JButton deleteButton = new JButton("Delete Pet");
-		JButton cancelButton = new JButton("Cancel");
-		JButton saveButton = new JButton("Save Changes");
+        lblOtherSpecies.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblOtherSpecies.setForeground(new java.awt.Color(73, 80, 87));
+        lblOtherSpecies.setText("Other Species");
 
-		buttonPanel.add(deleteButton);
-		buttonPanel.add(Box.createHorizontalStrut(45));
-		buttonPanel.add(cancelButton);
-		buttonPanel.add(saveButton);
+        txtOtherSpecies.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtOtherSpecies.setForeground(new java.awt.Color(33, 37, 41));
+        txtOtherSpecies.setEnabled(false);
+        txtOtherSpecies.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(206, 212, 218)), javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 10)));
 
-		deleteButton.setBackground(new Color(120, 45, 45));
-		deleteButton.setForeground(Color.WHITE);
+        lblGender.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblGender.setForeground(new java.awt.Color(73, 80, 87));
+        lblGender.setText("Gender");
 
-		deleteButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		cancelButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		saveButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        cmbGender.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        cmbGender.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Male", "Female" }));
 
-		setComboBoxHandCursor(speciesComboBox); 
-		setComboBoxHandCursor(genderComboBox);
+        btnDelete.setBackground(new java.awt.Color(220, 53, 69));
+        btnDelete.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnDelete.setForeground(new java.awt.Color(255, 255, 255));
+        btnDelete.setText("Delete Pet");
+        btnDelete.setBorderPainted(false);
+        btnDelete.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnDelete.setFocusPainted(false);
+        btnDelete.addActionListener(this::btnDeleteActionPerformed);
 
-		add(buttonPanel, BorderLayout.SOUTH);
+        btnCancel.setBackground(new java.awt.Color(255, 255, 255));
+        btnCancel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnCancel.setForeground(new java.awt.Color(33, 37, 41));
+        btnCancel.setText("Cancel");
+        btnCancel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(206, 212, 218)));
+        btnCancel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnCancel.setFocusPainted(false);
+        btnCancel.addActionListener(this::btnCancelActionPerformed);
 
-		// DELETE
-		deleteButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				int result = JOptionPane.showConfirmDialog(EditPetDialog.this, "Are you sure you want to delete " + pet.getName() + "?", "Delete Pet", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        btnSave.setBackground(new java.awt.Color(0, 121, 107));
+        btnSave.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnSave.setForeground(new java.awt.Color(255, 255, 255));
+        btnSave.setText("Save Changes");
+        btnSave.setBorderPainted(false);
+        btnSave.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnSave.setFocusPainted(false);
+        btnSave.addActionListener(this::btnSaveActionPerformed);
 
-				if (result == JOptionPane.YES_OPTION) {
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(28, 28, 28)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblTitle)
+                    .addComponent(lblSubtitle)
+                    .addComponent(lblName)
+                    .addComponent(txtName, javax.swing.GroupLayout.DEFAULT_SIZE, 344, Short.MAX_VALUE)
+                    .addComponent(lblSpecies)
+                    .addComponent(cmbSpecies, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblOtherSpecies)
+                    .addComponent(txtOtherSpecies, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblGender)
+                    .addComponent(cmbGender, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(10, 10, 10)
+                        .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(28, 28, 28))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(24, 24, 24)
+                .addComponent(lblTitle)
+                .addGap(2, 2, 2)
+                .addComponent(lblSubtitle)
+                .addGap(18, 18, 18)
+                .addComponent(lblName)
+                .addGap(4, 4, 4)
+                .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(lblSpecies)
+                .addGap(4, 4, 4)
+                .addComponent(cmbSpecies, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(lblOtherSpecies)
+                .addGap(4, 4, 4)
+                .addComponent(txtOtherSpecies, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(lblGender)
+                .addGap(4, 4, 4)
+                .addComponent(cmbGender, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 20, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(24, 24, 24))
+        );
 
-					try { 
-						controller.deletePet(user, pet);
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
 
-						changed = true;
+    private void cmbSpeciesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbSpeciesActionPerformed
+        // The extra field is only usable when "Other" is selected
+        txtOtherSpecies.setEnabled("Other".equals(cmbSpecies.getSelectedItem()));
+    }//GEN-LAST:event_cmbSpeciesActionPerformed
 
-						JOptionPane.showMessageDialog( EditPetDialog.this, "Pet deleted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
-						dispose();
+    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
+        dispose();
+    }//GEN-LAST:event_btnCancelActionPerformed
 
-					} catch (SQLIntegrityConstraintViolationException ex) {
-						//both completed and scheduled appointments linked to a pet are treated this way
-						JOptionPane.showMessageDialog(EditPetDialog.this, "This pet cannot be deleted because it has existing appointments.", "Cannot Delete Pet", JOptionPane.WARNING_MESSAGE);						
-					} catch (SQLException ex) { 
-						ErrorHandler.handleSQLException(ex);
-					} catch (DatabaseConfigException ex) { 
-						ErrorHandler.handleDatabaseConfigException(ex);
-					}
-				}
-			}
-		});
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        String name = txtName.getText().trim();
+        String species = (String) cmbSpecies.getSelectedItem();
+        String otherSpecies = txtOtherSpecies.getText().trim();
+        String gender = (String) cmbGender.getSelectedItem();
 
-		// CANCEL
-		cancelButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				dispose();
-			}
-		});
+        try {
+            controller.updatePet(user, pet, name, species, otherSpecies, gender);
 
-		// SAVE
-		saveButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+            changed = true;
 
-				String name = nameField.getText().trim();
-				String species = (String) speciesComboBox.getSelectedItem();
-				String otherSpecies = otherSpeciesField.getText().trim();
-				String gender = (String) genderComboBox.getSelectedItem();
+            JOptionPane.showMessageDialog(this, "Pet updated successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+            dispose();
 
-				try {
-					controller.updatePet(user, pet, name, species, otherSpecies, gender);
+        } catch (IllegalArgumentException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Validation Error", JOptionPane.ERROR_MESSAGE);
+        } catch (SQLException ex) {
+            ErrorHandler.handleSQLException(ex);
+        } catch (DatabaseConfigException ex) {
+            ErrorHandler.handleDatabaseConfigException(ex);
+        }
+    }//GEN-LAST:event_btnSaveActionPerformed
 
-					changed = true;
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        int result = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete " + pet.getName() + "?", "Delete Pet", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
-					JOptionPane.showMessageDialog(EditPetDialog.this, "Pet updated successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
-					dispose();
+        if (result == JOptionPane.YES_OPTION) {
 
-				} catch (IllegalArgumentException ex) {
-					JOptionPane.showMessageDialog(EditPetDialog.this, ex.getMessage(), "Validation Error", JOptionPane.ERROR_MESSAGE);
-				} catch (SQLException ex) {
-					ErrorHandler.handleSQLException(ex);
-				} catch (DatabaseConfigException ex) {
-					ErrorHandler.handleDatabaseConfigException(ex);
-				}
-			}
-		});
-	}
+            try {
+                controller.deletePet(user, pet);
 
-	private void setComboBoxHandCursor(JComboBox<String> comboBox) {
+                changed = true;
 
-	    comboBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-	    comboBox.addPopupMenuListener(new PopupMenuListener() {
+                JOptionPane.showMessageDialog(this, "Pet deleted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                dispose();
 
-	        public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
-	            Object popup = comboBox.getUI().getAccessibleChild(comboBox, 0);
+            } catch (SQLIntegrityConstraintViolationException ex) {
+                // both completed and scheduled appointments linked to a pet are treated this way
+                JOptionPane.showMessageDialog(this, "This pet cannot be deleted because it has existing appointments.", "Cannot Delete Pet", JOptionPane.WARNING_MESSAGE);
+            } catch (SQLException ex) {
+                ErrorHandler.handleSQLException(ex);
+            } catch (DatabaseConfigException ex) {
+                ErrorHandler.handleDatabaseConfigException(ex);
+            }
+        }
+    }//GEN-LAST:event_btnDeleteActionPerformed
 
-	            if (popup instanceof ComboPopup) {
-	                JList<?> list = ((ComboPopup) popup).getList();
-	                list.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-	            }
-	        }
-	        public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {}
-	        public void popupMenuCanceled(PopupMenuEvent e) {}
-	    });
-	}
-	
-	public boolean isChanged() {
-		return changed;
-	}
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCancel;
+    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnSave;
+    private javax.swing.JComboBox<String> cmbGender;
+    private javax.swing.JComboBox<String> cmbSpecies;
+    private javax.swing.JLabel lblGender;
+    private javax.swing.JLabel lblName;
+    private javax.swing.JLabel lblOtherSpecies;
+    private javax.swing.JLabel lblSpecies;
+    private javax.swing.JLabel lblSubtitle;
+    private javax.swing.JLabel lblTitle;
+    private javax.swing.JTextField txtName;
+    private javax.swing.JTextField txtOtherSpecies;
+    // End of variables declaration//GEN-END:variables
 }
