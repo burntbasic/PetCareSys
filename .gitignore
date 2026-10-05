@@ -1,17 +1,17 @@
-# Ignore everything
-*
+# Database credentials
+config/database.properties
 
-# Keep .gitignore
-!.gitignore
+# IDE
+build/
+lib/CopyLibs
+lib/nblibraries.properties
+nbproject/
+build.xml
 
-# Allow Git to enter src
-!src/
-!src/com/
-!src/com/petcare/
+# Compiled Java files
+bin/
+*.class
 
-# Ignore everything directly inside petcare
-src/com/petcare/*
-
-# Keep only view
-!src/com/petcare/view/
-!src/com/petcare/view/**
+# OS files
+.DS_Store
+Thumbs.db

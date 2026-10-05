@@ -1,0 +1,615 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<jasperReport name="Treatment_Report"
+
+              language="java"
+
+              pageWidth="842"
+
+              pageHeight="595"
+
+              columnWidth="802"
+
+              leftMargin="20"
+
+              rightMargin="20"
+
+              topMargin="20"
+
+              bottomMargin="20"
+
+              uuid="e4a91c72-6b35-4f08-a927-53d81b6204ce">
+
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter"/>
+
+	<parameter name="VET_ID" class="java.lang.Integer"/>
+
+	<query language="SQL"><![CDATA[
+
+SELECT
+
+    p.name AS pet_name,
+
+    CONCAT(o.first_name, ' ', o.last_name) AS owner_name,
+
+    t.diagnosis,
+
+    t.treatment_description,
+
+    t.medication,
+
+    t.status
+
+FROM Treatments t
+
+JOIN Appointments a ON t.appointment_id = a.appointment_id
+
+JOIN Pets p ON a.pet_id = p.pet_id
+
+JOIN Users o ON p.owner_id = o.user_id
+
+WHERE t.vet_id = $P{VET_ID}
+
+ORDER BY t.treatment_date DESC
+
+	]]></query>
+
+	<field name="pet_name" class="java.lang.String">
+
+		<property name="com.jaspersoft.studio.field.name" value="pet_name"/>
+
+		<property name="com.jaspersoft.studio.field.label" value="pet_name"/>
+
+	</field>
+
+	<field name="owner_name" class="java.lang.String">
+
+		<property name="com.jaspersoft.studio.field.name" value="owner_name"/>
+
+		<property name="com.jaspersoft.studio.field.label" value="owner_name"/>
+
+	</field>
+
+	<field name="diagnosis" class="java.lang.String">
+
+		<property name="com.jaspersoft.studio.field.name" value="diagnosis"/>
+
+		<property name="com.jaspersoft.studio.field.label" value="diagnosis"/>
+
+	</field>
+
+	<field name="treatment_description" class="java.lang.String">
+
+		<property name="com.jaspersoft.studio.field.name" value="treatment_description"/>
+
+		<property name="com.jaspersoft.studio.field.label" value="treatment_description"/>
+
+	</field>
+
+	<field name="medication" class="java.lang.String">
+
+		<property name="com.jaspersoft.studio.field.name" value="medication"/>
+
+		<property name="com.jaspersoft.studio.field.label" value="medication"/>
+
+	</field>
+
+	<field name="status" class="java.lang.String">
+
+		<property name="com.jaspersoft.studio.field.name" value="status"/>
+
+		<property name="com.jaspersoft.studio.field.label" value="status"/>
+
+	</field>
+
+
+	<background splitType="Stretch"/>
+
+
+	<title height="90" splitType="Stretch">
+
+		<element kind="staticText"
+
+				 x="0"
+
+				 y="5"
+
+				 width="802"
+
+				 height="35"
+
+				 fontSize="24.0"
+
+				 bold="true"
+
+				 hTextAlign="Center"
+
+				 vTextAlign="Middle">
+
+			<text><![CDATA[PetCareSys]]></text>
+
+		</element>
+
+		<element kind="staticText"
+
+				 x="0"
+
+				 y="45"
+
+				 width="802"
+
+				 height="20"
+
+				 fontSize="14.0"
+
+				 bold="true"
+
+				 hTextAlign="Center"
+
+				 vTextAlign="Middle">
+
+			<text><![CDATA[Treatment Report]]></text>
+
+		</element>
+
+		<element kind="line"
+
+				 x="0"
+
+				 y="78"
+
+				 width="802"
+
+				 height="1"/>
+
+	</title>
+
+
+	<pageHeader height="10" splitType="Stretch"/>
+
+
+	<columnHeader height="35" splitType="Stretch">
+
+		<element kind="staticText"
+
+				 x="0"
+
+				 y="0"
+
+				 width="110"
+
+				 height="35"
+
+				 fontSize="10.0"
+
+				 bold="true"
+
+				 hTextAlign="Center"
+
+				 vTextAlign="Middle">
+
+			<text><![CDATA[Pet]]></text>
+
+			<box>
+
+				<pen lineWidth="0.5"/>
+
+			</box>
+
+		</element>
+
+
+		<element kind="staticText"
+
+				 x="110"
+
+				 y="0"
+
+				 width="130"
+
+				 height="35"
+
+				 fontSize="10.0"
+
+				 bold="true"
+
+				 hTextAlign="Center"
+
+				 vTextAlign="Middle">
+
+			<text><![CDATA[Owner]]></text>
+
+			<box>
+
+				<pen lineWidth="0.5"/>
+
+			</box>
+
+		</element>
+
+
+		<element kind="staticText"
+
+				 x="240"
+
+				 y="0"
+
+				 width="135"
+
+				 height="35"
+
+				 fontSize="10.0"
+
+				 bold="true"
+
+				 hTextAlign="Center"
+
+				 vTextAlign="Middle">
+
+			<text><![CDATA[Diagnosis]]></text>
+
+			<box>
+
+				<pen lineWidth="0.5"/>
+
+			</box>
+
+		</element>
+
+
+		<element kind="staticText"
+
+				 x="375"
+
+				 y="0"
+
+				 width="180"
+
+				 height="35"
+
+				 fontSize="10.0"
+
+				 bold="true"
+
+				 hTextAlign="Center"
+
+				 vTextAlign="Middle">
+
+			<text><![CDATA[Treatment]]></text>
+
+			<box>
+
+				<pen lineWidth="0.5"/>
+
+			</box>
+
+		</element>
+
+
+		<element kind="staticText"
+
+				 x="555"
+
+				 y="0"
+
+				 width="145"
+
+				 height="35"
+
+				 fontSize="10.0"
+
+				 bold="true"
+
+				 hTextAlign="Center"
+
+				 vTextAlign="Middle">
+
+			<text><![CDATA[Medication]]></text>
+
+			<box>
+
+				<pen lineWidth="0.5"/>
+
+			</box>
+
+		</element>
+
+
+		<element kind="staticText"
+
+				 x="700"
+
+				 y="0"
+
+				 width="102"
+
+				 height="35"
+
+				 fontSize="10.0"
+
+				 bold="true"
+
+				 hTextAlign="Center"
+
+				 vTextAlign="Middle">
+
+			<text><![CDATA[Status]]></text>
+
+			<box>
+
+				<pen lineWidth="0.5"/>
+
+			</box>
+
+		</element>
+
+	</columnHeader>
+
+
+	<detail>
+
+		<band height="45" splitType="Stretch">
+
+			<element kind="textField"
+
+					 x="0"
+
+					 y="0"
+
+					 width="110"
+
+					 height="45"
+
+					 fontSize="10.0"
+
+					 vTextAlign="Middle"
+
+					 blankWhenNull="true"
+
+					 textAdjust="StretchHeight">
+
+				<expression><![CDATA[$F{pet_name}]]></expression>
+
+				<box>
+
+					<pen lineWidth="0.5"/>
+
+				</box>
+
+			</element>
+
+
+			<element kind="textField"
+
+					 x="110"
+
+					 y="0"
+
+					 width="130"
+
+					 height="45"
+
+					 fontSize="10.0"
+
+					 vTextAlign="Middle"
+
+					 blankWhenNull="true"
+
+					 textAdjust="StretchHeight">
+
+				<expression><![CDATA[$F{owner_name}]]></expression>
+
+				<box>
+
+					<pen lineWidth="0.5"/>
+
+				</box>
+
+			</element>
+
+
+			<element kind="textField"
+
+					 x="240"
+
+					 y="0"
+
+					 width="135"
+
+					 height="45"
+
+					 fontSize="10.0"
+
+					 vTextAlign="Middle"
+
+					 blankWhenNull="true"
+
+					 textAdjust="StretchHeight">
+
+				<expression><![CDATA[$F{diagnosis}]]></expression>
+
+				<box>
+
+					<pen lineWidth="0.5"/>
+
+				</box>
+
+			</element>
+
+
+			<element kind="textField"
+
+					 x="375"
+
+					 y="0"
+
+					 width="180"
+
+					 height="45"
+
+					 fontSize="10.0"
+
+					 vTextAlign="Middle"
+
+					 blankWhenNull="true"
+
+					 textAdjust="StretchHeight">
+
+				<expression><![CDATA[$F{treatment_description}]]></expression>
+
+				<box>
+
+					<pen lineWidth="0.5"/>
+
+				</box>
+
+			</element>
+
+
+			<element kind="textField"
+
+					 x="555"
+
+					 y="0"
+
+					 width="145"
+
+					 height="45"
+
+					 fontSize="10.0"
+
+					 vTextAlign="Middle"
+
+					 blankWhenNull="true"
+
+					 textAdjust="StretchHeight">
+
+				<expression><![CDATA[$F{medication}]]></expression>
+
+				<box>
+
+					<pen lineWidth="0.5"/>
+
+				</box>
+
+			</element>
+
+
+			<element kind="textField"
+
+					 x="700"
+
+					 y="0"
+
+					 width="102"
+
+					 height="45"
+
+					 fontSize="10.0"
+
+					 hTextAlign="Center"
+
+					 vTextAlign="Middle"
+
+					 blankWhenNull="true">
+
+				<expression><![CDATA[$F{status}]]></expression>
+
+				<box>
+
+					<pen lineWidth="0.5"/>
+
+				</box>
+
+			</element>
+
+		</band>
+
+	</detail>
+
+
+	<columnFooter height="20" splitType="Stretch"/>
+
+
+	<pageFooter height="35" splitType="Stretch">
+
+		<element kind="line"
+
+				 x="0"
+
+				 y="0"
+
+				 width="802"
+
+				 height="1"/>
+
+		<element kind="staticText"
+
+				 x="0"
+
+				 y="8"
+
+				 width="100"
+
+				 height="20"
+
+				 fontSize="9.0"
+
+				 vTextAlign="Middle">
+
+			<text><![CDATA[PetCareSys]]></text>
+
+		</element>
+
+		<element kind="textField"
+
+				 x="702"
+
+				 y="8"
+
+				 width="100"
+
+				 height="20"
+
+				 fontSize="9.0"
+
+				 hTextAlign="Right"
+
+				 vTextAlign="Middle">
+
+			<expression><![CDATA["Page " + $V{PAGE_NUMBER}]]></expression>
+
+		</element>
+
+	</pageFooter>
+
+
+	<summary height="30" splitType="Stretch">
+
+		<element kind="staticText"
+
+				 x="0"
+
+				 y="5"
+
+				 width="802"
+
+				 height="20"
+
+				 fontSize="9.0"
+
+				 italic="true"
+
+				 hTextAlign="Center"
+
+				 vTextAlign="Middle">
+
+			<text><![CDATA[End of Treatment Report]]></text>
+
+		</element>
+
+	</summary>
+
+</jasperReport>
